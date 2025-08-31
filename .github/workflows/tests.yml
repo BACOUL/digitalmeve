@@ -19,12 +19,12 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install black flake8
-      - name: Run linters (format + lint)
+      - name: Run linters (Black + Flake8)
         run: |
           black .
           flake8 .
 
-  pytest:
+  tests:
     runs-on: ubuntu-latest
     strategy:
       matrix:
