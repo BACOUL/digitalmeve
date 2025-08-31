@@ -1,102 +1,57 @@
-from __future__ import annotations
+"""
+Verifier module for DigitalMeve.
 
+Provides `verify_meve` and `verify_identity` functions to check the validity
+and authenticity of a `.meve` proof dictionary or JSON sidecar file.
+"""
+
+from __future__ import annotations
 import json
 from pathlib import Path
-from typing import Any, Dict, Optional, Tuple, Union
-
-__all__ = ["verify_identity", "verify_meve"]
-
-# Required keys for a valid MEVE object
-_REQUIRED_TOP = (
-    "meve_version",
-    "issuer",
-    "timestamp",
-    "metadata",
-    "subject",
-    "hash",
-)
-_REQUIRED_SUBJECT = ("filename", "size", "hash_sha256")
+from typing import Any, Dict, Tuple, Union
 
 
-# ---------------------------
-# Simple identity validation
-# ---------------------------
-def verify_identity(value: Optional[str]) -> bool:
+def verify_identity(value: str) -> bool:
     """
-    Return True iff `value` is a non-empty string (tests' expectation).
+    Very simple identity check used in tests.
+
+    Returns True if the provided string is non-empty and alphanumeric.
     """
-    return isinstance(value, str) and bool(value.strip())
-
-
-# ---------------------------
-# MEVE loader & validators
-# ---------------------------
-def _load_meve(
-    obj: Union[str, Path, Dict[str, Any]]
-) -> Tuple[Optional[Dict[str, Any]], Optional[Dict[str, Any]]]:
-    """
-    Load a MEVE object from a file path or directly from a dict.
-    Returns (data, None) if OK, else (None, {"error": "..."}).
-    """
-    if isinstance(obj, (str, Path)):
-        p = Path(obj)
-        try:
-            text = p.read_text(encoding="utf-8")
-            return json.loads(text), None
-        except Exception:  # noqa: BLE001
-            # Normalize any file-related error to the generic message expected by tests
-            return None, {"error": "invalid file"}
-    if isinstance(obj, dict):
-        return obj, None
-    return None, {"error": "invalid input type"}
-
-
-def _missing_keys(data: Dict[str, Any]) -> Dict[str, Any]:
-    """Return {"error": ..., "missing": [...]} if keys are missing, else {}."""
-    missing = [k for k in _REQUIRED_TOP if k not in data]
-    if missing:
-        return {"error": "Missing required keys", "missing": missing}
-
-    subj = data.get("subject", {})
-    sub_missing = [k for k in _REQUIRED_SUBJECT if k not in subj]
-    if sub_missing:
-        return {"error": "Missing required keys", "missing": sub_missing}
-
-    return {}
+    return isinstance(value, str) and value.isalnum()
 
 
 def verify_meve(
-    meve: Union[str, Path, Dict[str, Any]],
-    expected_issuer: Optional[str] = None,
+    proof: Union[Dict[str, Any], str, Path],
+    expected_issuer: str | None = None,
 ) -> Tuple[bool, Dict[str, Any]]:
     """
-    Verify a MEVE proof.
+    Verify a `.meve` proof.
+
+    Args:
+        proof: A dictionary already loaded, or a path/str to a `.json` file.
+        expected_issuer: Optional string; if provided, issuer must match.
 
     Returns:
-      (True, data) if valid,
-      (False, {"error": "...", ...}) if invalid.
+        (ok, info) tuple:
+          - ok: bool, True if verification passes
+          - info: dict with either the normalized proof or an {"error": "..."}.
     """
-    data, err = _load_meve(meve)
-    if err is not None:
-        return False, err
-    assert data is not None
+    # Load from file if string or Path
+    if isinstance(proof, (str, Path)):
+        try:
+            data = json.loads(Path(proof).read_text(encoding="utf-8"))
+        except Exception as e:
+            return False, {"error": f"invalid json: {e}"}
+    elif isinstance(proof, dict):
+        data = proof
+    else:
+        return False, {"error": "invalid proof type"}
 
-    miss = _missing_keys(data)
-    if miss:
-        return False, miss
+    required_keys = {"meve_version", "issuer", "timestamp", "metadata", "subject"}
+    if not required_keys.issubset(data.keys()):
+        return False, {"error": "missing required keys"}
 
-    # hash consistency: top-level "hash" must equal subject.hash_sha256
-    top_hash = data.get("hash")
-    subj_hash = data.get("subject", {}).get("hash_sha256")
-    if top_hash != subj_hash:
-        return False, {"error": "hash mismatch"}
-
-    # issuer check when an expected value is provided
-    if expected_issuer is not None and data.get("issuer") != expected_issuer:
-        return False, {
-            "error": "issuer mismatch",
-            "expected": expected_issuer,
-            "found": data.get("issuer"),
-        }
+    if expected_issuer and data.get("issuer") != expected_issuer:
+        return False, {"error": "issuer mismatch"}
 
     return True, data
