@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "digitalmeve"
-version = "1.7.0-dev"
+version = "1.7.0"
 description = "DigitalMeve — The .MEVE Standard: Certified Digital Memory"
 authors = [
     { name = "DigitalMeve Team", email = "support@digitalmeve.org" },
