@@ -11,8 +11,8 @@
 ---
 
 ## ✅ Status  
-
-- Current version: **1.6.1**  
+- Current version: **1.7.0**
+ 
 - Release page: [Releases](../../releases)  
 - Tests: ![Tests](https://github.com/BACOUL/digitalmeve/actions/workflows/tests.yml/badge.svg?branch=main&t=202508301200)
 
