@@ -1,46 +1,17 @@
 [build-system]
-requires = ["setuptools>=61.0", "wheel"]
+requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
+name = "digitalmeve"
 version = "1.7.1-dev"
-description = "DigitalMeve — The .MEVE Standard: Certified Digital Memory"
+description = "DigitalMeve library"
 authors = [
-    { name = "DigitalMeve Team", email = "support@digitalmeve.org" },
+  { name = "BACoul", email = "bacoul@example.com" }
 ]
-license = { text = "MIT" }
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = []
-
-[project.urls]
-Homepage = "https://github.com/BACOUL/digitalmeve"
-Documentation = "https://github.com/BACOUL/digitalmeve#readme"
-Repository = "https://github.com/BACOUL/digitalmeve"
-Issues = "https://github.com/BACOUL/digitalmeve/issues"
-
-[tool.black]
-line-length = 88
-target-version = ["py310", "py311", "py312"]
-skip-string-normalization = true
-
-[tool.flake8]
-max-line-length = 88
-extend-ignore = ["E203", "W503"]
-exclude = [
-  ".git",
-  "__pycache__",
-  "build",
-  "dist",
-  ".venv",
-]
-
-[tool.pytest.ini_options]
-minversion = "6.0"
-addopts = "-ra -q"
-testpaths = [
-    "tests",
-]
 
 [tool.setuptools.packages.find]
 where = ["src"]
