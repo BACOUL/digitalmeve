@@ -1,3 +1,4 @@
+
 # 🌍 DigitalMeve — The .MEVE Standard
 
 [![Quality](https://github.com/BACOUL/digitalmeve/actions/workflows/quality.yml/badge.svg?branch=main)](https://github.com/BACOUL/digitalmeve/actions/workflows/quality.yml)
@@ -10,26 +11,39 @@
 
 ---
 
-## ✅ Status
--- Current version: **1.7.0**
-+- Current version: [![PyPI - Version](https://img.shields.io/pypi/v/digitalmeve.svg?label=DigitalMeve&logo=pypi)](https://pypi.org/project/digitalmeve/)
- 
- - Release page: [Releases](../../releases)
- - Tests: ![Tests](https://github.com/BACOUL/digitalmeve/actions/workflows/tests.yml/badge.svg?branch=main)
- - 
-## 📑 Table of Contents  
+## 📖 Description
 
-- [🚀 Vision](#-vision)  
-- [🔑 Levels of Certification](#-levels-of-certification)  
-- [📂 Format Specification — MEVE/1](#-format-specification--meve1)  
-- [🛡 Security](#-security)  
-- [📊 Use Cases](#-use-cases)  
-- [📜 Roadmap](#-roadmap)  
-- [📢 Communication](#-communication)  
-- [⚖ License](#-license)  
-- [🛠 Contributing](#-contributing)  
-- [✅ Status](#-status)  
-- [📚 Documentation](#-documentation)  
+**DigitalMeve** — The .MEVE Standard: Certified Digital Memory
+
+---
+
+## 📦 Installation
+
+```bash
+pip install digitalmeve
+
+
+---
+
+📊 Table of Contents
+
+🚀 Vision
+
+🔑 Levels of Certification
+
+📂 Format Specification — MEVE/1
+
+🔒 Security
+
+📈 Use Cases
+
+🗺 Roadmap
+
+📢 Communication
+
+
+---
+
 - [🌟 Final Goal](#-final-goal)---
 
 **The first universal format to prove, certify and verify the authenticity of any digital document.**  
