@@ -10,12 +10,13 @@
 
 ---
 
-## ✅ Status  
-- Current version: **1.7.0**
+## ✅ Status
+-- Current version: **1.7.0**
++- Current version: [![PyPI - Version](https://img.shields.io/pypi/v/digitalmeve.svg?label=DigitalMeve&logo=pypi)](https://pypi.org/project/digitalmeve/)
  
-- Release page: [Releases](../../releases)  
-- Tests: ![Tests](https://github.com/BACOUL/digitalmeve/actions/workflows/tests.yml/badge.svg?branch=main&t=202508301200)
-
+ - Release page: [Releases](../../releases)
+ - Tests: ![Tests](https://github.com/BACOUL/digitalmeve/actions/workflows/tests.yml/badge.svg?branch=main)
+ - 
 ## 📑 Table of Contents  
 
 - [🚀 Vision](#-vision)  
