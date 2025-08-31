@@ -12,6 +12,7 @@ _PREVIEW_BYTES = 128  # petite empreinte lisible pour debug/aperçu
 
 
 def _file_sha256(path: Path) -> str:
+    """Return the hexadecimal SHA-256 digest for the file at `path`."""
     h = sha256()
     with path.open("rb") as f:
         for chunk in iter(lambda: f.read(8192), b""):
@@ -20,6 +21,22 @@ def _file_sha256(path: Path) -> str:
 
 
 def _preview_b64(path: Path, limit: int = _PREVIEW_BYTES) -> str:
+    """
+    Return a base64 preview of the first `limit` bytes of the file.
+
+    Parameters
+    ----------
+    path : pathlib.Path
+        Path to the file.
+    limit : int, default 128
+        Number of bytes to read for the preview.
+
+    Returns
+    -------
+    str
+        Base64-encoded string of the first bytes. Returns empty string
+        if reading fails (preview is optional).
+    """
     try:
         with path.open("rb") as f:
             head = f.read(limit)
@@ -36,16 +53,40 @@ def generate_meve(
     metadata: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
     """
-    Génère une preuve .meve au format dict.
+    Generate a minimal MEVE proof (as dict) for the given file.
 
-    - Ajoute les clés attendues par les tests :
-      * meve_version, issuer, timestamp, metadata
-      * subject: { filename, size, hash_sha256 }
-      * hash (copie de subject.hash_sha256)
-      * preview_b64 (aperçu base64 de quelques octets)
-    - Si `outdir` est fourni, écrit un sidecar JSON : <nom_fichier>.meve.json
+    What it does
+    ------------
+    - Reads the file, computes a SHA-256 hash and a base64 preview.
+    - Builds a dict with keys required by the test suite:
+        * meve_version, issuer, timestamp, metadata
+        * subject: { filename, size, hash_sha256 }
+        * hash (duplicate of subject.hash_sha256)
+        * preview_b64 (base64 preview of first bytes)
+    - Optionally writes a sidecar JSON `<filename>.meve.json` into `outdir`.
 
-    Retourne le dict de preuve.
+    Parameters
+    ----------
+    file_path : str | pathlib.Path
+        Path to the input file.
+    outdir : str | pathlib.Path | None, optional
+        If provided, the proof is also written as JSON file in this directory.
+    issuer : str, default "Personal"
+        Issuer string to include in the proof.
+    metadata : dict | None, optional
+        Optional metadata to embed in the proof.
+
+    Returns
+    -------
+    dict
+        The MEVE proof structure. Even if written to disk, the dict
+        is always returned.
+
+    Notes
+    -----
+    - `hash` and `subject.hash_sha256` always match.
+    - `timestamp` is ISO 8601 in UTC (with "Z").
+    - The preview is informational only, it is not part of verification.
     """
     path = Path(file_path)
     if not path.exists():
@@ -77,10 +118,7 @@ def generate_meve(
         out.mkdir(parents=True, exist_ok=True)
         outfile = out / f"{path.name}.meve.json"
 
-        # Écriture JSON minimale sans dépendances externes
-        # (on garde une indentation faible pour rester léger)
         import json
-
         with outfile.open("w", encoding="utf-8") as f:
             json.dump(proof, f, ensure_ascii=False, separators=(",", ":"), indent=None)
 
