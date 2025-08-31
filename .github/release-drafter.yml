@@ -1,0 +1,15 @@
+name-template: 'DigitalMeve v$NEXT_PATCH_VERSION'
+tag-template: 'v$NEXT_PATCH_VERSION'
+categories:
+  - title: '🚀 Features'
+    labels: ['feat', 'enhancement']
+  - title: '🐛 Fixes'
+    labels: ['fix', 'bug']
+  - title: '🧰 Maintenance'
+    labels: ['chore', 'refactor']
+  - title: '📝 Docs'
+    labels: ['docs']
+change-template: '- $TITLE (#$NUMBER) by @$AUTHOR'
+template: |
+  ## What’s new
+  $CHANGES
