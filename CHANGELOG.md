@@ -3,7 +3,27 @@
 All notable changes to this project will be documented here.
 
 ---
+# Changelog
 
+All notable changes to this project will be documented in this file.
+
+## [1.7.0] - 2025-08-30
+### Added
+- Polished generator & verifier (consistent keys, clearer error messages)
+- Docs: specification, security, examples, roadmap
+- CI stabilized (flake8 line length, tests 3.10/3.11/3.12)
+
+### Changed
+- Version alignment across code & tests
+
+### Fixed
+- Pre-commit/flake8 issues in `verifier.py`
+
+## [1.6.1] - 2025-08-29
+- Maintenance release, docs & tests updates.
+
+## [1.6.0] - 2025-08-28
+- Public stabilization of the 1.x line.
 ## [1.6.1] - 2025-08-30
 ### Added
 - Initial implementation of `.meve` proof generator (`generate_meve`)  
