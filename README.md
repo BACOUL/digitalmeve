@@ -1,13 +1,13 @@
 
 # 🌍 DigitalMeve — The .MEVE Standard
 
-Quality → https://github.com/BACOUL/digitalmeve/actions/workflows/quality.yml  
-Tests → https://github.com/BACOUL/digitalmeve/actions/workflows/tests.yml  
-Publish → https://github.com/BACOUL/digitalmeve/actions/workflows/publish.yml  
-PyPI → https://pypi.org/project/digitalmeve/  
-Python Versions → https://pypi.org/project/digitalmeve/  
-Downloads → https://pepy.tech/project/digitalmeve  
-License MIT → https://github.com/BACOUL/digitalmeve/blob/main/LICENSE  
+[![Quality](https://github.com/BACOUL/digitalmeve/actions/workflows/quality.yml/badge.svg?branch=main)](https://github.com/BACOUL/digitalmeve/actions/workflows/quality.yml)
+[![Tests](https://github.com/BACOUL/digitalmeve/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/BACOUL/digitalmeve/actions/workflows/tests.yml)
+[![Publish](https://github.com/BACOUL/digitalmeve/actions/workflows/publish.yml/badge.svg?branch=main)](https://github.com/BACOUL/digitalmeve/actions/workflows/publish.yml)
+[![PyPI - Version](https://img.shields.io/pypi/v/digitalmeve.svg?label=DigitalMeve&logo=pypi)](https://pypi.org/project/digitalmeve/)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/digitalmeve.svg?logo=python&label=Python)](https://pypi.org/project/digitalmeve/)
+[![Downloads](https://pepy.tech/badge/digitalmeve)](https://pepy.tech/project/digitalmeve)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/BACOUL/digitalmeve/blob/main/LICENSE)
 
 ---
 
@@ -24,30 +24,26 @@ a lightweight, human-readable file that proves in **2 seconds**:
 
 ---
 
-## 📂 Example of a `.meve.json`
+## 📚 Documentation
 
-```json
-{
-  "status": "Personal",
-  "issuer": "john.doe@example.com",
-  "issued_at": "2025-09-01T12:34:56Z",
-  "hash_sha256": "8f9c1b3c...e7a",
-  "meta": {
-    "filename": "contract-v1.pdf",
-    "size": 58231,
-    "mime": "application/pdf"
-  },
-  "preview_b64": "JVBERi0xLjQKJ....",
-  "id": "meve-0a92f3"
-}
-
+- [Overview](https://github.com/BACOUL/digitalmeve/blob/main/docs/overview.md)  
+- [API Usage](https://github.com/BACOUL/digitalmeve/blob/main/docs/API_USAGE.md)  
+- [Generator Guide](https://github.com/BACOUL/digitalmeve/blob/main/docs/generator-guide.md)  
+- [Verification Guide](https://github.com/BACOUL/digitalmeve/blob/main/docs/verification-guide.md)  
+- [Specification](https://github.com/BACOUL/digitalmeve/blob/main/docs/specification.md)  
+- [Security](https://github.com/BACOUL/digitalmeve/blob/main/docs/security.md)  
+- [Examples](https://github.com/BACOUL/digitalmeve/blob/main/docs/examples.md)  
+- [Pro Verification](https://github.com/BACOUL/digitalmeve/blob/main/docs/PRO.md)  
+- [Official Verification](https://github.com/BACOUL/digitalmeve/blob/main/docs/OFFICIAL.md)  
+- [Roadmap (docs)](https://github.com/BACOUL/digitalmeve/blob/main/docs/roadmap.md) • [Roadmap (root)](https://github.com/BACOUL/digitalmeve/blob/main/ROADMAP.md)
 
 ---
 
-⚡ Quick Start
+## ⚡ Quick Start
 
-Generate and verify a .meve proof in Python:
+Generate and verify a `.meve` proof in Python:
 
+```python
 from digitalmeve import generate_meve, verify_meve
 
 # 1) Generate
@@ -61,78 +57,8 @@ meve_path = generate_meve(
 result = verify_meve(meve_path)
 print(result.valid, result.level, result.timestamp_iso)
 
-➡️ Generator Guide → https://github.com/BACOUL/digitalmeve/blob/main/docs/generator-guide.md
-➡️ Verification Guide → https://github.com/BACOUL/digitalmeve/blob/main/docs/verification-guide.md
-
-
----
-
-📚 Documentation
-
-📌 Current (GitHub)
-
-Overview → https://github.com/BACOUL/digitalmeve/blob/main/docs/overview.md
-API Usage → https://github.com/BACOUL/digitalmeve/blob/main/docs/API_USAGE.md
-Generator Guide → https://github.com/BACOUL/digitalmeve/blob/main/docs/generator-guide.md
-Verification Guide → https://github.com/BACOUL/digitalmeve/blob/main/docs/verification-guide.md
-Specification → https://github.com/BACOUL/digitalmeve/blob/main/docs/specification.md
-Security → https://github.com/BACOUL/digitalmeve/blob/main/docs/security.md
-Examples → https://github.com/BACOUL/digitalmeve/blob/main/docs/examples.md
-Pro Verification → https://github.com/BACOUL/digitalmeve/blob/main/docs/PRO.md
-Official Verification → https://github.com/BACOUL/digitalmeve/blob/main/docs/OFFICIAL.md
-Roadmap (docs) → https://github.com/BACOUL/digitalmeve/blob/main/docs/roadmap.md
-Roadmap (root) → https://github.com/BACOUL/digitalmeve/blob/main/ROADMAP.md
-
-🚀 Future (MkDocs site)
-
-Overview → https://bacoul.github.io/digitalmeve/overview/
-API Usage → https://bacoul.github.io/digitalmeve/api_usage/
-Generator Guide → https://bacoul.github.io/digitalmeve/generator-guide/
-Verification Guide → https://bacoul.github.io/digitalmeve/verification-guide/
-Specification → https://bacoul.github.io/digitalmeve/specification/
-Security → https://bacoul.github.io/digitalmeve/security/
-Examples → https://bacoul.github.io/digitalmeve/examples/
-Pro Verification → https://bacoul.github.io/digitalmeve/pro/
-Official Verification → https://bacoul.github.io/digitalmeve/official/
-Roadmap → https://bacoul.github.io/digitalmeve/roadmap/
-
-
----
-
-📌 Project Status (v1.7.0)
-
-✅ Core generator (generate_meve) — hash, timestamp, metadata
-✅ Core verifier (verify_meve) — integrity + issuer check
-✅ PyPI package published → https://pypi.org/project/digitalmeve/
-✅ CI/CD (tests, quality, publish)
-✅ Documentation & governance (MIT, CONTRIBUTING, SECURITY)
-
-🚧 Next steps:
-
-JSON Schema validation (schema/meve-1.schema.json)
-
-Minimal API backend (FastAPI)
-
-Framer landing site + demo
-
-
-
----
-
-📑 MEVE/1 Specification (draft)
-
-Field	Description
-
-status	Personal | Pro | Official
-issuer	Identity (email or domain)
-issued_at	UTC timestamp (ISO 8601)
-hash_sha256	Document integrity hash
-id	Short MEVE ID
-meta	Filename • Size • Mime type
-preview_b64	Base64 preview of first bytes
-
-
-Full spec → https://github.com/BACOUL/digitalmeve/blob/main/docs/specification.md
+➡️ Generator Guide
+➡️ Verification Guide
 
 
 ---
@@ -147,26 +73,6 @@ Official → DNS-verified institution/domain.
 
 
 ☑️ The level is automatically computed by the verifier (never self-declared).
-
-
----
-
-🌐 API (coming soon)
-
-POST /generate → upload file + issuer → returns .meve.json.
-POST /verify → submit proof → returns { ok, level, issuer, timestamp }.
-
-
----
-
-🛣 Roadmap
-
-Phase 1 (MVP) → generator, verifier, CI/CD, PyPI (done)
-
-Phase 2 (6 months) → email/DNS verification, PDF export, SaaS API (planned)
-
-Phase 3 (1–2 years) → ISO/AFNOR standardization, ERP/CRM integrations, adoption (goal)
-
 
 
 ---
@@ -187,9 +93,12 @@ Run local checks:
 pre-commit run --all-files
 pytest -q
 
-Contributing → https://github.com/BACOUL/digitalmeve/blob/main/CONTRIBUTING.md
-Code of Conduct → https://github.com/BACOUL/digitalmeve/blob/main/CODE_OF_CONDUCT.md
-Security Policy → https://github.com/BACOUL/digitalmeve/blob/main/SECURITY.md
+Contributing
+
+Code of Conduct
+
+Security Policy
+
 
 
 ---
@@ -209,9 +118,59 @@ Your documents, certified and verifiable in 2 seconds, anywhere in the world.
 
 ⚖ License
 
-Distributed under the MIT License → https://github.com/BACOUL/digitalmeve/blob/main/LICENSE
+Distributed under the MIT License → LICENSE
 
 
 ---
 
-✍️ Maintained by DigitalMeve Team •
+✍️ Maintained by DigitalMeve Team • Repo → https://github.com/BACOUL/digitalmeve
+
+---
+
+# 📄 `LINKS.md` (backup avec toutes les URLs en clair)
+
+```markdown
+# 🔗 DigitalMeve — Links Backup
+
+This file contains all important links in raw format (no Markdown)  
+to avoid copy-paste issues with some editors.
+
+---
+
+## 📚 Documentation
+
+Overview → https://github.com/BACOUL/digitalmeve/blob/main/docs/overview.md  
+API Usage → https://github.com/BACOUL/digitalmeve/blob/main/docs/API_USAGE.md  
+Generator Guide → https://github.com/BACOUL/digitalmeve/blob/main/docs/generator-guide.md  
+Verification Guide → https://github.com/BACOUL/digitalmeve/blob/main/docs/verification-guide.md  
+Specification → https://github.com/BACOUL/digitalmeve/blob/main/docs/specification.md  
+Security → https://github.com/BACOUL/digitalmeve/blob/main/docs/security.md  
+Examples → https://github.com/BACOUL/digitalmeve/blob/main/docs/examples.md  
+Pro Verification → https://github.com/BACOUL/digitalmeve/blob/main/docs/PRO.md  
+Official Verification → https://github.com/BACOUL/digitalmeve/blob/main/docs/OFFICIAL.md  
+Roadmap (docs) → https://github.com/BACOUL/digitalmeve/blob/main/docs/roadmap.md  
+Roadmap (root) → https://github.com/BACOUL/digitalmeve/blob/main/ROADMAP.md  
+
+---
+
+## 📦 Project
+
+Repo → https://github.com/BACOUL/digitalmeve  
+PyPI → https://pypi.org/project/digitalmeve/  
+Downloads → https://pepy.tech/project/digitalmeve  
+License → https://github.com/BACOUL/digitalmeve/blob/main/LICENSE  
+Contributing → https://github.com/BACOUL/digitalmeve/blob/main/CONTRIBUTING.md  
+Code of Conduct → https://github.com/BACOUL/digitalmeve/blob/main/CODE_OF_CONDUCT.md  
+Security Policy → https://github.com/BACOUL/digitalmeve/blob/main/SECURITY.md  
+
+---
+
+## 🛠 CI/CD Workflows
+
+Quality → https://github.com/BACOUL/digitalmeve/actions/workflows/quality.yml  
+Tests → https://github.com/BACOUL/digitalmeve/actions/workflows/tests.yml  
+Publish → https://github.com/BACOUL/digitalmeve/actions/workflows/publish.yml
+
+
+---
+
