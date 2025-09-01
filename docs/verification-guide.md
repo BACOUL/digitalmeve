@@ -1,23 +1,32 @@
-# 🛡 DigitalMeve Verification Guide
-
-## Overview
-DigitalMeve provides a fast and universal way to verify the authenticity of any `.meve` proof.  
-Verification ensures:
-1. The document has not been tampered with (hash validation).  
-2. The proof contains a valid timestamp (UTC).  
-3. The issuer identity matches the expected level (Personal, Pro, Official).  
+# 🛡 DigitalMeve — Verification Guide
 
 ---
 
-## Verification Methods
+## 1. Overview
 
-### 1. Local verification (Python SDK)
+DigitalMeve provides a **fast and universal** way to verify the authenticity of any `.meve` proof.  
+Verification ensures:
+
+- **Integrity** → the document has not been tampered with (SHA-256 validation).  
+- **Timestamp** → the proof contains a valid UTC timestamp.  
+- **Issuer** → the identity level (Personal, Pro, Official) matches expectations.  
+
+---
+
+## 2. Verification Methods
+
+### 2.1 Local verification (Python SDK)
+
+Install DigitalMeve:
+
 ```bash
 pip install digitalmeve
 
+Example usage:
+
 from digitalmeve import verify_meve
 
-ok, info = verify_meve("sample.txt.meve.json", expected_issuer="DigitalMeve Test Suite")
+ok, info = verify_meve("sample.txt.meve.json", expected_issuer="Personal")
 
 if ok:
     print("✅ Proof valid:", info)
@@ -27,9 +36,9 @@ else:
 
 ---
 
-2. Web verification
+2.2 Web verification (coming soon)
 
-Drag & drop your .meve.json file into the DigitalMeve Web Verifier (coming soon).
+Drag & drop your .meve.json file into the DigitalMeve Web Verifier.
 
 The verifier runs locally in your browser — no data is uploaded.
 
@@ -37,9 +46,9 @@ The verifier runs locally in your browser — no data is uploaded.
 
 ---
 
-3. API verification
+2.3 API verification (for Pro/Official users)
 
-DigitalMeve will provide a REST API for professional integrations:
+A REST API will be available for integrations:
 
 POST /api/v1/verify
 Content-Type: application/json
@@ -48,7 +57,7 @@ Content-Type: application/json
   "proof": { ... }
 }
 
-Response:
+Response example:
 
 {
   "valid": true,
@@ -60,23 +69,32 @@ Response:
 
 ---
 
-Error Cases
+3. Error Handling
 
-issuer mismatch → Issuer does not match the expected identity.
+Standard error cases:
 
-hash mismatch → The document has been altered.
+Issuer mismatch → {"error": "Issuer mismatch", "expected": "..."}
 
-missing keys → Proof file is incomplete or corrupted.
+Hash mismatch → {"error": "Hash mismatch"}
+
+Missing keys → {"error": "Missing required keys", "missing": [...]}
+
+Invalid proof → {"error": "Invalid file: ..."}
+
+
+
+---
+
+4. Next Steps
+
+Learn how to generate proofs → Generator Guide
+
+See formal rules → Specification
+
+Review security model → Security
 
 
 
 ---
 
-Next Steps
-
-See Generator Guide for creating proofs.
-
-Check Security for technical guarantees.
-
-
----
+✍️ Maintained under DigitalMeve.
