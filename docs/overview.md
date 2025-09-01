@@ -1,19 +1,47 @@
 # 🌍 DigitalMeve — Overview
 
-DigitalMeve est le **format universel (.meve)** pour *prouver, certifier et vérifier* l’authenticité d’un document numérique.
+DigitalMeve defines the universal **`.meve` (Memory Verified)** format to **prove, certify, and verify** the authenticity of any digital document.
 
-## Qu’est-ce qu’un fichier `.meve` ?
-`.meve` = **Memory Verified** : un conteneur léger, lisible, qui regroupe :
-- ✅ L’empreinte (hash) du document d’origine (SHA-256)
-- ⏱️ Un horodatage fiable (UTC ISO 8601)
-- 🔏 Une signature de l’émetteur (ex. Ed25519)
-- 🗂️ Des métadonnées optionnelles (nom, propriétaire, tags…)
+---
 
-## Pourquoi DigitalMeve ?
-- 🌐 **Universel** et interopérable
-- ⏱️ **Rapide** (preuve en < 2 s)
-- 🔐 **Sécurisé** (hash + signature)
-- 🤝 **Simple** (lisible & vérifiable par machine)
+## 📂 What is a `.meve` file?
 
-👉 Pour la structure formelle, voir **[Specification](./specification.md)**.  
-👉 Pour des cas concrets, voir **[Examples](./examples.md)**.
+A `.meve` file is a lightweight, human-readable JSON container that includes:
+
+- ✅ The **cryptographic hash** of the original document (SHA-256)  
+- ⏱️ A trusted **timestamp** (UTC ISO 8601)  
+- 🔏 A **digital signature** from the issuer (Ed25519)  
+- 🗂️ Optional **metadata** (filename, author, tags…)  
+
+---
+
+## 🔑 Why DigitalMeve?
+
+- 🌐 **Universal & interoperable** — works across files, apps, and platforms  
+- ⏱️ **Fast** — proof generated in under 2 seconds  
+- 🔐 **Secure** — tamper-proof integrity check (hash + signature)  
+- 🤝 **Simple** — lightweight JSON, easy to read and verify locally  
+
+---
+
+## 🔒 Certification Levels
+
+- **Personal** → self-issued proof (free)  
+- **Pro** → verified professional (email/domain)  
+- **Official** → verified organization (DNS/org key)  
+
+---
+
+## 📚 Next Steps
+
+- 👉 See [Specification](SPECIFICATION.md) for the formal `.MEVE/1` structure  
+- 👉 See [Examples](EXAMPLES.md) for concrete use cases and sample proofs  
+- 👉 See [Generator Guide](GENERATOR_GUIDE.md) to create proofs yourself  
+
+---
+
+## 🌟 Final Goal
+
+**DigitalMeve aims to become the “PDF of digital proof”** —  
+free for individuals, subscription for professionals,  
+and trusted licenses for institutions.
