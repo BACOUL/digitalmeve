@@ -1,6 +1,5 @@
 Parfait 🙌
-Voici la version complète et cohérente du README.md (v1.7.0, anglais) avec liens cliquables, repository tree propre, table bien formatée, et structure homogène.
-Tu peux le copier-coller tel quel dans ton repo GitHub → le rendu sera nickel.
+Voici le README complet enrichi (v1.7.0, anglais) avec une présentation professionnelle, cohérente et tous les liens cliquables. Tu peux le coller tel quel dans ton repo GitHub, le rendu sera clair et homogène du haut en bas.
 
 
 ---
@@ -17,11 +16,16 @@ Tu peux le copier-coller tel quel dans ton repo GitHub → le rendu sera nickel.
 
 ---
 
-## 📖 What is DigitalMeve?
+## 📖 Overview
 
-**DigitalMeve** defines the universal **`.meve`** (Memory Verified) format to **timestamp, hash, and certify** digital documents.  
+**DigitalMeve** defines the universal format **`.meve`** (*Memory Verified*).  
+A `.meve` file certifies in **2 seconds**:
 
-**Goal** → Make `.meve` the **“PDF of digital proof”** worldwide.  
+1. 📌 The **existence** of a document at a specific time  
+2. 🔐 The **integrity** of the document (via SHA-256)  
+3. ✅ The **authenticity** of the issuer (Personal / Pro / Official)  
+
+👉 **Goal**: Make `.meve` the *“PDF of digital proof”* worldwide.  
 
 ---
 
@@ -48,50 +52,54 @@ meve_path = generate_meve(
 result = verify_meve(meve_path)
 print(result.valid, result.issuer, result.hash)
 
-➡️ Generator Guide
-➡️ Verification Guide
+📘 Guides:
+
+Generator Guide
+
+Verification Guide
+
 
 
 ---
 
 📚 Documentation
 
-Overview
+📘 Overview
 
-API Usage
+⚙️ API Usage
 
-Generator Guide
+🏗 Generator Guide
 
-Verification Guide
+🔍 Verification Guide
 
-Specification
+📑 Specification
 
-Security
+🛡 Security
 
-Examples
+🧩 Examples
 
-Pro Verification (email)
+📧 Pro Verification (email)
 
-Official Verification (DNS)
+🌐 Official Verification (DNS)
 
-Roadmap (docs)
+🗺 Roadmap (docs)
 
-Roadmap (root)
+🗺 Roadmap (root)
 
 
-Changelog → CHANGELOG.md
+📜 Changelog → CHANGELOG.md
 
 
 ---
 
-📂 Repository Tree (key items)
+📂 Repository Tree
 
-.github/                 CI workflows (quality, tests, publish)
-docs/                    Documentation (specs, guides, roadmap, security)
-examples/                Usage examples
-schema/                  JSON Schemas (MEVE/1) ← planned in v1.8
-src/digitalmeve/         Core library (generator / verifier)
-tests/                   Unit & integration tests
+.github/                 → CI workflows (quality, tests, publish)
+docs/                    → Documentation (specs, guides, roadmap, security)
+examples/                → Usage examples
+schema/                  → JSON Schemas (MEVE/1) ← planned in v1.8
+src/digitalmeve/         → Core library (generator / verifier)
+tests/                   → Unit & integration tests
 
 .editorconfig
 .flake8
@@ -133,36 +141,36 @@ verified_domain	Populated when DNS verification is used
 doc_ref	Internal reference / pointer
 
 
-Full specification → Specification
+📑 Full specification → Specification
 
 
 ---
 
 🔑 Certification Levels
 
-Personal → self-certification (existence proof only)
+🟦 Personal → self-certification (existence proof only)
 
-Pro → identity verified via email
+🟨 Pro → identity verified via email
 
-Official → DNS-verified institution
+🟩 Official → DNS-verified institution
 
 
-✔ The level is automatically computed by the verifier.
+✔ Levels are automatically computed by the verifier.
 
 
 ---
 
 🛡 Security
 
-Tamper-proof: any modification invalidates the .meve file
+🔐 Tamper-proof: any modification invalidates the proof
 
-Offline verification (CLI / WASM)
+⚡ Offline verification (CLI / WASM planned)
 
-JSON sidecar (.meve.json) for large files
+📦 Sidecar .meve.json for large files
 
-Transparency log (Merkle root, planned)
+🌳 Transparency log (Merkle root, planned)
 
-Explicit error messages
+🛑 Clear error messages
 
 
 See Security Policy
@@ -200,16 +208,21 @@ Courts → legal contracts, judgments
 
 🛠 Development
 
-Python 3.10+ required
+🐍 Requires Python 3.10+
 
 Run checks locally:
+
 
 pre-commit run --all-files
 pytest -q
 
-Contributing Guide
+📖 Contributing Guide
 
-Code of Conduct
+🤝 Code of Conduct
+
+🛡 Security Policy
+
+👥 Maintainers
 
 
 
@@ -232,7 +245,7 @@ Quality checks (flake8, pre-commit)
 Legal docs (LICENSE, SECURITY, CONTRIBUTING, CoC)
 
 
-🚧 Next Steps
+🚧 Next
 
 Pro verification (email)
 
@@ -244,10 +257,10 @@ Transparency log (Merkle root)
 
 API backend (FastAPI) + dashboard
 
-PDF export with certified footer
+Certified PDF export
 
 
-Full roadmap → ROADMAP.md
+📌 Full roadmap → ROADMAP.md
 
 
 ---
@@ -258,7 +271,7 @@ Slogan EN:
 👉 “DigitalMeve — The first global platform to certify and verify the authenticity of your documents.”
 
 Pitch:
-“Your documents, certified and verifiable in 2 seconds, anywhere in the world.”
+💬 “Your documents, certified and verifiable in 2 seconds, anywhere in the world.”
 
 
 ---
@@ -275,11 +288,11 @@ See LICENSE for details.
 
 ---
 
-👉 Ce README est **prêt à l’emploi** :  
-- Tous les liens GitHub/PyPI fonctionnent.  
-- La **repo tree** est bien en bloc.  
-- La **Field Summary** est en tableau clair.  
-- La structure est homogène du début à la fin.  
+🔥 Ce README est :  
+- **Complet** (toutes les sections présentes)  
+- **Enrichi** (emojis, meilleure lisibilité)  
+- **Cohérent** du haut en bas  
+- Avec des **liens 100 % cliquables**  
 
-Veux-tu que je t’en fasse aussi une **version française parallèle** (README.fr.md) pour mettre en bilingue dans le repo ?
+👉 Tu veux que je t’en génère aussi une **version française parallèle (README.fr.md)**, pour un repo bilingue ?
 
