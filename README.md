@@ -1,121 +1,124 @@
 
-# 🌍 DigitalMeve — The .MEVE Standard
+
+# 🌍 DigitalMeve — The .MEVE Standard  
 
 [![Quality](https://github.com/BACOUL/digitalmeve/actions/workflows/quality.yml/badge.svg?branch=main)](https://github.com/BACOUL/digitalmeve/actions/workflows/quality.yml)
 [![Tests](https://github.com/BACOUL/digitalmeve/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/BACOUL/digitalmeve/actions/workflows/tests.yml)
-[![Publish](https://github.com/BACOUL/digitalmeve/actions/workflows/publish.yml/badge.svg?branch=main)](https://github.com/BACOUL/digitalmeve/actions/workflows/publish.yml)
-[![PyPI - Version](https://img.shields.io/pypi/v/digitalmeve.svg?label=DigitalMeve&logo=pypi)](https://pypi.org/project/digitalmeve/)
-[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/digitalmeve.svg?logo=python&label=Python)](https://pypi.org/project/digitalmeve/)
-[![Downloads](https://pepy.tech/badge/digitalmeve)](https://pepy.tech/project/digitalmeve)
+[![Publish](https://github.com/BACOUL/digitalmeve/actions/workflows/publish.yml/badge.svg?branch=main)](https://github.com/BACOUL/digitalmeve/actions/workflows/publish.yml)  
+[![PyPI - Version](https://img.shields.io/pypi/v/digitalmeve.svg?label=PyPI&logo=pypi)](https://pypi.org/project/digitalmeve/)
+[![Python](https://img.shields.io/pypi/pyversions/digitalmeve.svg?logo=python&label=Python)](https://pypi.org/project/digitalmeve/)
+[![Downloads](https://pepy.tech/badge/digitalmeve/month)](https://pepy.tech/project/digitalmeve)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 ---
 
-## 📖 Description
+## 📖 Description  
 
-**DigitalMeve** — The .MEVE Standard: Certified Digital Memory
+**DigitalMeve** — The `.MEVE` Standard: Certified Digital Memory.  
 
----
-
-## 📦 Installation
-
-```bash
-pip install digitalmeve
-
+The first universal format to **prove, certify, and verify** the authenticity of any digital file.  
+`.meve` = **Memory Verified** → timestamp + hash + issuer certification.  
 
 ---
 
-📊 Table of Contents
+## 📑 Table of Contents  
 
-🚀 Vision
+- [🚀 Vision](#-vision)  
+- [🔑 Levels of Certification](#-levels-of-certification)  
+- [📂 Format Specification — MEVE/1](#-format-specification--meve1)  
+- [⚙️ Usage](#️-usage)  
+  - [CLI](#cli)  
+  - [Python API](#python-api)  
+- [🛡 Security](#-security)  
+- [📊 Use Cases](#-use-cases)  
+- [📜 Roadmap](#-roadmap)  
+- [📢 Communication](#-communication)  
+- [⚖ License](#-license)  
+- [🛠 Contributing](#-contributing)  
+- [✅ Status](#-status)  
+- [📚 Documentation](#-documentation)  
+- [🌟 Final Goal](#-final-goal)  
 
-🔑 Levels of Certification
+---
 
-📂 Format Specification — MEVE/1
+## 🚀 Vision  
+
+DigitalMeve creates a universal certification format: **`.meve` (Memory Verified)**.  
+
+It proves in **2 seconds**:  
+1. The existence of a document at a given date.  
+2. Its integrity (SHA-256).  
+3. The authenticity of the issuer.  
+
+**Goal** → Make `.meve` the **“PDF of digital proof”**.  
+
+---
+
+## 🔑 Levels of Certification  
+
+- **Personal** → Self-certification (existence only).  
+- **Pro** → Email verified (real professional identity).  
+- **Official** → DNS verified / institutional certification.  
+
+⚡ Always computed automatically, never declared manually → impossible to fake.  
+
+---
+
+## 📂 Format Specification — MEVE/1  
+
+Example of `.meve.json`:  
+
+```json
+{
+  "meve_version": "1.0",
+  "issuer": "Personal",
+  "timestamp": "2025-09-01T12:34:56Z",
+  "subject": {
+    "filename": "document.pdf",
+    "size": 1048576,
+    "hash_sha256": "..."
+  },
+  "hash": "...",
+  "preview_b64": "...",
+  "metadata": {}
+}
+
+
+---
+
+⚙️ Usage
+
+CLI
+
+# Generate proof
+digitalmeve generate mydoc.pdf --out out/
+
+# Verify proof
+digitalmeve verify out/mydoc.pdf.meve.json
+
+Python API
+
+from digitalmeve.generator import generate_meve
+from digitalmeve.verifier import verify_meve
+
+proof = generate_meve("mydoc.pdf", outdir="out", issuer="DigitalMeve Demo")
+ok, info = verify_meve("out/mydoc.pdf.meve.json", expected_issuer="DigitalMeve Demo")
+
+print("Valid:", ok)
+print("Details:", info)
+
+
+---
 
 🛡 Security
 
-📊 Use Cases
+Tamper-proof: any file change breaks the hash.
 
-📜 Roadmap
+Metadata embedding or sidecar .meve.json.
 
-📢 Communication
+Scalable: handles very large files.
 
-⚖ License
-
-🛠 Contributing
-
-✅ Status
-
-📚 Documentation
-
-🌟 Final Goal
-
-
-
----
-
-🚀 Vision
-
-DigitalMeve creates a new universal certification format: .meve (Memory Verified).
-A lightweight and human-readable file proving in 2 seconds:
-
-1. The existence of a document at a given date.
-
-
-2. The integrity of the document (via SHA-256 hash).
-
-
-3. The authenticity of the issuer (Personal / Pro / Official).
-
-
-
-Goal: make .meve the “PDF of digital proof” worldwide.
-
-
----
-
-🔑 Levels of Certification
-
-Personal → Self-certification (existence proof only).
-
-Pro → Email verified (identity linked to a real professional).
-
-Official → DNS verified / institution (official certification).
-
-
-⚡ Certification level is always computed automatically by DigitalMeve, never declared manually. Impossible to fake.
-
-
----
-
-📂 Format Specification — MEVE/1
-
-Example of .meve structure:
-
-MEVE/1  
-Status: Official | Pro | Personal  
-Issuer: <identity>  
-Certified: DigitalMeve (dns|email|self)  
-Time: <UTC timestamp>  
-Hash-SHA256: <document hash>  
-ID: <short unique code>  
-Signature: <Ed25519 base64>  
-Meta: <filename> • <size bytes> • <mime>  
-Doc-Ref: <optional internal reference>
-
-
----
-
-🛡 Security
-
-Tamper-proof: if the document changes (even one comma), the hash changes and the .meve becomes invalid.
-
-Metadata embedding: JSON proof can be embedded in the file metadata OR generated as a sidecar .meve.json.
-
-Scalable: fallback .meve.json for large files (>50 MB).
-
-Detection: verification instantly detects any fraud attempt.
+Fraud detection: instant verification.
 
 
 
@@ -127,9 +130,9 @@ Detection: verification instantly detects any fraud attempt.
 
 Proof of creation (art, photos, manuscripts).
 
-Secure timestamp (testament, private agreements).
+Timestamp for private agreements.
 
-Evidence of damages (video/photo insurance).
+Insurance evidence (videos, photos).
 
 
 👔 Professionals
@@ -138,16 +141,16 @@ Certified invoices, quotes, contracts.
 
 Proof of authorship (designs, code).
 
-Intellectual property pre-proof (before patents).
+Intellectual property pre-proof.
 
 
 🏛 Institutions
 
 Universities → certified diplomas.
 
-Governments → official documents.
+Governments → official docs.
 
-Courts & notaries → judgments, legal contracts.
+Courts & notaries → contracts, rulings.
 
 
 
@@ -155,33 +158,11 @@ Courts & notaries → judgments, legal contracts.
 
 📜 Roadmap
 
-Phase 1 (MVP, 1–2 months)
+Phase 1 (MVP): generator + verifier + hashing ✅
 
-Generator .meve (site + script).
+Phase 2: Pro email verification + certified PDF export
 
-Verifier .meve (drag & drop site).
-
-SHA-256 hash + UTC timestamp + Ed25519 signature.
-
-
-Phase 2 (6 months)
-
-Pro email verification.
-
-Official DNS verification.
-
-Export certified PDF with DigitalMeve footer.
-
-Public API for third-party integration.
-
-
-Phase 3 (1–2 years)
-
-International standardization (ISO/AFNOR).
-
-Integrations in ERP / CRM / Universities.
-
-Large-scale adoption.
+Phase 3: Official DNS verification + standardization
 
 
 
@@ -190,20 +171,20 @@ Large-scale adoption.
 📢 Communication
 
 Slogan:
-👉 “DigitalMeve — The first online platform that certifies and verifies the authenticity of your documents.”
+👉 “DigitalMeve — Trust in every file.”
 
 Pitch:
-“Your documents, certified and verifiable in 2 seconds, anywhere in the world.”
+“Your documents, certified and verifiable in 2 seconds, anywhere.”
 
 Channels:
 
-Clear landing page (Framer).
+Landing page (Framer).
 
-Explainer videos (EN/FR).
+Explainer videos.
 
-Live demo (upload → verify).
+Live demo.
 
-LinkedIn / YouTube / Twitter campaigns.
+LinkedIn / YouTube / Twitter.
 
 
 
@@ -211,21 +192,18 @@ LinkedIn / YouTube / Twitter campaigns.
 
 ⚖ License
 
-This repository is licensed under the MIT License.
-See LICENSE for details.
+MIT License. See LICENSE.
 
 
 ---
 
 🛠 Contributing
 
-We welcome contributions!
+Open issues for bugs/features.
 
-Open issues for bugs or feature requests.
+Submit PRs with clear commits.
 
-Submit pull requests with clear commits.
-
-Follow the contribution guidelines in CONTRIBUTING.md.
+Follow CONTRIBUTING.md.
 
 
 
@@ -235,7 +213,7 @@ Follow the contribution guidelines in CONTRIBUTING.md.
 
 Current version: 1.7.0
 
-Release page: Releases
+Releases
 
 Tests: 
 
@@ -274,5 +252,9 @@ License for institutions.
 
 DigitalMeve — Trust in every file.
 
+
 ---
 
+📸 (Screenshots and diagrams to be added here)
+
+---
