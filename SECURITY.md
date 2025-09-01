@@ -1,51 +1,46 @@
-# 🔒 Security Policy — DigitalMeve
+# 🔐 Security Policy — DigitalMeve
 
-We take security seriously at **DigitalMeve**.  
-If you discover a vulnerability, please follow the process below.
+## Supported Versions
+We support the **latest stable release** of DigitalMeve on PyPI.  
+Older versions may not receive security updates.
 
----
-
-## 📢 Reporting a Vulnerability
-
-- Please **do not open a public issue** for security problems.  
-- Instead, send a private report to: **security@digitalmeve.com**  
-- Include as much detail as possible:
-  - Steps to reproduce
-  - Potential impact
-  - Suggested fix (if any)
-
-We will acknowledge receipt within **48 hours** and provide a status update within **5 business days**.
+| Version   | Supported          |
+|-----------|--------------------|
+| 1.7.0     | ✅ (current)       |
+| < 1.7.0   | ❌ (unsupported)   |
 
 ---
 
-## ✅ Supported Versions
+## Reporting a Vulnerability
+If you discover a security issue:
 
-We currently support the **latest stable release** only:  
+- **Do NOT open a public issue.**
+- Please email us at: `security@digitalmeve.com`  
+- Include as much detail as possible (steps, logs, proof of concept).
 
-| Version   | Supported |
-|-----------|-----------|
-| 1.7.0     | ✅ Yes    |
-| < 1.7.0   | ❌ No     |
-
----
-
-## 🛠 Our Commitment
-
-- We will confirm the vulnerability and assess severity.  
-- If confirmed, we will release a patch as quickly as possible.  
-- Credit will be given to the reporter (unless anonymity is requested).  
+We commit to:
+- First response **within 72h**.
+- Status updates every 7 days until resolution.
+- Public disclosure only **after a fix is available**.
 
 ---
 
-## 🚫 Out of Scope
-
-The following are **not considered vulnerabilities**:
-- Self-signed `.meve` proofs marked as **Personal**
-- Misconfigured third-party environments
-- Issues already documented in [README.md](./README.md)
+## Scope
+- Core library (`/src/digitalmeve/`)
+- CLI and verification tools
+- GitHub Actions workflows
+- Documentation website
 
 ---
 
-## 🙏 Thanks
+## Out of Scope
+- Content of documents protected by `.meve` (we only certify hashes, not meaning).
+- Third-party integrations (unless officially maintained by DigitalMeve).
 
-We greatly appreciate the security community for helping make **DigitalMeve** safer for everyone.
+---
+
+## Responsible Disclosure
+We follow the principle of **coordinated disclosure**.  
+Please do not exploit vulnerabilities beyond what is necessary to prove them.
+
+🙏 Thank you for helping keep DigitalMeve safe for everyone.
