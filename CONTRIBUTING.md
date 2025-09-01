@@ -1,65 +1,138 @@
-# Contribuer à DigitalMeve
-
-Merci de votre intérêt ! Pour contribuer :
 
 # Contributing to DigitalMeve
 
-Thanks for your interest! Please read this guide before opening an issue or PR.
+Thank you for your interest in contributing!  
+Please read this guide before opening an issue or pull request.
 
-## Setup
-- Python 3.10+ recommended.
-- Clone, then:  
+---
+
+## 🛠️ Setup
+
+- Python **3.10+** recommended.  
+- Clone the repository:  
   ```bash
-  pip install -r requirements-dev.txt
-  pre-commit install
+  git clone https://github.com/BACOUL/digitalmeve.git
+  cd digitalmeve
 
-Run all checks: pre-commit run --all-files && pytest -q
+Install dependencies:
 
+pip install -r requirements-dev.txt
 
-Branching & PR
+Install git hooks:
 
-Branch name: feat/<topic>, fix/<topic>, or docs/<topic>.
+pre-commit install
 
-Keep PRs small, with clear description and tests.
+Run all checks locally before committing:
 
-CI must be green (lint + tests) before review.
-
-
-Coding style
-
-Black + Flake8 (max line length = 88).
-
-Type hints where practical.
-
-Tests with pytest, put them in tests/.
+pre-commit run --all-files && pytest -q
 
 
-Releases
 
-Bump version in pyproject.toml & src/digitalmeve/__init__.py.
+---
 
-Create a tag vX.Y.Z → publish workflow handles PyPI.
+🌱 Branching & Pull Requests
+
+Branch naming convention:
+
+feat/<name> → new feature
+
+fix/<name> → bug fix
+
+docs/<name> → documentation
 
 
-## Flux de contribution
-1. Ouvrez une **issue** si vous proposez une nouvelle fonctionnalité ou signalez un bug.
-2. **Forkez** le dépôt puis créez une branche : `git checkout -b feature/ma-feature`
-3. Écrivez du code **clair** + **tests** dans `tests/`.
-4. Vérifiez que la **CI est verte** (lint, format, tests).
-5. Ouvrez une **Pull Request** vers `main` (remplissez le template).
+Keep PRs small and focused.
 
-## Standards
-- Python **3.10+**
-- **pytest** pour les tests (`pytest -q`)
-- **ruff** (lint) : `ruff check .`
-- **black** (format) : `black .` (ligne 100 max)
+Each PR should include:
 
-## Commit & PR
-- Messages de commit clairs : `feat: …`, `fix: …`, `docs: …`, `chore: …`
-- Une PR = un sujet. Ajoutez captures/logs si pertinent.
+Clear description of the change
 
-## Sécurité
-- Ne joignez **jamais** de documents sensibles aux issues/PR.
-- Pour signaler une vulnérabilité : voir `SECURITY.md`.
+Tests (if applicable)
 
-Merci ! 🙏
+Updated docs (if needed)
+
+
+✅ CI must be green (lint + tests) before review.
+
+
+
+---
+
+🎨 Coding Standards
+
+Formatting: Black (line length = 88)
+
+Linting: Ruff
+
+ruff check .
+
+Type hints: use them where practical
+
+Tests: pytest → put tests in tests/
+
+
+
+---
+
+🚀 Releases
+
+1. Bump version in:
+
+pyproject.toml
+
+src/digitalmeve/__init__.py
+
+
+
+2. Commit with message:
+
+chore(release): vX.Y.Z
+
+
+3. Tag the release:
+
+git tag -a vX.Y.Z -m "Release vX.Y.Z"
+git push origin vX.Y.Z
+
+
+4. The publish workflow will handle build & upload to PyPI.
+
+
+
+
+---
+
+✅ Pull Request Checklist
+
+Before submitting a PR, make sure:
+
+[ ] Code is formatted with Black
+
+[ ] Lint passes with Ruff
+
+[ ] All tests pass with pytest
+
+[ ] Docs / README updated if relevant
+
+[ ] CI (tests + quality + publish) is green
+
+
+
+---
+
+🔒 Security
+
+Never attach sensitive documents in issues/PRs.
+
+To report a vulnerability, please use SECURITY.md.
+
+
+
+---
+
+🙌 Thanks!
+
+Your contributions make DigitalMeve better.
+We welcome new ideas, bug reports, documentation improvements, and code changes!
+
+---
