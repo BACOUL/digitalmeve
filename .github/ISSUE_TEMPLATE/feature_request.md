@@ -1,15 +1,30 @@
----
-name: Feature request
-about: Suggest an idea for this project
-labels: enhancement
----
+name: 💡 Feature Request
+description: Suggest an idea, new feature, or improvement for DigitalMeve
+labels: ["enhancement"]
 
-**Problem**
-What problem does this solve?
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: ❓ Problem to Solve
+      description: What problem would this feature solve?
+    validations:
+      required: true
 
-**Proposed solution**
-Outline API/CLI/behavior.
+  - type: textarea
+    id: solution
+    attributes:
+      label: 🚀 Proposed Solution
+      description: Describe the API/CLI/behavior you would like to see.
 
-**Alternatives**
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: 🔄 Alternatives
+      description: Have you considered other solutions or workarounds?
 
-**Additional context**
+  - type: textarea
+    id: context
+    attributes:
+      label: 📎 Additional Context
+      description: Any screenshots, references, or context that might help.
