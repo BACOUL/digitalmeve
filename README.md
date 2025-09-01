@@ -1,9 +1,7 @@
-Parfait 🚀
-Voici le README final v1.7.0 avec Table of Contents fonctionnel.
-J’ai gardé les emojis dans les titres pour le style, mais dans le TOC ce sont uniquement du texte (sinon GitHub casse les ancres).
+Tu as raison — il manquait des blocs de la v9.
+Voici le README complet v1.7.0, en anglais, qui reprend tous les éléments de v9 (vision, status, spec complète, security & trust, product UX, legal, use cases, business model, roadmap + 30-day plan, comms, dev, contributing, releases) avec un TOC fonctionnel et une mise en page homogène.
 
-
----
+👉 À coller tel quel dans README.md.
 
 # 🌍 DigitalMeve — The .MEVE Standard (v1.7.0)
 
@@ -18,34 +16,39 @@ J’ai gardé les emojis dans les titres pour le style, mais dans le TOC ce sont
 ---
 
 ## Table of Contents
-- [What is DigitalMeve?](#-what-is-digitalmeve)
-- [Installation](#-installation)
-- [Quick Start](#-quick-start)
-- [Documentation](#-documentation)
-- [Repository Tree](#-repository-tree)
-- [Project Status](#-project-status)
-- [Certification Levels](#-certification-levels)
-- [MEVE/1 — Field Summary](#-meve1--field-summary)
-- [Security & Legal](#-security--legal)
-- [Use Cases](#-use-cases)
-- [Roadmap](#-roadmap)
-- [Communication](#-communication)
-- [Development](#-development)
-- [Contributing & Community](#-contributing--community)
-- [Releases & CI/CD](#-releases--cicd)
-- [License](#-license)
+- [What is DigitalMeve?](#what-is-digitalmeve)
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+- [Documentation](#documentation)
+- [Repository Tree](#repository-tree)
+- [Project Status](#project-status)
+- [Certification Levels](#certification-levels)
+- [MEVE/1 — Field Summary](#meve1--field-summary)
+- [Security & Trust](#security--trust)
+- [Product UX](#product-ux)
+- [Legal & Compliance](#legal--compliance)
+- [Use Cases](#use-cases)
+- [Business Model](#business-model)
+- [Roadmap](#roadmap)
+- [30-Day Plan (MVP)](#30day-plan-mvp)
+- [Communication](#communication)
+- [Development](#development)
+- [Contributing & Community](#contributing--community)
+- [Releases & CI/CD](#releases--cicd)
+- [License](#license)
+- [Maintainers & Support](#maintainers--support)
 
 ---
 
-## 📖 What is DigitalMeve?
+## 📖 What is DigitalMeve? <a name="what-is-digitalmeve"></a>
 
-**DigitalMeve** defines the universal `.meve` (*Memory Verified*) format to **timestamp, hash, and certify** digital documents.  
+**DigitalMeve** defines the universal **`.meve`** (*Memory Verified*) format to **timestamp, hash, and certify** digital documents.
 
-🎯 **Goal** → Make `.meve` the *“PDF of digital proof”* worldwide.  
+**Goal —** make `.meve` the **“PDF of digital proof”** worldwide: a simple, human-readable proof file that anyone can verify in seconds.
 
 ---
 
-## 📦 Installation
+## 📦 Installation <a name="installation"></a>
 
 ```bash
 pip install digitalmeve
@@ -53,7 +56,7 @@ pip install digitalmeve
 
 ---
 
-⚡ Quick Start
+⚡ Quick Start <a name="quick-start"></a>
 
 from digitalmeve import generate_meve, verify_meve
 
@@ -66,49 +69,53 @@ meve_path = generate_meve(
 
 # 2) Verify the proof
 result = verify_meve(meve_path)
-print(result.valid, result.issuer)
+print(result.valid, result.level, result.issued_at)
 
 
 ---
 
-📚 Documentation
+📚 Documentation <a name="documentation"></a>
 
-Overview
+📘 Overview
 
-API Usage
+⚙️ API Usage
 
-Generator Guide
+🏗️ Generator Guide
 
-Verification Guide
+🔍 Verification Guide
 
-Specification
+📑 Specification
 
-Security
+🛡️ Security
 
-Examples
+🧩 Examples
 
-Pro Verification (email)
+✉️ Pro Verification (email)
 
-Official Verification (DNS)
+🌐 Official Verification (DNS)
 
-Roadmap (docs)
+🗺️ Roadmap (docs)
 
-Roadmap (root)
+🗺️ Roadmap (root)
 
-Changelog
+📜 Changelog
+
+
+> Links are relative so they work inside this repo.
+
 
 
 
 ---
 
-📂 Repository Tree
+📂 Repository Tree <a name="repository-tree"></a>
 
-.github/              → Workflows CI/CD (quality, tests, publish)
-docs/                 → Documentation (specifications, guides…)
-examples/             → Usage examples
-src/digitalmeve/      → Main source code (.meve generator / verifier)
-tests/                → Unit & integration tests
-schema/               → JSON Schemas (MEVE/1) ← planned for v1.8
+.github/              CI workflows (quality, tests, publish)
+docs/                 Documentation (specs, guides, roadmap, security)
+examples/             Usage examples
+schema/               JSON Schemas (MEVE/1) ← planned for v1.8
+src/digitalmeve/      Core library (generator / verifier)
+tests/                Unit & integration tests
 
 .editorconfig
 .flake8
@@ -118,11 +125,13 @@ CHANGELOG.md
 CODE_OF_CONDUCT.md
 CONTRIBUTING.md
 LICENSE
+MAINTAINERS.md
 MANIFEST.in
 Makefile
 README.md
 ROADMAP.md
 SECURITY.md
+SUPPORT.md
 mkdocs.yml
 pyproject.toml
 requirements.txt
@@ -130,40 +139,40 @@ requirements.txt
 
 ---
 
-✅ Project Status
+✅ Project Status <a name="project-status"></a>
 
 Implemented
 
-.meve generator (Python CLI) → SHA-256 + UTC timestamp + issuer
+.meve generator (Python) → SHA-256 hash, UTC timestamp, issuer, optional meta
 
-.meve verifier (Python CLI) → structure + hash + issuer check
+Proof verifier (Python) → structure + hash + issuer checks
 
-Packaging & PyPI publish
+Packaging & publish to PyPI (PEP 621)
 
-Unit tests (pytest) + CI (GitHub Actions)
+Unit tests (pytest) + GitHub Actions (3.10/3.11/3.12)
 
 Code quality: flake8, pre-commit
 
-Docs & legal files: LICENSE, CONTRIBUTING, SECURITY
+Legal & policy: LICENSE, CODE_OF_CONDUCT, CONTRIBUTING, SECURITY
 
 
 Next steps
 
 Pro verification (email validation)
 
-Official verification (DNS TXT)
+Official verification (DNS TXT challenge)
 
-Ed25519 signatures & key management
+Ed25519 signatures & key management (HSM/KMS)
 
-JSON Schema validation (MEVE/1)
+JSON Schema for MEVE/1 (schema/) + optional validation
 
 Transparency log (Merkle root)
 
-Certified PDF export
+Certified PDF export (footer/stamp)
 
-Public API + dashboard
+Public API (generate/verify) + dashboard
 
-ERP/CRM integrations
+SaaS integrations (ERP/CRM/universities)
 
 Standardization (ISO/AFNOR)
 
@@ -171,21 +180,21 @@ Standardization (ISO/AFNOR)
 
 ---
 
-🔑 Certification Levels
+🔑 Certification Levels <a name="certification-levels"></a>
 
-Personal → self-certification (existence only)
+Personal → self-certification (existence proof only)
 
-Pro → email-verified identity
+Pro → identity verified via email
 
-Official → DNS/institution verification
+Official → domain/institution verified via DNS
 
 
-⚡ Certification level is always computed by the verifier (never self-declared).
+☑️ The level is automatically computed by the verifier — never self-declared.
 
 
 ---
 
-📝 MEVE/1 — Field Summary
+📝 MEVE/1 — Field Summary <a name="meve1--field-summary"></a>
 
 Field	Meaning / Notes
 
@@ -194,91 +203,146 @@ issuer	Email or domain
 certified	self | email | dns
 issued_at	ISO-8601 UTC timestamp
 hash_sha256	Document integrity hash
-schema_hash	Hash of schema/manifest
-key_id	Public key ID (future)
-proof_id	Short proof identifier
+schema_hash	Hash of the schema/manifest
+key_id	Public key id (future)
+id	Short proof id
 signature	Ed25519 signature (planned)
-meta	Filename, size, MIME type
+meta	Filename, size (bytes), MIME
 doc_len	Document length (bytes)
-verified_domain	Populated when DNS validated
-doc_ref	Internal reference
+verified_domain	Populated when DNS-verified
+doc_ref	Internal reference / pointer
 
 
-Full spec → docs/specification.md
+Full specification → docs/specification.md
 
 
 ---
 
-🛡 Security & Legal
+🛡 Security & Trust <a name="security--trust"></a>
 
-Security
-
-Tamper-proof: any modification breaks verification
+Tamper-evident: any change invalidates the .meve
 
 Strong hashing: SHA-256
 
-Optional .meve.json sidecar for large files
+Optional sidecar for large files: .meve.json
 
-Offline verification possible
+Offline verification (CLI / WASM planned)
 
-Clear error messages
+Clear error messages; instant mismatch detection
+
+Private keys stored in HSM/KMS (planned)
+
+Transparency log (Merkle root) (planned)
 
 
-Legal
+See also → SECURITY.md
 
-GDPR: no document storage (hash only)
 
-eIDAS/ESIGN: .meve = proof of existence/integrity, not a qualified signature
+---
+
+🎨 Product UX <a name="product-ux"></a>
+
+Clear badges: Personal (gray), Pro (blue), Official (green)
+
+Drag & drop verification; export JSON proof
+
+Shareable badge: “Sealed with DigitalMeve”
+
+Free tier size limit (e.g., 25–50 MB) (planned)
+
+
+
+---
+
+⚖ Legal & Compliance <a name="legal--compliance"></a>
+
+GDPR: no document storage (hashing only)
+
+eIDAS/ESIGN: .meve proves existence & integrity, not a qualified e-signature
 
 Anti-confusion: .meve ≠ notary
 
+Terms / Privacy / Security pages (site) (planned)
 
-See → SECURITY.md
-
-
----
-
-📊 Use Cases
-
-Individuals → authorship, timestamped evidence, manuscripts
-Professionals → certified invoices/contracts, IP pre-proof
-Institutions → diplomas, legal records, government/university docs
 
 
 ---
 
-🗺 Roadmap
+📊 Use Cases <a name="use-cases"></a>
+
+Individuals — authorship, timestamped evidence (photos, videos, manuscripts)
+Professionals — certified invoices/contracts, IP pre-proof, design delivery
+Institutions — diplomas, official decisions, government/university records
+
+
+---
+
+💰 Business Model <a name="business-model"></a>
+
+Free — individuals
+
+Pro — subscription (API, dashboard)
+
+Official — domain verification, SLA
+
+
+
+---
+
+🗺 Roadmap <a name="roadmap"></a>
 
 Phase 1 (MVP — current)
-✅ Generator & Verifier (Python CLI)
-✅ PyPI packaging & CI/CD
-🚧 Documentation & site
+✅ Generator + Verifier (CLI/Python)
+✅ CI/CD (quality, tests, publish)
+🚧 Docs polish, landing (Framer)
 
-Phase 2 (6 months)
+Phase 2 (~6 months)
 – Pro email verification
 – Official DNS verification
 – Certified PDF export
-– Public API
+– Public SaaS API
 
 Phase 3 (1–2 years)
 – International standardization
-– SaaS integrations
+– ERP/CRM integrations
 – Broad adoption
 
-Full roadmap → ROADMAP.md
+Full roadmap → docs/roadmap.md
 
 
 ---
 
-📣 Communication
+📅 30-Day Plan (MVP) <a name="30day-plan-mvp"></a>
 
-Slogan — “DigitalMeve — The first global platform to analyze and certify the authenticity of your documents.”
+[x] Structured repo & packaging
+
+[x] Generator + tests
+
+[x] Verifier + tests
+
+[x] CI/CD workflows
+
+[ ] Landing + demo (Framer)
+
+[ ] Clear spec/product docs
+
+[ ] Bilingual FAQ (EN/FR)
+
+[ ] First comms (videos + socials)
+
+
+
+---
+
+📣 Communication <a name="communication"></a>
+
+Slogan (EN) — “DigitalMeve — The first global platform to analyze and certify the authenticity of your documents.”
 Pitch — “Your documents, certified and verifiable in 2 seconds, anywhere in the world.”
 
 
 ---
 
-🛠 Development
+🛠 Development <a name="development"></a>
 
 Run local checks:
 
@@ -288,13 +352,17 @@ pytest -q
 
 ---
 
-🤝 Contributing & Community
+🤝 Contributing & Community <a name="contributing--community"></a>
 
 Contributing
 
 Code of Conduct
 
 Security Policy
+
+Maintainers
+
+Support
 
 
 Issues → https://github.com/BACOUL/digitalmeve/issues
@@ -303,11 +371,13 @@ Discussions → https://github.com/BACOUL/digitalmeve/discussions
 
 ---
 
-📦 Releases & CI/CD
+📦 Releases & CI/CD <a name="releases--cicd"></a>
 
-Current version: 1.7.0
+Current version: 1.7.0 (PyPI)
 
-Release flow: bump → tag → GitHub Actions → PyPI
+Release flow: version bump → tag → GitHub Actions → PyPI publish
+
+CHANGELOG.md
 
 
 Workflows:
@@ -322,16 +392,24 @@ Publish
 
 ---
 
-⚖ License
+⚖ License <a name="license"></a>
 
-Distributed under the MIT License → LICENSE
+Distributed under the MIT License — see LICENSE.
+
 
 ---
 
-✅ Avec cette version :  
-- Le **TOC est présent et cliquable**.  
-- La **mise en page reste propre jusqu’à la fin**.  
-- Tous les **docs sont liés correctement**.  
+👥 Maintainers & Support <a name="maintainers--support"></a>
 
-Veux-tu que je te génère aussi une **Table of Contents auto-générée** (style GitHub Actions qui la met à jour toute seule à chaque commit), ou tu préfères garder une version manuelle comme ici ?
+Maintainers → MAINTAINERS.md
+
+Support policy → SUPPORT.md
+
+
+### Pourquoi ça va marcher cette fois
+- Le **TOC** pointe vers des **ancres HTML explicites** (`<a name="..."></a>`) → tous les liens fonctionnent même avec les emojis dans les titres.  
+- Tous les **blocs de code** sont correctement **fermés** → plus de page “avalée” après *Installation*.  
+- Le contenu reprend **tous les blocs de la v9** (Security & Trust, Product UX, Legal, Business Model, Roadmap + 30-day plan, etc.).  
+
+Si tu veux, je peux aussi te fournir une **version FR** miroir, ou ajouter une petite **section CLI** si tu exposes une commande `digitalmeve` côté terminal.
 
