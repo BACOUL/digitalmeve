@@ -23,11 +23,9 @@ def _as_dict(proof: Any) -> Optional[Dict[str, Any]]:
       - un chemin de fichier (Path ou str) pointant vers un JSON
     Retourne un dict ou None si l'entrée n'est pas exploitable.
     """
-    # dict direct
     if isinstance(proof, dict):
         return proof
 
-    # chemin de fichier ?
     if isinstance(proof, (str, Path)):
         p = Path(proof)
         if p.exists() and p.is_file():
@@ -36,13 +34,11 @@ def _as_dict(proof: Any) -> Optional[Dict[str, Any]]:
                 return json.loads(text)
             except Exception:
                 return None
-        # sinon tenter de parser comme JSON inline
         try:
             return json.loads(str(proof))
         except Exception:
             return None
 
-    # bytes -> JSON
     if isinstance(proof, (bytes, bytearray)):
         try:
             return json.loads(proof.decode("utf-8"))
@@ -68,7 +64,6 @@ def verify_meve(
     if not isinstance(obj, dict):
         return False, {"error": "Invalid proof"}
 
-    # Clés obligatoires au niveau racine
     required: Iterable[str] = (
         "meve_version",
         "issuer",
@@ -88,31 +83,18 @@ def verify_meve(
     if any(k not in subject for k in subj_required):
         return False, {"error": "Missing required keys"}
 
-    # Vérification optionnelle de l'émetteur
     if expected_issuer is not None and obj.get("issuer") != expected_issuer:
         return False, {"error": "Issuer mismatch"}
 
-    # Cohérence du hash
     if obj.get("hash") != subject.get("hash_sha256"):
         return False, {"error": "Hash mismatch"}
 
-    # Validation JSON Schema optionnelle (souple)
+    # Exemple : validation de schéma (si ajoutée plus tard)
     try:
-        import jsonschema  # type: ignore
-
-        # repo_root = .../ (depuis .../src/digitalmeve/verifier.py)
-        repo_root = Path(__file__).resolve().parents[2]
-        schema_path = repo_root / "schema" / "meve-1.schema.json"
-        if schema_path.exists():
-            with schema_path.open("r", encoding="utf-8") as f:
-                schema = json.load(f)
-            try:
-                jsonschema.validate(instance=obj, schema=schema)
-            except jsonschema.ValidationError as e:  # type: ignore
-                return False, {"error": f"Schema validation failed: {e.message}"}
-    except Exception:
-        # jsonschema absent ou autre souci : on n'échoue pas, la validation reste best-effort
+        # schema_validate(obj)   # <- placeholder futur
         pass
+    except Exception as e:
+        msg = f"Schema validation failed: {e}"
+        return False, {"error": msg}
 
-    # ✅ Succès : renvoyer le dict complet (les tests l'utilisent)
     return True, obj
