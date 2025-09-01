@@ -13,52 +13,129 @@
 
 ## 📖 What is DigitalMeve?
 
-**DigitalMeve** defines the universal format `.meve` (*Memory Verified*):  
-a lightweight, human-readable file that proves in **2 seconds**:
+**DigitalMeve** defines the universal format **`.meve`** (Memory Verified) to **timestamp, hash, and certify** digital documents.
 
-1. The existence of a document at a given date.  
-2. The integrity of the document (via SHA-256 hash).  
-3. The authenticity of the issuer (Personal, Pro, Official).  
-
-🎯 Goal: make `.meve` the **“PDF of digital proof”** worldwide.  
+**Goal** → Make `.meve` the **“PDF of digital proof”** worldwide.
 
 ---
 
-## 📚 Documentation
+## 📦 Installation
 
-- [Overview](https://github.com/BACOUL/digitalmeve/blob/main/docs/overview.md)  
-- [API Usage](https://github.com/BACOUL/digitalmeve/blob/main/docs/API_USAGE.md)  
-- [Generator Guide](https://github.com/BACOUL/digitalmeve/blob/main/docs/generator-guide.md)  
-- [Verification Guide](https://github.com/BACOUL/digitalmeve/blob/main/docs/verification-guide.md)  
-- [Specification](https://github.com/BACOUL/digitalmeve/blob/main/docs/specification.md)  
-- [Security](https://github.com/BACOUL/digitalmeve/blob/main/docs/security.md)  
-- [Examples](https://github.com/BACOUL/digitalmeve/blob/main/docs/examples.md)  
-- [Pro Verification](https://github.com/BACOUL/digitalmeve/blob/main/docs/PRO.md)  
-- [Official Verification](https://github.com/BACOUL/digitalmeve/blob/main/docs/OFFICIAL.md)  
-- [Roadmap (docs)](https://github.com/BACOUL/digitalmeve/blob/main/docs/roadmap.md) • [Roadmap (root)](https://github.com/BACOUL/digitalmeve/blob/main/ROADMAP.md)
+```bash
+pip install digitalmeve
+
 
 ---
 
-## ⚡ Quick Start
+📚 Documentation
 
-Generate and verify a `.meve` proof in Python:
+Current (GitHub)
 
-```python
-from digitalmeve import generate_meve, verify_meve
+Overview
 
-# 1) Generate
-meve_path = generate_meve(
-    file_path="examples/sample.pdf",
-    issuer="john.doe@example.com",
-    meta={"purpose": "contract-v1"}
-)
+API Usage
 
-# 2) Verify
-result = verify_meve(meve_path)
-print(result.valid, result.level, result.timestamp_iso)
+Generator Guide
 
-➡️ Generator Guide
-➡️ Verification Guide
+Verification Guide
+
+Specification
+
+Security
+
+Examples
+
+Pro Verification
+
+Official Verification
+
+Roadmap (docs)
+
+Roadmap (root)
+
+
+Future (MkDocs site)
+
+👉 DigitalMeve Documentation (soon)
+
+
+---
+
+🗂 Repository Tree
+
+.github/                 CI workflows (quality, tests, publish)
+docs/                    Documentation (specs, guides, roadmap, security)
+examples/                Usage examples
+schema/                  JSON Schemas (MEVE/1) ← planned in v1.8
+src/digitalmeve/         Core library (generator / verifier)
+tests/                   Unit & integration tests
+
+.editorconfig
+.flake8
+.gitignore
+.pre-commit-config.yaml
+CHANGELOG.md
+CODE_OF_CONDUCT.md
+CONTRIBUTING.md
+LICENSE
+MAINTAINERS.md
+MANIFEST.in
+Makefile
+README.md
+ROADMAP.md
+SECURITY.md
+mkdocs.yml
+pyproject.toml
+requirements.txt
+
+
+---
+
+✅ Already Implemented
+
+.meve generator (Python CLI)
+→ SHA-256 hash + UTC timestamp + issuer + base64 preview.
+→ Saved as .meve.json sidecar.
+
+.meve verifier (Python CLI)
+→ Validates structure + hash + expected issuer.
+
+Packaging & PyPI publishing
+→ pyproject.toml, requirements.txt, MANIFEST.in.
+
+Unit tests (pytest)
+→ Automated with GitHub Actions (3.10, 3.11, 3.12).
+
+Code quality
+→ .flake8, pre-commit, linting.
+
+Docs & legal
+→ LICENSE, CODE_OF_CONDUCT.md, CONTRIBUTING.md, SECURITY.md.
+
+
+
+---
+
+🚧 Next Steps
+
+Email verification (Pro level).
+
+DNS TXT challenge verification (Official level).
+
+Ed25519 signatures and key management.
+
+Transparency log (Merkle root).
+
+Certified PDF export with DigitalMeve footer.
+
+Public API (upload → verify).
+
+Dashboard (history, exports, webhooks).
+
+SaaS integrations (ERP, CRM, universities).
+
+Standardization (ISO/AFNOR).
+
 
 
 ---
@@ -69,108 +146,108 @@ Personal → self-certification (existence proof only).
 
 Pro → email-verified identity.
 
-Official → DNS-verified institution/domain.
+Official → DNS-verified institution.
 
 
-☑️ The level is automatically computed by the verifier (never self-declared).
+⚡ Certification level is always computed automatically by the verifier.
+
+
+---
+
+🛡 Security
+
+Tamper-proof: any change in the file invalidates the .meve.
+
+Metadata embedding (JSON or sidecar).
+
+Scalable: .meve.json sidecar for large files.
+
+Fraud detection: instant hash mismatch detection.
+
+Transparency log (future).
+
 
 
 ---
 
 📊 Use Cases
 
-👤 Individuals → authorship, timestamped photos/videos, personal evidence
-👔 Professionals → certified invoices, contracts, IP pre-proof
-🏛 Institutions → diplomas, court judgments, official documents
+👤 Individuals
+
+Proof of authorship (art, photos, manuscripts).
+
+Timestamped evidence (insurance, agreements).
+
+
+👔 Professionals
+
+Certified invoices, contracts, designs.
+
+Intellectual property pre-proof.
+
+
+🏛 Institutions
+
+Universities → certified diplomas.
+
+Governments → official documents.
+
+Courts → legal contracts, judgments.
+
 
 
 ---
 
 🛠 Development
 
-Run local checks:
+Requires Python 3.10+
+
+Run checks locally:
 
 pre-commit run --all-files
 pytest -q
 
-Contributing
+Contribution guide → CONTRIBUTING.md
 
-Code of Conduct
+Code of Conduct → CODE_OF_CONDUCT.md
 
-Security Policy
+Security policy → SECURITY.md
 
 
 
 ---
 
-🚀 Vision
+📦 Releases
 
-A universal proof format, as simple and portable as PDF, but for existence & authenticity.
+Current version: 1.7.0
 
-Slogan
-👉 DigitalMeve — The first global platform to certify and verify the authenticity of your documents.
+Published automatically to PyPI
 
-Pitch
-Your documents, certified and verifiable in 2 seconds, anywhere in the world.
+Workflow: version bump → tag → GitHub Actions → PyPI publish
+
+
+
+---
+
+📢 Communication
+
+Slogan:
+👉 “DigitalMeve — The first global platform to certify and verify the authenticity of your documents.”
+
+Pitch:
+“Your documents, certified and verifiable in 2 seconds, anywhere in the world.”
 
 
 ---
 
 ⚖ License
 
-Distributed under the MIT License → LICENSE
+This repository is licensed under the MIT License.
+See LICENSE for details.
 
 
 ---
 
-✍️ Maintained by DigitalMeve Team • Repo → https://github.com/BACOUL/digitalmeve
+✍️ Maintained by the DigitalMeve Team.
 
----
-
-# 📄 `LINKS.md` (backup avec toutes les URLs en clair)
-
-```markdown
-# 🔗 DigitalMeve — Links Backup
-
-This file contains all important links in raw format (no Markdown)  
-to avoid copy-paste issues with some editors.
-
----
-
-## 📚 Documentation
-
-Overview → https://github.com/BACOUL/digitalmeve/blob/main/docs/overview.md  
-API Usage → https://github.com/BACOUL/digitalmeve/blob/main/docs/API_USAGE.md  
-Generator Guide → https://github.com/BACOUL/digitalmeve/blob/main/docs/generator-guide.md  
-Verification Guide → https://github.com/BACOUL/digitalmeve/blob/main/docs/verification-guide.md  
-Specification → https://github.com/BACOUL/digitalmeve/blob/main/docs/specification.md  
-Security → https://github.com/BACOUL/digitalmeve/blob/main/docs/security.md  
-Examples → https://github.com/BACOUL/digitalmeve/blob/main/docs/examples.md  
-Pro Verification → https://github.com/BACOUL/digitalmeve/blob/main/docs/PRO.md  
-Official Verification → https://github.com/BACOUL/digitalmeve/blob/main/docs/OFFICIAL.md  
-Roadmap (docs) → https://github.com/BACOUL/digitalmeve/blob/main/docs/roadmap.md  
-Roadmap (root) → https://github.com/BACOUL/digitalmeve/blob/main/ROADMAP.md  
-
----
-
-## 📦 Project
-
-Repo → https://github.com/BACOUL/digitalmeve  
-PyPI → https://pypi.org/project/digitalmeve/  
-Downloads → https://pepy.tech/project/digitalmeve  
-License → https://github.com/BACOUL/digitalmeve/blob/main/LICENSE  
-Contributing → https://github.com/BACOUL/digitalmeve/blob/main/CONTRIBUTING.md  
-Code of Conduct → https://github.com/BACOUL/digitalmeve/blob/main/CODE_OF_CONDUCT.md  
-Security Policy → https://github.com/BACOUL/digitalmeve/blob/main/SECURITY.md  
-
----
-
-## 🛠 CI/CD Workflows
-
-Quality → https://github.com/BACOUL/digitalmeve/actions/workflows/quality.yml  
-Tests → https://github.com/BACOUL/digitalmeve/actions/workflows/tests.yml  
-Publish → https://github.com/BACOUL/digitalmeve/actions/workflows/publish.yml
-
-
----
 
