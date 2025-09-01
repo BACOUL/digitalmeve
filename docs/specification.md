@@ -1,17 +1,23 @@
-# DigitalMeve — MEVE/1 Specification (draft)
+# 📑 DigitalMeve — MEVE/1 Specification (Draft)
 
-## 1) Purpose
-`.meve` provides a portable, human-readable proof for any digital file:
-- Existence at time T (UTC timestamp)
-- Integrity of the exact bytes (SHA-256)
-- Issuer linkage (Personal / Pro / Official), **computed by the verifier** — never user-declared
+---
 
-## 2) Minimal JSON (MEVE/1)
+## 1. Purpose
+
+`.meve` provides a **portable, human-readable proof** for any digital file:
+
+- **Existence** at time T (UTC timestamp)  
+- **Integrity** of the exact bytes (SHA-256)  
+- **Issuer linkage** (Personal / Pro / Official), computed automatically by the verifier  
+
+---
+
+## 2. Minimal JSON (MEVE/1)
 
 ```json
 {
-  "issuer": "Personal",
   "meve_version": "1.0",
+  "issuer": "Personal",
   "hash": "<sha256 of the file>",
   "preview_b64": "<optional base64 preview of first bytes>",
   "subject": {
@@ -22,23 +28,24 @@
   "timestamp": "2025-08-30T12:34:56Z",
   "metadata": {}
 }
+
 Required fields
 
-issuer (string) – logical issuer name shown in proofs
+meve_version (string) → currently "1.0"
 
-meve_version (string) – currently "1.0"
+issuer (string) → logical issuer name
 
-hash (string) – SHA-256 of the exact file bytes; must equal subject.hash_sha256
+hash (string) → SHA-256 of file bytes (must equal subject.hash_sha256)
 
-preview_b64 (string) – short base64 preview; optional but present in our generator
+preview_b64 (string, optional) → base64 preview (first bytes)
 
 subject (object)
 
-filename (string) – original file name
+filename (string) → original filename
 
-size (integer) – size in bytes
+size (integer) → size in bytes
 
-hash_sha256 (string) – SHA-256 of the file
+hash_sha256 (string) → SHA-256 of file
 
 
 timestamp (string, ISO 8601 UTC)
@@ -46,90 +53,123 @@ timestamp (string, ISO 8601 UTC)
 metadata (object, can be empty)
 
 
-3) Levels (computed by verifier)
 
-Personal — self (default)
+---
 
-Pro — verified email/domain account (future)
+3. Levels of Certification (computed by verifier)
 
-Official — DNS / institution verified (future)
+Personal → default self-certification
+
+Pro → verified email/domain account (future)
+
+Official → DNS / institution verified (future)
 
 
-> The level is computed by the verifier’s rules and cannot be faked by setting a field.
+> The level is always computed by the verifier — never user-declared.
 
 
 
-4) Generation rules (reference)
 
-Do not modify the original file; produce a sidecar *.meve.json.
+---
+
+4. Generation Rules (reference)
+
+Do not modify the original file; always produce a sidecar *.meve.json.
 
 Compute SHA-256 on the full byte stream.
 
-Include a small preview_b64 (first ~64 bytes) to help quick visual checks.
+Include a small base64 preview (~64–128 bytes).
 
-Use datetime.now(timezone.utc).isoformat() for timestamp (UTC).
+Use datetime.now(timezone.utc).isoformat() → UTC timestamp with Z.
 
 
-5) Verification rules (reference)
 
-Given a dict or a path to *.meve.json, the verifier MUST:
+---
+
+5. Verification Rules (reference)
+
+Given a dict or path to *.meve.json, the verifier MUST:
 
 1. Parse JSON → must be an object.
 
 
-2. Check presence of required root keys:
-
-issuer, meve_version, subject, hash, metadata, timestamp, preview_b64
+2. Check presence of required root keys.
 
 
-
-3. Check subject contains filename, size, hash_sha256.
-
-
-4. Check hash == subject.hash_sha256 (internal consistency).
+3. Ensure subject contains: filename, size, hash_sha256.
 
 
-5. If expected_issuer is provided, enforce equality.
+4. Verify hash == subject.hash_sha256.
 
 
-6. Return (ok: true, info: dict) on success; otherwise (ok: false, {"error": "...", ...}).
+5. If expected_issuer provided → enforce equality.
+
+
+6. Return (ok: true, info: dict) on success, otherwise (ok: false, {"error": "...", ...}).
 
 
 
 Standard error messages
 
-Missing root keys → {"error": "Missing required keys", "missing": [...] }
+Missing keys → {"error": "Missing required keys", "missing": [...]}
 
-Issuer mismatch → {"error": "issuer mismatch", "expected": "..." }
+Issuer mismatch → {"error": "Issuer mismatch", "expected": "..."}
 
-Hash mismatch → {"error": "hash mismatch" }
+Hash mismatch → {"error": "Hash mismatch"}
 
-Invalid JSON/file → {"error": "invalid file: <details>" }
-
-
-6) Embedding vs. sidecar
-
-Recommended (MVP): keep the original file untouched; emit a sidecar filename.ext.meve.json.
-
-Future: metadata embedding (PDF/XMP, PNG tEXt, EXIF/XMP) when stable and standardized.
+Invalid JSON/file → {"error": "Invalid file: <details>"}
 
 
-7) Backward/forward compatibility
 
-Parsers must ignore unknown fields (extensibility).
+---
 
-meve_version guards major format changes (e.g., "2.0" in the future).
+6. Embedding vs Sidecar
+
+Recommended (MVP) → keep the file untouched; generate filename.ext.meve.json.
+
+Future → embed proof inside metadata (PDF/XMP, PNG tEXt, EXIF).
 
 
-8) Security notes (short)
+
+---
+
+7. Compatibility
+
+Parsers must ignore unknown fields (forward extensibility).
+
+meve_version controls major format changes (e.g., "2.0").
+
+
+
+---
+
+8. Security Notes
 
 Any byte change → different SHA-256 → verification fails.
 
-Existence proof ≠ legal identity. Identity-level comes from verified accounts (Pro/Official).
+Existence proof ≠ legal identity.
 
-Timestamp is UTC; trusted timestamp authority may be added in a future revision.
+Identity verification comes from Pro/Official flows.
+
+UTC timestamp; optional future trusted timestamp authority (TSA).
 
 
-9) Examples
+👉 See Security Model for full threat model.
 
-See docs/examples.md for concrete invoice/photo/diploma samples.
+
+---
+
+9. Examples
+
+Concrete usage available in Examples.
+
+digitalmeve verify contract.pdf.meve.json
+✔ Valid — hash and issuer verified
+
+
+---
+
+✍️ Draft version: MEVE/1.0
+Maintained under DigitalMeve.
+
+---
