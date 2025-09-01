@@ -1,7 +1,7 @@
-Tu as raison : il manquait beaucoup d’éléments (vision v9, état du projet, roadmap détaillée, com, etc.).
-Voici un README complet, pro et cohérent, en anglais, avec liens relatifs cliquables, badges, TOC, vision + état réel (done / next), spec MEVE/1, security, use cases, roadmap (phases + 30-day plan), communication, dev, contributing, license.
+Super 🚀 Merci pour ta patience, voici le README final v1.7.0 pour DigitalMeve.
+Tout est pro, cohérent, sans doublons, avec mise en page homogène et liens relatifs cliquables.
 
-🔧 À coller tel quel dans README.md.
+À coller directement dans README.md 👇
 
 # 🌍 DigitalMeve — The .MEVE Standard (v1.7.0)
 
@@ -37,9 +37,12 @@ Voici un README complet, pro et cohérent, en anglais, avec liens relatifs cliqu
 
 ## 📖 What is DigitalMeve?
 
-**DigitalMeve** defines the universal **`.meve`** (*Memory Verified*) format to **timestamp, hash, and certify** digital documents.
+**DigitalMeve** defines the universal `.meve` (*Memory Verified*) format to **timestamp, hash, and certify** digital documents.  
 
-🎯 **Goal** — make `.meve` the **“PDF of digital proof”** worldwide: a simple, human-readable proof file that anyone can verify in seconds.
+🎯 **Goal** — make `.meve` the *“PDF of digital proof”* worldwide:  
+- Simple  
+- Human-readable  
+- Verifiable in seconds  
 
 ---
 
@@ -75,29 +78,13 @@ print(result.valid, result.level, result.issued_at)
 
 ⚙️ API Usage
 
-🏗️ Generator Guide
-
-🔍 Verification Guide
-
 📑 Specification
 
 🛡️ Security
 
-🧩 Examples
-
-✉️ Pro Verification (email)
-
-🌐 Official Verification (DNS)
-
-🗺️ Roadmap (docs)
-
-🗺️ Roadmap (root)
+🗺️ Roadmap
 
 📜 Changelog
-
-
-> Links are relative so they work inside this repo. Create missing pages as you expand docs.
-
 
 
 
@@ -140,7 +127,7 @@ Implemented
 
 .meve generator (Python) → SHA-256 hash, UTC timestamp, issuer, optional meta
 
-Proof verifier (Python) → structure & hash checks, issuer validation
+Proof verifier (Python) → structure & hash checks
 
 Packaging & PyPI publish (PEP 621)
 
@@ -148,7 +135,7 @@ Unit tests + GitHub Actions (3.10 / 3.11 / 3.12)
 
 Code quality: flake8, pre-commit
 
-Legal & policy pages: LICENSE, CODE_OF_CONDUCT, CONTRIBUTING, SECURITY
+Legal & policy files: LICENSE, CODE_OF_CONDUCT, CONTRIBUTING, SECURITY
 
 
 Next steps
@@ -157,17 +144,17 @@ Pro verification (email validation)
 
 Official verification (DNS TXT challenge)
 
-Ed25519 signatures & key management (HSM/KMS)
+Ed25519 signatures & key management
 
-JSON Schema for MEVE/1 (schema/) + optional validation
+JSON Schema validation (MEVE/1)
 
 Transparency log (Merkle root)
 
-Certified PDF export (footer / stamp)
+Certified PDF export
 
-Public API (generate/verify) + dashboard
+Public API + dashboard
 
-SaaS integrations (ERP/CRM/universities)
+ERP/CRM integrations
 
 Standardization (ISO/AFNOR)
 
@@ -177,7 +164,7 @@ Standardization (ISO/AFNOR)
 
 🔑 Certification Levels
 
-Personal → self-certification (existence proof)
+Personal → self-certification (existence proof only)
 
 Pro → identity verified via email
 
@@ -208,7 +195,7 @@ verified_domain	Populated when DNS verified
 doc_ref	Internal reference / pointer
 
 
-Full spec → docs/specification.md
+📑 Full spec → docs/specification.md
 
 
 ---
@@ -234,23 +221,21 @@ Transparency log (Merkle root) (planned)
 
 Legal
 
-GDPR: no document is stored (transient hashing only)
+GDPR: no document stored (hash-only)
 
-eIDAS/ESIGN: .meve proves existence & integrity, not a qualified e-signature
+eIDAS/ESIGN: .meve = proof of existence & integrity, not a qualified signature
 
 Anti-confusion: .meve ≠ notary
 
-
-See → SECURITY.md
 
 
 ---
 
 📊 Use Cases
 
-Individuals — authorship, timestamped evidence (photos, videos, manuscripts)
-Professionals — certified invoices/contracts, design delivery, IP pre-proof
-Institutions — diplomas, official decisions, government/university records
+Individuals → authorship, timestamped evidence (photos, videos, manuscripts)
+Professionals → certified invoices/contracts, IP pre-proof, design delivery
+Institutions → diplomas, official decisions, government/university records
 
 
 ---
@@ -271,7 +256,7 @@ Phase 2 (~6 months)
 Phase 3 (1–2 years)
 – International standardization
 – ERP/CRM integrations
-– Broad adoption
+– Large-scale adoption
 
 30-day MVP Plan
 
@@ -292,14 +277,12 @@ Phase 3 (1–2 years)
 [ ] First comms (videos + socials)
 
 
-Full roadmap → docs/roadmap.md
-
 
 ---
 
 📣 Communication
 
-Slogan (EN) — “DigitalMeve — The first global platform to analyze and certify the authenticity of your documents.”
+Slogan — “DigitalMeve — The first global platform to analyze and certify the authenticity of your documents.”
 Pitch — “Your documents, certified and verifiable in 2 seconds, anywhere in the world.”
 
 
@@ -307,7 +290,7 @@ Pitch — “Your documents, certified and verifiable in 2 seconds, anywhere in 
 
 🛠 Development
 
-Local checks:
+Run local checks:
 
 pre-commit run --all-files
 pytest -q
@@ -339,9 +322,9 @@ Discussions → https://github.com/BACOUL/digitalmeve/discussions
 
 Current version: 1.7.0 (PyPI)
 
-Release flow: version bump → tag → GitHub Actions → PyPI publish
+Flow: version bump → tag → GitHub Actions → PyPI publish
 
-Changelog → CHANGELOG.md
+Changelog
 
 
 Workflows:
@@ -360,5 +343,13 @@ Publish
 
 Distributed under the MIT License — see LICENSE.
 
-Si tu veux, je peux te fournir **aussi** une petite section “**CLI**” (si tu exposes `digitalmeve` en entrée de commande) et une **Table des matières** autogénérée via `doctoc`/`markdown-toc`.
+---
+
+✅ Avec cette version :  
+- Le **TOC** sert uniquement pour naviguer → pas de doublon.  
+- La **section Documentation** est réduite aux fichiers essentiels.  
+- Tous les **liens relatifs** sont bien cliquables sur GitHub.  
+- La **mise en page est homogène** du début à la fin.  
+
+Veux-tu que je t’ajoute aussi une **section CLI usage** (si tu veux montrer `digitalmeve generate file.pdf` en plus du Python API) ?
 
