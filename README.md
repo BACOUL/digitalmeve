@@ -1,94 +1,33 @@
 
-# 🌍 DigitalMeve — The `.meve` Standard (v1.7.0)
+# 🌍 DigitalMeve — The .MEVE Standard
 
-[![PyPI](https://img.shields.io/pypi/v/digitalmeve.svg?label=PyPI%20package&logo=pypi)](https://pypi.org/project/digitalmeve/)
-![Python](https://img.shields.io/pypi/pyversions/digitalmeve.svg?logo=python&label=Python)
+[![Quality](https://github.com/BACOUL/digitalmeve/actions/workflows/quality.yml/badge.svg?branch=main)](https://github.com/BACOUL/digitalmeve/actions/workflows/quality.yml)
+[![Tests](https://github.com/BACOUL/digitalmeve/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/BACOUL/digitalmeve/actions/workflows/tests.yml)
+[![Publish](https://github.com/BACOUL/digitalmeve/actions/workflows/publish.yml/badge.svg?branch=main)](https://github.com/BACOUL/digitalmeve/actions/workflows/publish.yml)
+[![PyPI - Version](https://img.shields.io/pypi/v/digitalmeve.svg?label=DigitalMeve&logo=pypi)](https://pypi.org/project/digitalmeve/)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/digitalmeve.svg?logo=python&label=Python)](https://pypi.org/project/digitalmeve/)
 [![Downloads](https://pepy.tech/badge/digitalmeve)](https://pepy.tech/project/digitalmeve)
-[![Tests](https://github.com/BACOUL/digitalmeve/actions/workflows/tests.yml/badge.svg)](https://github.com/BACOUL/digitalmeve/actions/workflows/tests.yml)
-[![Quality](https://github.com/BACOUL/digitalmeve/actions/workflows/quality.yml/badge.svg)](https://github.com/BACOUL/digitalmeve/actions/workflows/quality.yml)
-[![Publish](https://github.com/BACOUL/digitalmeve/actions/workflows/publish.yml/badge.svg)](https://github.com/BACOUL/digitalmeve/actions/workflows/publish.yml)
-[![Security](https://img.shields.io/badge/security-policy-green)](https://github.com/BACOUL/digitalmeve/blob/main/SECURITY.md)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/BACOUL/digitalmeve/blob/main/LICENSE)
-
-**DigitalMeve** defines the **`.meve` (Memory Verified)** format to **hash, timestamp, and certify** any digital file — fast ⚡, secure 🔐, and universal 🌍.
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 ---
 
-## Table of contents
+## 📖 Description  
 
-- [What is `.meve`?](#what-is-meve)
-- [Installation](#installation)
-- [Quick start](#quick-start)
-  - [Python SDK](#python-sdk)
-  - [CLI usage](#cli-usage)
-- [Documentation](#documentation)
-- [Specification (MEVE/1)](#specification-meve1)
-- [Security model](#security-model)
-- [Issuer levels](#issuer-levels)
-- [Project status](#project-status)
-- [CI/CD & Publishing](#cicd--publishing)
-- [Development](#development)
-- [Project layout](#project-layout)
-- [Roadmap](#roadmap)
-- [Contributing & Code of conduct](#contributing--code-of-conduct)
-- [License](#license)
-- [Contact](#contact)
+**DigitalMeve** defines the universal format **`.meve`** (Memory Verified) to **timestamp, hash, and certify** digital documents.  
+
+**Goal** → Make `.meve` the **“PDF of digital proof”** worldwide.  
 
 ---
 
-## What is `.meve`?
-
-A portable, human-readable proof that ties a file to:
-
-1. **Existence** at time *T* (UTC timestamp)  
-2. **Integrity** of the **exact bytes** (SHA-256)  
-3. **Issuer linkage** (Personal / Pro / Official) — **computed by the verifier**, never user-declared
-
-**Goal:** make `.meve` the “**PDF of digital proof**”.
-
----
-
-## Installation
+## 📦 Installation  
 
 ```bash
 pip install digitalmeve
 
-Supported Python: 3.10, 3.11, 3.12
-Platforms: Linux, macOS, Windows (CPython)
-
 
 ---
 
-Quick start
-
-Python SDK
-
-from digitalmeve.core import generate_meve, verify_meve
-
-# Generate an in-memory proof (and optionally write sidecar JSON)
-proof = generate_meve("contract.pdf", issuer="Personal", outdir="out")
-print(proof["subject"]["hash_sha256"])  # SHA-256 of the file
-
-# Verify (path or dict)
-ok, info = verify_meve("out/contract.pdf.meve.json", expected_issuer="Personal")
-print("✅ Valid" if ok else "❌ Invalid", info)
-
-Sidecar output: out/contract.pdf.meve.json
-
-CLI usage
-
-(Temporary reference CLIs kept at repository root)
-
-# Generate a proof
-python cli_generate.py path/to/file.pdf --out out --issuer Personal
-
-# Verify a proof
-python cli_verify.py out/file.pdf.meve.json --expected Personal
-
-
----
-
-Documentation
+📚 Documentation
 
 Overview
 
@@ -104,9 +43,9 @@ Security
 
 Examples
 
-Pro verification (email)
+Pro Verification (email)
 
-Official verification (DNS)
+Official Verification (DNS)
 
 Roadmap
 
@@ -114,203 +53,133 @@ Roadmap
 
 ---
 
-Specification (MEVE/1)
+🚀 Vision
 
-Minimal JSON (reference):
+DigitalMeve creates a new universal certification format: .meve (Memory Verified).
+A lightweight and human-readable file proving in 2 seconds:
 
-{
-  "meve_version": "1.0",
-  "issuer": "Personal",
-  "timestamp": "2025-08-30T12:34:56Z",
-  "metadata": {},
-  "subject": {
-    "filename": "sample.pdf",
-    "size": 12345,
-    "hash_sha256": "abcd1234..."
-  },
-  "hash": "abcd1234...",
-  "preview_b64": "..."
-}
-
-Rules: SHA-256 over the full byte stream, UTC ISO-8601 timestamp, strict JSON, sidecar *.meve.json preferred.
-➡️ Details: docs/specification.md
+1. The existence of a document at a given date.
 
 
----
-
-Security model
-
-Tamper-proof: any byte change ⇒ different hash ⇒ verification fails
-
-Verifier runs offline (no upload)
-
-Transparency log & key management planned
-
-Large files → prefer sidecar JSON
-➡️ Details: docs/security.md
+2. The integrity of the document (via SHA-256 hash).
 
 
-
----
-
-Issuer levels
-
-Personal → self-asserted (free)
-
-Pro → verified email/domain (paid) — MVP+1
-
-Official → DNS/institution verified (licensed) — MVP+2
-
-
-The level is computed by the verifier, not user-declared.
-➡️ PRO.md • OFFICIAL.md
-
-
----
-
-Project status
-
-Current library version: 1.7.0
-
-MEVE spec revision: MEVE/1 (meve_version: "1.0")
-
-Test matrix: Python 3.10 / 3.11 / 3.12
-
-CI: lint + unit tests + smoke, on PRs and pushes to main
-
-
-
----
-
-CI/CD & Publishing
-
-Workflows (see .github/workflows/):
-
-✅ tests.yml — pytest on 3.10–3.12 + flake8 lint
-
-✅ quality.yml — lightweight flake8 (PR signal)
-
-✅ smoke.yml — fast sanity check
-
-✅ publish.yml — PyPI publish on GitHub Release → Published using Trusted Publisher (OIDC)
-
-✅ release-drafter.yml — drafts release notes from merged PRs
-
-
-Release flow (maintainers)
-
-1. Bump version in:
-
-pyproject.toml
-
-src/digitalmeve/__init__.py
-
-
-
-2. Merge to main (CI must be green)
-
-
-3. Create GitHub Release with tag vX.Y.Z
-
-
-4. publish.yml builds sdist/wheel & publishes to PyPI (OIDC, no secrets)
+3. The authenticity of the issuer (Personal / Pro / Official).
 
 
 
 
 ---
 
-Development
+🔑 Certification Levels
 
-# Clone
-git clone https://github.com/BACOUL/digitalmeve.git
-cd digitalmeve
+Personal → Self-certification (existence proof only).
 
-# Create venv (example)
-python -m venv .venv && . .venv/bin/activate
+Pro → Email verified (identity linked to a real professional).
 
-# Install
-python -m pip install -U pip
-pip install -e .
-pip install -r requirements-dev.txt
+Official → DNS verified / institution (official certification).
 
-# Pre-commit (format/lint/hooks)
-pre-commit install
+
+⚡ Certification level is always computed automatically by the verifier.
+
+
+---
+
+🛡 Security
+
+Tamper-proof: any change in the file invalidates the .meve.
+
+Metadata embedding (JSON or sidecar).
+
+Scalable: .meve.json sidecar for large files.
+
+Fraud detection: instant hash mismatch detection.
+
+
+
+---
+
+📊 Use Cases
+
+🧑‍💻 Individuals
+
+Proof of authorship (art, photos, manuscripts).
+
+Timestamped evidence (insurance, agreements).
+
+
+👔 Professionals
+
+Certified invoices, contracts, designs.
+
+Intellectual property pre-proof.
+
+
+🏛 Institutions
+
+Universities → certified diplomas.
+
+Governments → official documents.
+
+Courts → legal contracts, judgments.
+
+
+
+---
+
+🛠 Development
+
+Python 3.10+ required
+
+Run checks locally:
+
 pre-commit run --all-files
-
-# Tests
 pytest -q
 
-Style & tools
+Contribution guide → CONTRIBUTING.md
 
-Formatter: black (88 cols)
+Code of Conduct → CODE_OF_CONDUCT.md
 
-Lint: flake8
-
-Tests: pytest
-
-Hooks: pre-commit (see .pre-commit-config.yaml)
+Security policy → SECURITY.md
 
 
 
 ---
 
-Project layout
+📦 Releases
 
-digitalmeve/
-├─ src/digitalmeve/           # core library
-│  ├─ __init__.py
-│  ├─ core.py                 # generator
-│  └─ verifier.py             # verifier
-├─ cli_generate.py            # reference CLI (gen)
-├─ cli_verify.py              # reference CLI (verify)
-├─ docs/                      # full documentation
-├─ tests/                     # pytest suite
-├─ .github/workflows/         # CI/CD
-├─ pyproject.toml             # package metadata
-├─ Makefile                   # convenience tasks
-└─ SECURITY.md, CONTRIBUTING.md, CODE_OF_CONDUCT.md, ROADMAP.md, CHANGELOG.md
+Current version: 1.7.0
+
+Published automatically to PyPI
+
+Workflow: version bump → tag → GitHub Actions → PyPI publish
+
 
 
 ---
 
-Roadmap
+📢 Communication
 
-High-level milestones are tracked in
-➡️ docs/roadmap.md
+Slogan:
+👉 “DigitalMeve — The first global platform to certify and verify the authenticity of your documents.”
 
-
----
-
-Contributing & Code of conduct
-
-Contributing guide
-
-Code of conduct
-
-Security policy
-
-
-Issue templates & PR template are provided under
-➡️ .github/ISSUE_TEMPLATE/ & .github/PULL_REQUEST_TEMPLATE.md
+Pitch:
+“Your documents, certified and verifiable in 2 seconds, anywhere in the world.”
 
 
 ---
 
-License
+⚖ License
 
-Licensed under the MIT License.
-➡️ LICENSE
+This repository is licensed under the MIT License.
+See LICENSE for details.
 
-
----
-
-Contact
-
-DigitalMeve Core Team — contact@digitalmeve.com
-Security: security@digitalmeve.com
 
 ---
 
-Si tu veux, je peux aussi préparer un **CHANGES/CHANGELOG précis pour 1.7.0** et un petit **badge “Made for Framer site”**. Dis-moi et je te le fournis en patch direct.
+✍️ Maintained by DigitalMeve Team.
+
+---
+
+👉 Tu veux que je prépare aussi le **tableau de navigation (sommaire cliquable)** au début du README (avec des ancres internes), ou tu préfères rester uniquement sur les liens vers les fichiers docs ?
 
