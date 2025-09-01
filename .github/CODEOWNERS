@@ -1,1 +1,7 @@
-* @BAC0UL
+# CODEOWNERS — DigitalMeve
+# These people will be automatically requested for review
+# when someone opens a pull request that affects the repo.
+
+*       @BACOUL
+/docs/* @BACOUL
+/src/*  @BACOUL
