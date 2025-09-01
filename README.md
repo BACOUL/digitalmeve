@@ -181,5 +181,3 @@ See LICENSE for details.
 
 ---
 
-👉 Tu veux que je prépare aussi le **tableau de navigation (sommaire cliquable)** au début du README (avec des ancres internes), ou tu préfères rester uniquement sur les liens vers les fichiers docs ?
-
