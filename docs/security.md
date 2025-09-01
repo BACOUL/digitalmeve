@@ -1,32 +1,60 @@
-# Security Model (draft)
+# 🔒 DigitalMeve — Security Model
 
-## What MEVE proves
-- **Existence** at time T (UTC timestamp).
-- **Integrity** of the exact bytes (SHA-256).
-- **Issuer linkage** (Personal / Pro / Official) — level is computed by the verifier.
+This document describes what `.MEVE` guarantees, what it does **not** guarantee, and the threat model with mitigations.
 
-## What MEVE does NOT prove
-- Civil/legal identity of a person by itself (unless verified flows are used).
-- Truthfulness of the content; it certifies bytes, not meaning.
+---
 
-## Threats & mitigations
-- **Tampering**: any byte change → different SHA-256 → verification fails.
-- **Visual tricks**: verification relies on content hash, not on how a viewer renders it.
-- **Large files** (>50 MB): prefer sidecar `*.meve.json` instead of metadata embedding.
-- **Clock issues**: store timestamps in UTC ISO-8601; future option: trusted timestamp authority.
-- **Key management (future)**: Pro/Official signatures will use per-issuer keys and revocation lists.
+## ✅ What MEVE Proves
 
-## Responsible disclosure
-Please report vulnerabilities privately:
-- Email: `security@digitalmeve.example`
-- Expected first response: **≤ 72h**
+- **Existence** of a file at a given point in time (**UTC timestamp**).  
+- **Integrity** of the file content (**SHA-256 hash**).  
+- **Issuer linkage** (Personal / Pro / Official) — automatically computed by the verifier.  
 
-Do not publicly disclose before a fix or mitigation is available.
+---
 
-## Scope
-- Core library under `/src/digitalmeve`
-- Reference verifier/generator
-- CI workflows under `.github/workflows`
+## ❌ What MEVE Does *Not* Prove
 
-## Privacy
-- No document content is stored by the verifier; only the hash and minimal metadata appear in proofs.
+- The **civil/legal identity** of a person (unless verified Pro/Official flows are used).  
+- The **truthfulness of the content**; MEVE certifies **bytes**, not meaning.  
+
+---
+
+## ⚠️ Threats & Mitigations
+
+- **Tampering** → any byte change results in a different SHA-256 → verification fails.  
+- **Visual tricks** → verifier always checks raw content bytes, not rendering.  
+- **Large files (>50 MB)** → use sidecar `*.meve.json` instead of metadata embedding.  
+- **Clock issues** → all timestamps stored in **UTC ISO-8601**; future option: trusted timestamp authority.  
+- **Key management (future)** → Pro/Official issuers will use dedicated signing keys and revocation lists.  
+
+---
+
+## 📣 Responsible Disclosure
+
+We take security seriously. Please report vulnerabilities privately:
+
+- 📧 Email: `security@digitalmeve.example`  
+- ⏱ Expected first response: **≤ 72h**  
+
+⚠️ **Do not disclose vulnerabilities publicly** before a fix or mitigation is available.  
+
+---
+
+## 🗂 Scope
+
+- Core library: `/src/digitalmeve`  
+- Reference verifier & generator  
+- CI workflows: `.github/workflows`  
+
+---
+
+## 🔐 Privacy
+
+- The verifier **never stores document content**.  
+- Only the **hash** and minimal **metadata** appear in proofs.  
+- No centralized storage: proofs remain under the user’s control.  
+
+---
+
+👉 For technical details, see [Specification](SPECIFICATION.md).  
+👉 For adoption roadmap, see [Roadmap](ROADMAP.md).
