@@ -1,189 +1,181 @@
 
 # 🌍 DigitalMeve — The .MEVE Standard
 
-[![Quality](https://github.com/BACOUL/digitalmeve/actions/workflows/quality.yml/badge.svg?branch=main)](https://github.com/BACOUL/digitalmeve/actions/workflows/quality.yml)
-[![Tests](https://github.com/BACOUL/digitalmeve/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/BACOUL/digitalmeve/actions/workflows/tests.yml)
-[![Publish](https://github.com/BACOUL/digitalmeve/actions/workflows/publish.yml/badge.svg?branch=main)](https://github.com/BACOUL/digitalmeve/actions/workflows/publish.yml)
-[![PyPI - Version](https://img.shields.io/pypi/v/digitalmeve.svg?label=DigitalMeve&logo=pypi)](https://pypi.org/project/digitalmeve/)
-[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/digitalmeve.svg?logo=python&label=Python)](https://pypi.org/project/digitalmeve/)
-[![Downloads](https://static.pepy.tech/badge/digitalmeve)](https://pepy.tech/project/digitalmeve)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/BACOUL/digitalmeve/blob/main/LICENSE)
+Quality → https://github.com/BACOUL/digitalmeve/actions/workflows/quality.yml  
+Tests → https://github.com/BACOUL/digitalmeve/actions/workflows/tests.yml  
+Publish → https://github.com/BACOUL/digitalmeve/actions/workflows/publish.yml  
+PyPI → https://pypi.org/project/digitalmeve/  
+Python Versions → https://pypi.org/project/digitalmeve/  
+Downloads → https://pepy.tech/project/digitalmeve  
+License MIT → https://github.com/BACOUL/digitalmeve/blob/main/LICENSE  
 
 ---
 
-## 📖 Description
+## 📖 What is DigitalMeve?
 
-**DigitalMeve** defines the universal format **`.meve`** (*Memory Verified*) to **timestamp, hash, and certify** any digital document.  
+**DigitalMeve** defines the universal format `.meve` (*Memory Verified*):  
+a lightweight, human-readable file that proves in **2 seconds**:
 
-🎯 **Mission**: make `.meve` the **“PDF of digital proof”**.  
+1. The existence of a document at a given date.  
+2. The integrity of the document (via SHA-256 hash).  
+3. The authenticity of the issuer (Personal, Pro, Official).  
+
+🎯 Goal: make `.meve` the **“PDF of digital proof”** worldwide.  
 
 ---
 
-## 📦 Installation
+## 📂 Example of a `.meve.json`
 
-```bash
-pip install digitalmeve
-
-> Requirement: Python 3.10+
-
-
+```json
+{
+  "status": "Personal",
+  "issuer": "john.doe@example.com",
+  "issued_at": "2025-09-01T12:34:56Z",
+  "hash_sha256": "8f9c1b3c...e7a",
+  "meta": {
+    "filename": "contract-v1.pdf",
+    "size": 58231,
+    "mime": "application/pdf"
+  },
+  "preview_b64": "JVBERi0xLjQKJ....",
+  "id": "meve-0a92f3"
+}
 
 
 ---
 
 ⚡ Quick Start
 
-Generate a .meve proof for a file and verify it:
+Generate and verify a .meve proof in Python:
 
 from digitalmeve import generate_meve, verify_meve
 
 # 1) Generate
 meve_path = generate_meve(
     file_path="examples/sample.pdf",
-    issuer="john.doe@example.com",   # or domain for OFFICIAL
-    meta={"purpose": "draft-contract-v1"}
+    issuer="john.doe@example.com",
+    meta={"purpose": "contract-v1"}
 )
-print("MEVE created:", meve_path)
 
 # 2) Verify
 result = verify_meve(meve_path)
-assert result.valid
-print(
-    "valid:", result.valid,
-    "| level:", result.level,         # PERSONAL / PRO / OFFICIAL
-    "| algo:", result.hash_algo,      # SHA-256
-    "| ts:", result.timestamp_iso
-)
+print(result.valid, result.level, result.timestamp_iso)
 
-➡️ More details: Generator Guide • Verification Guide
+➡️ Generator Guide → https://github.com/BACOUL/digitalmeve/blob/main/docs/generator-guide.md
+➡️ Verification Guide → https://github.com/BACOUL/digitalmeve/blob/main/docs/verification-guide.md
 
 
 ---
 
 📚 Documentation
 
-Overview
+📌 Current (GitHub)
 
-API Usage
+Overview → https://github.com/BACOUL/digitalmeve/blob/main/docs/overview.md
+API Usage → https://github.com/BACOUL/digitalmeve/blob/main/docs/API_USAGE.md
+Generator Guide → https://github.com/BACOUL/digitalmeve/blob/main/docs/generator-guide.md
+Verification Guide → https://github.com/BACOUL/digitalmeve/blob/main/docs/verification-guide.md
+Specification → https://github.com/BACOUL/digitalmeve/blob/main/docs/specification.md
+Security → https://github.com/BACOUL/digitalmeve/blob/main/docs/security.md
+Examples → https://github.com/BACOUL/digitalmeve/blob/main/docs/examples.md
+Pro Verification → https://github.com/BACOUL/digitalmeve/blob/main/docs/PRO.md
+Official Verification → https://github.com/BACOUL/digitalmeve/blob/main/docs/OFFICIAL.md
+Roadmap (docs) → https://github.com/BACOUL/digitalmeve/blob/main/docs/roadmap.md
+Roadmap (root) → https://github.com/BACOUL/digitalmeve/blob/main/ROADMAP.md
 
-Generator Guide
+🚀 Future (MkDocs site)
 
-Verification Guide
-
-Specification
-
-Security
-
-Examples
-
-Pro Verification (email)
-
-Official Verification (DNS)
-
-Roadmap (docs) • Roadmap (root)
-
+Overview → https://bacoul.github.io/digitalmeve/overview/
+API Usage → https://bacoul.github.io/digitalmeve/api_usage/
+Generator Guide → https://bacoul.github.io/digitalmeve/generator-guide/
+Verification Guide → https://bacoul.github.io/digitalmeve/verification-guide/
+Specification → https://bacoul.github.io/digitalmeve/specification/
+Security → https://bacoul.github.io/digitalmeve/security/
+Examples → https://bacoul.github.io/digitalmeve/examples/
+Pro Verification → https://bacoul.github.io/digitalmeve/pro/
+Official Verification → https://bacoul.github.io/digitalmeve/official/
+Roadmap → https://bacoul.github.io/digitalmeve/roadmap/
 
 
 ---
 
 📌 Project Status (v1.7.0)
 
-✅ Core generator (generate_meve) — SHA-256, UTC timestamp, base64 preview
-✅ Core verifier (verify_meve) — structure + hash + issuer check
-✅ PyPI packaging & GitHub Actions (tests, quality, publish)
-✅ Unit tests (pytest, Python 3.10–3.12)
-✅ Documentation & legal (MIT license, CONTRIBUTING, SECURITY, etc.)
+✅ Core generator (generate_meve) — hash, timestamp, metadata
+✅ Core verifier (verify_meve) — integrity + issuer check
+✅ PyPI package published → https://pypi.org/project/digitalmeve/
+✅ CI/CD (tests, quality, publish)
+✅ Documentation & governance (MIT, CONTRIBUTING, SECURITY)
 
-🚧 Next steps (v1.8–1.9):
+🚧 Next steps:
 
 JSON Schema validation (schema/meve-1.schema.json)
 
 Minimal API backend (FastAPI)
 
-Framer site + demo (generate & verify online)
+Framer landing site + demo
 
-Legal pages (Privacy, Terms, Security)
 
+
+---
+
+📑 MEVE/1 Specification (draft)
+
+Field	Description
+
+status	Personal | Pro | Official
+issuer	Identity (email or domain)
+issued_at	UTC timestamp (ISO 8601)
+hash_sha256	Document integrity hash
+id	Short MEVE ID
+meta	Filename • Size • Mime type
+preview_b64	Base64 preview of first bytes
+
+
+Full spec → https://github.com/BACOUL/digitalmeve/blob/main/docs/specification.md
 
 
 ---
 
 🔑 Certification Levels
 
-PERSONAL → self-certification (existence proof only).
+Personal → self-certification (existence proof only).
 
-PRO → identity verified via email (real professional).
+Pro → email-verified identity.
 
-OFFICIAL → identity verified via DNS (institution / domain).
+Official → DNS-verified institution/domain.
 
 
-☑️ Certification level is always computed automatically by the verifier.
+☑️ The level is automatically computed by the verifier (never self-declared).
 
 
 ---
 
-🛡 Security
+🌐 API (coming soon)
 
-Tamper-proof: any modification invalidates the .meve.
-
-Strong hashing: SHA-256 by default.
-
-Metadata embedding: inline (JSON) or sidecar .meve.json for large files.
-
-Fraud detection: instant hash mismatch detection.
+POST /generate → upload file + issuer → returns .meve.json.
+POST /verify → submit proof → returns { ok, level, issuer, timestamp }.
 
 
-Details: Security Doc • SECURITY.md
+---
+
+🛣 Roadmap
+
+Phase 1 (MVP) → generator, verifier, CI/CD, PyPI (done)
+
+Phase 2 (6 months) → email/DNS verification, PDF export, SaaS API (planned)
+
+Phase 3 (1–2 years) → ISO/AFNOR standardization, ERP/CRM integrations, adoption (goal)
+
 
 
 ---
 
 📊 Use Cases
 
-👤 Individuals
-
-Proof of authorship (art, photos, manuscripts).
-
-Timestamped evidence (insurance, agreements).
-
-
-👔 Professionals
-
-Certified invoices, contracts, designs.
-
-Intellectual property pre-proof.
-
-
-🏛 Institutions
-
-Universities → certified diplomas.
-
-Governments → official documents.
-
-Courts → contracts, judgments, evidence.
-
-
-
----
-
-🌐 API Preview (coming soon)
-
-POST /generate → upload file + issuer → returns .meve.json proof (not stored).
-POST /verify → submit proof JSON → returns { ok, level, issuer, timestamp }.
-
-Planned deployment: FastAPI + Docker + Railway/Render/Cloud Run.
-
-
----
-
-🛣 Roadmap (simplified)
-
-Phase 1 (MVP, v1.7) → generator, verifier, CI/CD, PyPI (✅ done)
-
-Phase 2 (6 months) → email/DNS verification, PDF export, SaaS API (🚧)
-
-Phase 3 (1–2 years) → international standardization, ERP/CRM integrations, global adoption
-
+👤 Individuals → authorship, timestamped photos/videos, personal evidence
+👔 Professionals → certified invoices, contracts, IP pre-proof
+🏛 Institutions → diplomas, court judgments, official documents
 
 
 ---
@@ -195,69 +187,31 @@ Run local checks:
 pre-commit run --all-files
 pytest -q
 
-Project policies & guides:
-
-CONTRIBUTING.md
-
-CODE_OF_CONDUCT.md
-
-SECURITY.md
-
-MAINTAINERS.md
-
-SUPPORT.md
-
-
-
-
----
-
-📦 Releases & CI/CD
-
-Current version: 1.7.0
-
-Published automatically to PyPI
-
-Workflow: version bump → tag → GitHub Actions → PyPI publish
-
-Changelog: CHANGELOG.md
-
-
-Workflows: Quality • Tests • Publish (see badges above).
+Contributing → https://github.com/BACOUL/digitalmeve/blob/main/CONTRIBUTING.md
+Code of Conduct → https://github.com/BACOUL/digitalmeve/blob/main/CODE_OF_CONDUCT.md
+Security Policy → https://github.com/BACOUL/digitalmeve/blob/main/SECURITY.md
 
 
 ---
 
 🚀 Vision
 
-A lightweight, human-readable format, verifiable in 2 seconds, recognized worldwide to prove:
-
-1. The existence of a document at a given time,
-
-
-2. The integrity of the document (hash),
-
-
-3. The authenticity of the issuer (Personal / Pro / Official).
-
-
+A universal proof format, as simple and portable as PDF, but for existence & authenticity.
 
 Slogan
-👉 “DigitalMeve — The first global platform to certify and verify the authenticity of your documents.”
+👉 DigitalMeve — The first global platform to certify and verify the authenticity of your documents.
 
 Pitch
-“Your documents, certified and verifiable in 2 seconds, anywhere in the world.”
+Your documents, certified and verifiable in 2 seconds, anywhere in the world.
 
 
 ---
 
 ⚖ License
 
-Distributed under the MIT License — see LICENSE.
+Distributed under the MIT License → https://github.com/BACOUL/digitalmeve/blob/main/LICENSE
 
 
 ---
 
-✍️ Maintained by DigitalMeve Team • 
-
----
+✍️ Maintained by DigitalMeve Team •
