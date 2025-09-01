@@ -1,44 +1,47 @@
-Super 👍
-Voici la version complète, propre et pro du README v1.7.0.
-Tous les liens sont en relatif donc cliquables sur GitHub, la mise en page est uniforme, et les badges sont bien en haut.
+Parfait 🚀
+Voici le README final v1.7.0 avec Table of Contents fonctionnel.
+J’ai gardé les emojis dans les titres pour le style, mais dans le TOC ce sont uniquement du texte (sinon GitHub casse les ancres).
 
 
 ---
 
-# DigitalMeve
+# 🌍 DigitalMeve — The .MEVE Standard (v1.7.0)
 
-[![PyPI version](https://img.shields.io/pypi/v/digitalmeve.svg)](https://pypi.org/project/digitalmeve/)
-[![Python versions](https://img.shields.io/pypi/pyversions/digitalmeve.svg)](https://pypi.org/project/digitalmeve/)
-[![Downloads](https://img.shields.io/pypi/dm/digitalmeve.svg)](https://pypi.org/project/digitalmeve/)
-[![License](https://img.shields.io/github/license/BACOUL/digitalmeve)](LICENSE)
-[![CI](https://github.com/BACOUL/digitalmeve/actions/workflows/ci.yml/badge.svg)](.github/workflows/ci.yml)
+[![Quality](https://github.com/BACOUL/digitalmeve/actions/workflows/quality.yml/badge.svg?branch=main)](https://github.com/BACOUL/digitalmeve/actions/workflows/quality.yml)
+[![Tests](https://github.com/BACOUL/digitalmeve/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/BACOUL/digitalmeve/actions/workflows/tests.yml)
+[![Publish](https://github.com/BACOUL/digitalmeve/actions/workflows/publish.yml/badge.svg?branch=main)](https://github.com/BACOUL/digitalmeve/actions/workflows/publish.yml)
+[![PyPI - Version](https://img.shields.io/pypi/v/digitalmeve.svg?label=DigitalMeve&logo=pypi)](https://pypi.org/project/digitalmeve/)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/digitalmeve.svg?logo=python&label=Python)](https://pypi.org/project/digitalmeve/)
+[![Downloads](https://static.pepy.tech/badge/digitalmeve)](https://pepy.tech/project/digitalmeve)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 ---
 
-## 📑 Table of Contents
-- [What is DigitalMeve?](#what-is-digitalmeve)
-- [Installation](#installation)
-- [Quick Start](#quick-start)
-- [Documentation](#documentation)
-- [Repository Tree](#repository-tree)
-- [Project Status](#project-status)
-- [Certification Levels](#certification-levels)
-- [MEVE/1 — Field Summary](#meve1--field-summary)
-- [Roadmap](#roadmap)
-- [Security & Legal](#security--legal)
-- [Use Cases](#use-cases)
-- [Contributing & Community](#contributing--community)
-- [Releases & CI/CD](#releases--cicd)
-- [License](#license)
+## Table of Contents
+- [What is DigitalMeve?](#-what-is-digitalmeve)
+- [Installation](#-installation)
+- [Quick Start](#-quick-start)
+- [Documentation](#-documentation)
+- [Repository Tree](#-repository-tree)
+- [Project Status](#-project-status)
+- [Certification Levels](#-certification-levels)
+- [MEVE/1 — Field Summary](#-meve1--field-summary)
+- [Security & Legal](#-security--legal)
+- [Use Cases](#-use-cases)
+- [Roadmap](#-roadmap)
+- [Communication](#-communication)
+- [Development](#-development)
+- [Contributing & Community](#-contributing--community)
+- [Releases & CI/CD](#-releases--cicd)
+- [License](#-license)
 
 ---
 
 ## 📖 What is DigitalMeve?
 
-**DigitalMeve** defines the universal `.meve` (Memory Verified) format to  
-**timestamp, hash, and certify** digital documents.
+**DigitalMeve** defines the universal `.meve` (*Memory Verified*) format to **timestamp, hash, and certify** digital documents.  
 
-**Goal →** Make `.meve` the *“PDF of digital proof”* worldwide.
+🎯 **Goal** → Make `.meve` the *“PDF of digital proof”* worldwide.  
 
 ---
 
@@ -100,12 +103,12 @@ Changelog
 
 📂 Repository Tree
 
-.github/         → CI workflows (quality, tests, publish)
-docs/            → Documentation (specs, guides, roadmap, security)
-examples/        → Usage examples
-schema/          → JSON Schemas (MEVE/1) ← planned in v1.8
-src/digitalmeve/ → Core library (generator / verifier)
-tests/           → Unit & integration tests
+.github/              → Workflows CI/CD (quality, tests, publish)
+docs/                 → Documentation (specifications, guides…)
+examples/             → Usage examples
+src/digitalmeve/      → Main source code (.meve generator / verifier)
+tests/                → Unit & integration tests
+schema/               → JSON Schemas (MEVE/1) ← planned for v1.8
 
 .editorconfig
 .flake8
@@ -115,7 +118,6 @@ CHANGELOG.md
 CODE_OF_CONDUCT.md
 CONTRIBUTING.md
 LICENSE
-MAINTAINERS.md
 MANIFEST.in
 Makefile
 README.md
@@ -132,17 +134,17 @@ requirements.txt
 
 Implemented
 
-.meve generator (Python) → save proofs
+.meve generator (Python CLI) → SHA-256 + UTC timestamp + issuer
 
-Proof verifier (Python) → strong checks
+.meve verifier (Python CLI) → structure + hash + issuer check
 
 Packaging & PyPI publish
 
-Unit tests + GitHub Actions CI
+Unit tests (pytest) + CI (GitHub Actions)
 
 Code quality: flake8, pre-commit
 
-Legal & policy files
+Docs & legal files: LICENSE, CONTRIBUTING, SECURITY
 
 
 Next steps
@@ -171,14 +173,14 @@ Standardization (ISO/AFNOR)
 
 🔑 Certification Levels
 
-Personal → self-certification
+Personal → self-certification (existence only)
 
-Pro → identity verified via email
+Pro → email-verified identity
 
-Official → domain/institution verified
+Official → DNS/institution verification
 
 
-☑️ The level is automatically included in each .meve.
+⚡ Certification level is always computed by the verifier (never self-declared).
 
 
 ---
@@ -189,79 +191,147 @@ Field	Meaning / Notes
 
 status	Personal | Pro | Official
 issuer	Email or domain
-certified	self | email | domain
+certified	self | email | dns
 issued_at	ISO-8601 UTC timestamp
 hash_sha256	Document integrity hash
-schema_hash	Hash of schema used
-key_id	Public key id (future support)
+schema_hash	Hash of schema/manifest
+key_id	Public key ID (future)
 proof_id	Short proof identifier
+signature	Ed25519 signature (planned)
+meta	Filename, size, MIME type
+doc_len	Document length (bytes)
+verified_domain	Populated when DNS validated
+doc_ref	Internal reference
 
+
+Full spec → docs/specification.md
+
+
+---
+
+🛡 Security & Legal
+
+Security
+
+Tamper-proof: any modification breaks verification
+
+Strong hashing: SHA-256
+
+Optional .meve.json sidecar for large files
+
+Offline verification possible
+
+Clear error messages
+
+
+Legal
+
+GDPR: no document storage (hash only)
+
+eIDAS/ESIGN: .meve = proof of existence/integrity, not a qualified signature
+
+Anti-confusion: .meve ≠ notary
+
+
+See → SECURITY.md
+
+
+---
+
+📊 Use Cases
+
+Individuals → authorship, timestamped evidence, manuscripts
+Professionals → certified invoices/contracts, IP pre-proof
+Institutions → diplomas, legal records, government/university docs
 
 
 ---
 
 🗺 Roadmap
 
-See full Roadmap.
+Phase 1 (MVP — current)
+✅ Generator & Verifier (Python CLI)
+✅ PyPI packaging & CI/CD
+🚧 Documentation & site
+
+Phase 2 (6 months)
+– Pro email verification
+– Official DNS verification
+– Certified PDF export
+– Public API
+
+Phase 3 (1–2 years)
+– International standardization
+– SaaS integrations
+– Broad adoption
+
+Full roadmap → ROADMAP.md
 
 
 ---
 
-🔐 Security & Legal
+📣 Communication
 
-Security Policy
-
-Code of Conduct
-
-License (Apache 2.0 planned)
-
+Slogan — “DigitalMeve — The first global platform to analyze and certify the authenticity of your documents.”
+Pitch — “Your documents, certified and verifiable in 2 seconds, anywhere in the world.”
 
 
 ---
 
-💡 Use Cases
+🛠 Development
 
-Long-term archiving of contracts
+Run local checks:
 
-Timestamped research publications
-
-Legal document certification
-
-Proof of authenticity for media files
-
-ERP/CRM integration for business workflows
-
+pre-commit run --all-files
+pytest -q
 
 
 ---
 
 🤝 Contributing & Community
 
-Contributing Guide
+Contributing
 
-Maintainers
+Code of Conduct
+
+Security Policy
 
 
-PRs, issues and feature requests are welcome!
-
-
----
-
-🚀 Releases & CI/CD
-
-Changelog
-
-CI workflow
-
+Issues → https://github.com/BACOUL/digitalmeve/issues
+Discussions → https://github.com/BACOUL/digitalmeve/discussions
 
 
 ---
 
-📜 License
+📦 Releases & CI/CD
 
-LICENSE – Apache 2.0 (planned)
+Current version: 1.7.0
+
+Release flow: bump → tag → GitHub Actions → PyPI
+
+
+Workflows:
+
+Quality
+
+Tests
+
+Publish
+
+
 
 ---
 
-👉 Dis-moi : veux-tu que je t’ajoute aussi une **section “Badges supplémentaires”** (coverage, code style, PyPI weekly downloads…) pour faire encore plus pro ?
+⚖ License
+
+Distributed under the MIT License → LICENSE
+
+---
+
+✅ Avec cette version :  
+- Le **TOC est présent et cliquable**.  
+- La **mise en page reste propre jusqu’à la fin**.  
+- Tous les **docs sont liés correctement**.  
+
+Veux-tu que je te génère aussi une **Table of Contents auto-générée** (style GitHub Actions qui la met à jour toute seule à chaque commit), ou tu préfères garder une version manuelle comme ici ?
 
