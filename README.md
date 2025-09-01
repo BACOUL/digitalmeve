@@ -1,4 +1,5 @@
 
+
 # 🌍 DigitalMeve — The .MEVE Standard
 
 [![Quality](https://github.com/BACOUL/digitalmeve/actions/workflows/quality.yml/badge.svg?branch=main)](https://github.com/BACOUL/digitalmeve/actions/workflows/quality.yml)
@@ -25,6 +26,7 @@
   - [Python API](#python-api)
   - [Command Line](#command-line)
 - [API Reference (short)](#api-reference-short)
+- [Project Structure](#project-structure)
 - [Security](#security)
 - [UX & Product](#ux--product)
 - [Legal & Compliance](#legal--compliance)
@@ -32,7 +34,7 @@
 - [Business Model](#business-model)
 - [Communication](#communication)
 - [Roadmap](#roadmap)
-- [30-Day Plan (MVP)](#30day-plan-mvp)
+- [30-Day Plan (MVP)](#30-day-plan-mvp)
 - [Status](#status)
 - [Contributing](#contributing)
 - [License](#license)
@@ -42,21 +44,21 @@
 
 ## About
 
-**DigitalMeve** defines **`.MEVE` (Memory Verified)** — a lightweight, human-readable proof that certifies a file’s **existence**, **integrity** and **issuer authenticity** in seconds.
+**DigitalMeve** defines **`.MEVE` (Memory Verified)** — a compact, human-readable proof that certifies a file’s **existence**, **integrity** and **issuer authenticity** in seconds, with **offline verification**.
 
 ---
 
 ## Vision
 
-A single, universal proof format that any person, business or institution can verify **offline** in under 2 seconds.  
-The goal: make `.MEVE` the **global standard** for digital certification.
+A single, universal proof format anyone can verify in under 2 seconds.  
+Goal: make `.MEVE` the **global standard** for digital certification.
 
 ---
 
 ## Levels of Certification
 
-- **Personal** — self-certified (existence proof).  
-- **Pro** — email-verified identity.  
+- **Personal** — self-certified (existence proof).
+- **Pro** — email-verified identity.
 - **Official** — DNS/domain or institutional verification.
 
 > The level is **computed by the verifier** (never self-declared) to prevent fraud.
@@ -66,7 +68,7 @@ The goal: make `.MEVE` the **global standard** for digital certification.
 ## Specification — MEVE/1
 
 The canonical manifest is a compact JSON (stable key order, UTF-8).  
-Typical fields returned by the current generator:
+Current generator returns:
 
 ```json
 {
@@ -77,18 +79,20 @@ Typical fields returned by the current generator:
   "subject": {
     "filename": "document.pdf",
     "size": 123456,
-    "hash_sha256": "…"
+    "hash_sha256": "..."
   },
-  "hash": "…",
-  "preview_b64": "…"
+  "hash": "...",
+  "preview_b64": "..."
 }
 
-> The hash is duplicated for convenience; preview_b64 is a short Base64 preview (debug/UX).
-A sidecar file <filename>.meve.json can be written for large assets.
+hash duplicates subject.hash_sha256 for convenience.
+
+preview_b64 is a short Base64 preview for debugging/UX.
+
+Optional sidecar: <filename>.meve.json (no change to the source file).
 
 
-
-Planned/extended fields for advanced issuers (design notes in docs/): Status, Key_ID, Signature (Ed25519), Schema_Hash, Verified_Domain, Doc-Len, Doc-Ref.
+Design notes for future fields (Pro/Official issuers) live under docs/: Status, Key_ID, Signature (Ed25519), Schema_Hash, Verified_Domain, Doc-Len, Doc-Ref.
 
 
 ---
@@ -97,7 +101,7 @@ Install
 
 pip install digitalmeve
 
-Python ≥ 3.10 is recommended.
+Python ≥ 3.10 recommended.
 
 
 ---
@@ -110,27 +114,25 @@ from pathlib import Path
 from digitalmeve.generator import generate_meve
 from digitalmeve.verifier import verify_meve, verify_identity
 
-# 1) Generate a .meve proof (and optionally write a sidecar JSON)
+# 1) Generate a .MEVE proof, optionally write a sidecar JSON
 proof = generate_meve(
     file_path="samples/invoice.pdf",
-    outdir="out",                 # optional -> writes invoice.pdf.meve.json
+    outdir="out",                 # -> writes invoice.pdf.meve.json
     issuer="Personal",            # "Personal" | "Pro" | "Official"
     metadata={"purpose": "demo"}  # arbitrary metadata
 )
 
-# 2) Verify the proof (in-memory dict or path to the .meve.json)
+# 2) Verify the proof (dict or path to .meve.json)
 ok, info = verify_meve(proof, expected_issuer="Personal")
 assert ok is True
+assert info["subject"]["filename"] == "invoice.pdf"
 
-# 3) Verify an identity string (simple helper)
+# 3) Identity helper
 assert verify_identity("ABC123") is True
 
 Command Line
 
-> The CLI is provided as Python modules so it works everywhere (including mobile).
-Run with -m:
-
-
+The CLI modules run everywhere (no console script needed):
 
 # Generate
 python -m digitalmeve.cli.generate path/to/file.pdf --issuer Personal --out out/
@@ -143,21 +145,49 @@ python -m digitalmeve.cli.verify out/file.pdf.meve.json --issuer Personal
 
 API Reference (short)
 
-# generator.py
+# src/digitalmeve/generator.py
 def generate_meve(
     file_path: str | Path,
     outdir: str | Path | None = None,
     issuer: str = "Personal",
     metadata: dict | None = None,
 ) -> dict:
-    """Return a MEVE/1 proof as a dict and optionally write <name>.meve.json"""
+    """Return a MEVE/1 proof and optionally write <name>.meve.json"""
 
-# verifier.py
+# src/digitalmeve/verifier.py
 def verify_meve(meve: dict | str | Path, expected_issuer: str | None = None) -> tuple[bool, dict]:
     """Validate structure + content hash; returns (ok, info_or_error)"""
 
 def verify_identity(identity: str) -> bool:
-    """Tiny helper used by tests/examples"""
+    """Simple helper used by tests/examples"""
+
+
+---
+
+Project Structure
+
+.
+├─ docs/                     # specifications & design notes (in progress)
+├─ examples/                 # usage samples
+├─ src/
+│  └─ digitalmeve/
+│     ├─ generator.py        # MEVE proof generator
+│     ├─ verifier.py         # MEVE verifier
+│     └─ cli/
+│        ├─ generate.py      # python -m digitalmeve.cli.generate
+│        └─ verify.py        # python -m digitalmeve.cli.verify
+├─ tests/                    # pytest suite (green on CI)
+├─ README.md  CHANGELOG.md  ROADMAP.md  SECURITY.md  CONTRIBUTING.md
+└─ pyproject.toml  mkdocs.yml  LICENSE  Makefile
+
+Quick links:
+
+src/digitalmeve/generator.py · src/digitalmeve/verifier.py
+
+src/digitalmeve/cli/ · examples/ · tests/
+
+docs/ · ROADMAP.md · SECURITY.md · CONTRIBUTING.md
+
 
 
 ---
@@ -168,25 +198,23 @@ Tamper-evident: any change to the source file invalidates the proof.
 
 Offline verification: works without network access.
 
-Transparency-ready: design compatible with Merkle root logging.
+Transparency-ready: design compatible with Merkle-root logging.
 
 Sidecar support: .meve.json avoids touching original files.
 
 Clear errors: invalid structure, missing keys, issuer mismatch, hash mismatch, etc.
 
 
-> Future: Ed25519 signatures, key rotation, revocation list, transparency log publishing.
-
-
+Future work: Ed25519 signatures, key rotation & revocation list, transparency log publishing.
 
 
 ---
 
 UX & Product
 
-Clear status badges: Personal (grey), Pro (blue), Official (green).
+Status badges: Personal (grey), Pro (blue), Official (green).
 
-Drag-and-drop verifier (web) and simple CLI.
+Drag-and-drop web verifier (planned) + simple CLI.
 
 Exportable JSON proof; short Base64 preview for visual inspection.
 
@@ -203,16 +231,15 @@ GDPR-friendly: the project does not store user documents.
 eIDAS/ESIGN note: .MEVE is a proof of existence/integrity, not a qualified e-signature.
 
 Anti-confusion: .MEVE is not a notary/INPI replacement.
+See also: SECURITY.md and LICENSE.
 
-
-See SECURITY.md and LICENSE.
 
 
 ---
 
 Use Cases
 
-Individuals: authorship, photos/videos evidence, timestamping drafts.
+Individuals: authorship, photo/video evidence, timestamping drafts.
 Professionals: invoices, quotes, contracts, IP pre-proof.
 Institutions: diplomas, rulings, official communications.
 
@@ -221,7 +248,7 @@ Institutions: diplomas, rulings, official communications.
 
 Business Model
 
-Free: personal proofs with sensible quotas.
+Free: personal proofs with quotas.
 
 Pro: subscription (volume, API, dashboard).
 
@@ -234,9 +261,7 @@ Official: institutional licensing (DNS/domain verification, SLA).
 Communication
 
 Slogan: “DigitalMeve — The first global platform to analyze and certify the authenticity of your documents.”
-
-Landing page (EN/FR), short explainer videos, live demo, and social campaigns.
-
+Channels: landing page (EN/FR), short explainers, live demos, LinkedIn/Twitter/YouTube.
 
 
 ---
@@ -309,7 +334,7 @@ Contributing
 
 Issues and PRs are welcome!
 Please read CONTRIBUTING.md and follow the code style.
-Run the linters and tests locally or rely on the GitHub Actions checks.
+Run pre-commit locally, then pytest before submitting.
 
 
 ---
@@ -323,13 +348,18 @@ MIT — see LICENSE.
 
 More Docs
 
-Roadmap
+docs/ (specification & guides; in progress)
 
-Security
+examples/
 
-Examples
+ROADMAP.md · SECURITY.md
 
-MkDocs config
+mkdocs.yml
 
-docs/ (in progress): specification, generator guide, verification guide.
+
+**Notes on links**
+- All **internal anchors** now match GitHub’s exact IDs (e.g., `#30-day-plan-mvp` ✅).
+- All **file/folder links** point to paths that exist in your repo (`docs/`, `examples/`, `src/digitalmeve/...`, `tests/`, `ROADMAP.md`, etc.).
+
+If any specific file inside `docs/` is not yet created (e.g., `specification.md`), we safely link to the **folder** so the link is still valid today. When you add `docs/specification.md`, we can point directly to it.
 
