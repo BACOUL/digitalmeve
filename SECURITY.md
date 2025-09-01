@@ -1,46 +1,49 @@
 # Security Policy
 
+We take security seriously. Thank you for helping keep DigitalMeve, its users, and the ecosystem safe.
+
 ## Supported Versions
-Nous maintenons uniquement les dernières versions mineures stables de DigitalMeve.  
-| Version | Supportée |
-|---------|-----------|
-| 0.1.x   | ✅ |
-| < 0.1   | ❌ |
 
----
+| Version  | Status        |
+|----------|---------------|
+| 1.7.x    | ✔ Supported   |
+| < 1.7.0  | ✖ End-of-life |
 
-## Signalement de vulnérabilités
-Si vous découvrez une faille de sécurité :
-1. **Ne pas ouvrir d’issue publique.**
-2. Envoyer un mail à : `security@digitalmeve.org`
-3. Indiquer :
-   - Version concernée
-   - Étapes de reproduction
-   - Impact potentiel
+We backport only critical fixes.
 
-Nous nous engageons à répondre **sous 48 heures** et à proposer un correctif **sous 7 jours ouvrés**.
+## How to Report a Vulnerability
 
----
+**Please do not open public Issues for security reports.**
 
-## Process de correction
-- Patch appliqué sur `main` via PR privée
-- Release patch (`vX.Y.Z+security`)
-- Publication dans `CHANGELOG.md`
-- Notification aux utilisateurs via PyPI + GitHub Release
+Use one of these private channels:
 
----
+1. **GitHub Security Advisory** (preferred)  
+   - Go to the repository’s **Security** tab → **Advisories** → **Report a vulnerability**.
 
-## Bonnes pratiques pour les développeurs
-- Toujours valider la **signature cryptographique** avant d’accepter un fichier `.meve`
-- Ne pas stocker les clés privées dans le repo
-- Utiliser uniquement les dépendances listées dans `requirements.txt`
-- Vérifier l’intégrité avec `cli_verify.py` avant utilisation
+2. **Email**  
+   - Send details to **security@digitalmeve.com** (PGP optional).  
+   - Include: affected version(s), environment, steps to reproduce, PoC, impact, and any suggested mitigations.
 
----
+We will acknowledge receipt within **3 business days** and keep you informed of progress.
 
-## Certifications prévues
-DigitalMeve vise les niveaux suivants :
-- ✅ **SHA-256 Hashing** — déjà implémenté
-- ✅ **Ed25519 Signatures** — déjà implémenté
-- 🔜 **ISO 27001 compliant workflows**
-- 🔜 **EU eIDAS compatible trust services**
+## Disclosure Policy
+
+- We follow **coordinated disclosure**:
+  - We validate, develop a fix, and prepare a release.
+  - We credit reporters (unless you prefer anonymity).
+  - We may request a short embargo until patches are available.
+
+## Hardening Notes
+
+- No user documents are stored by the project; proofs are generated locally.
+- Verification can run **offline**; no network dependency for core validation.
+- Design is compatible with: transparency logs (Merkle roots), key rotation, revocation lists.
+- Sidecar `.meve.json` avoids modifying original files; large files supported.
+
+## Development Security Hygiene
+
+- Mandatory CI checks: lint, tests, packaging.
+- `pre-commit` hooks recommended for contributors.
+- Dependencies are pinned via `pyproject.toml`; supply chain checks run in CI.
+
+Thank you for responsibly disclosing security issues. 🙏
