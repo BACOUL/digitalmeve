@@ -16,14 +16,39 @@ def verify_identity(identity: Union[str, Path]) -> bool:
 
 
 def _as_dict(proof: Any) -> Optional[Dict[str, Any]]:
-    """Accepte un dict ou une chaîne JSON et retourne un dict, sinon None."""
+    """
+    Accepte :
+      - un dict (retourné tel quel)
+      - une chaîne JSON
+      - un chemin de fichier (Path ou str) pointant vers un JSON
+    Retourne un dict ou None si l'entrée n'est pas exploitable.
+    """
+    # dict direct
     if isinstance(proof, dict):
         return proof
-    if isinstance(proof, (bytes, str)):
+
+    # chemin de fichier ?
+    if isinstance(proof, (str, Path)):
+        p = Path(proof)
+        if p.exists() and p.is_file():
+            try:
+                text = p.read_text(encoding="utf-8")
+                return json.loads(text)
+            except Exception:
+                return None
+        # sinon tenter de parser comme JSON inline
         try:
-            return json.loads(proof)
+            return json.loads(str(proof))
         except Exception:
             return None
+
+    # bytes -> JSON
+    if isinstance(proof, (bytes, bytearray)):
+        try:
+            return json.loads(proof.decode("utf-8"))
+        except Exception:
+            return None
+
     return None
 
 
@@ -71,5 +96,5 @@ def verify_meve(
     if obj.get("hash") != subject.get("hash_sha256"):
         return False, {"error": "Hash mismatch"}
 
-    # ✅ Succès : on renvoie le dict complet attendu par les tests
+    # ✅ Succès : renvoyer le dict complet (les tests l'utilisent)
     return True, obj
