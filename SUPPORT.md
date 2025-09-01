@@ -1,29 +1,24 @@
-# Support — DigitalMeve
+# 💬 Support — DigitalMeve
 
-If you need help, please follow this order of escalation:
+Thanks for using DigitalMeve! Here’s how to get help:
 
-1) **Docs**  
-   - [Overview](./docs/overview.md)  
-   - [Specification](./docs/specification.md)  
-   - [Verification Guide](./docs/verification-guide.md)  
-   - [Generator Guide](./docs/generator-guide.md)  
-   - [Security](./docs/security.md)  
-   - [Roadmap](./docs/roadmap.md)  
-   - [Examples](./docs/examples.md)
+## 📚 Documentation
+- Quickstart & guides: `docs/` in this repository
+- Spec & security: `docs/specification.md`, `docs/security.md`
 
-2) **Issues**  
-   - Bug reports: use **New issue → Bug report** and attach minimal repro (`*.meve.json` if possible).  
-   - Feature requests: use **New issue → Feature request** and outline API/CLI/UX.
+## 🐛 Bugs
+- Open a GitHub Issue with a minimal reproduction.
+- Use the **Bug report** template and include:
+  - OS / Python version
+  - `digitalmeve` version
+  - Steps to reproduce and sample files (no sensitive data)
 
-3) **Security**  
-   - For vulnerabilities, **do not** open a public issue.  
-   - Follow [SECURITY.md](./SECURITY.md) (private disclosure, ≤72h first response).
+## 💡 Feature requests
+- Open a **Feature request** issue or start a Discussion.
 
-4) **Discussions** (if enabled)  
-   - Q&A, design proposals, and community feedback.
+## 🔒 Security
+- **Do not** open public issues for vulnerabilities.
+- Follow our [Security Policy](SECURITY.md) and email **security@digitalmeve.com**.
 
-Response time targets (business days):  
-- General issues: **≤ 72h**  
-- Security reports: **≤ 72h (first response)**
-
-Thank you for helping us make `.MEVE` a trusted standard.
+## ⏱ SLA (community)
+- First response aim: **≤ 72h** (business days)
