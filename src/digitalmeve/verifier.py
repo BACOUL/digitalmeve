@@ -5,25 +5,18 @@ from pathlib import Path
 from typing import Any, Dict, Iterable, Optional, Tuple, Union
 
 
-# --------------------------------------------------------------------
-# Public API expected by tests
-# --------------------------------------------------------------------
-
 def verify_identity(identity: Union[str, Path]) -> bool:
     """
     Minimal identity check used by tests.
-
-    The tests consider an empty string invalid and a non-empty token
-    like 'ABC123' valid. So we return True for any non-empty string/path.
+    Empty string = invalid, any non-empty = valid.
     """
     if identity is None:
         return False
-    s = str(identity).strip()
-    return s != ""
+    return str(identity).strip() != ""
 
 
 def _as_dict(proof: Any) -> Optional[Dict[str, Any]]:
-    """Accept either a dict or a JSON string and return a dict (or None)."""
+    """Accept dict or JSON string and return a dict, else None."""
     if isinstance(proof, dict):
         return proof
     if isinstance(proof, (bytes, str)):
@@ -41,21 +34,11 @@ def verify_meve(
 ) -> Tuple[bool, Dict[str, str]]:
     """
     Validate a .meve proof structure.
-
-    Required top-level keys:
-      - meve_version (str)
-      - issuer (str)
-      - timestamp (str)
-      - subject (dict with filename/size/hash_sha256)
-      - hash (str)  # must equal subject.hash_sha256
-
-    Returns:
-        (True, {}) if valid
-        (False, {"error": "<reason>"}) if invalid
+    Returns (True, {}) if valid, (False, {"error": "<reason>"}) otherwise.
     """
     obj = _as_dict(proof)
     if not isinstance(obj, dict):
-        return False, {"error": "invalid proof"}
+        return False, {"error": "Invalid proof"}
 
     # Top-level required keys
     required: Iterable[str] = (
@@ -67,22 +50,22 @@ def verify_meve(
     )
     missing = [k for k in required if k not in obj]
     if missing:
-        return False, {"error": "missing required keys"}
+        return False, {"error": "Missing required keys"}
 
     subject = obj.get("subject")
     if not isinstance(subject, dict):
-        return False, {"error": "missing required keys"}
+        return False, {"error": "Missing required keys"}
 
     subj_required: Iterable[str] = ("filename", "size", "hash_sha256")
     if any(k not in subject for k in subj_required):
-        return False, {"error": "missing required keys"}
+        return False, {"error": "Missing required keys"}
 
     # Optional issuer check
     if expected_issuer is not None and obj.get("issuer") != expected_issuer:
-        return False, {"error": "issuer mismatch"}
+        return False, {"error": "Issuer mismatch"}
 
-    # Hash must mirror subject.hash_sha256
+    # Hash must equal subject.hash_sha256
     if obj.get("hash") != subject.get("hash_sha256"):
-        return False, {"error": "hash mismatch"}
+        return False, {"error": "Hash mismatch"}
 
     return True, {}
