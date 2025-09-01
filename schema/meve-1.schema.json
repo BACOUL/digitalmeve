@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DigitalMeve Proof Schema v1",
+  "type": "object",
+  "required": ["meve_version", "issuer", "timestamp", "subject", "hash"],
+  "properties": {
+    "meve_version": {
+      "type": "string",
+      "const": "1.0"
+    },
+    "issuer": {
+      "type": "string",
+      "minLength": 1
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "metadata": {
+      "type": "object"
+    },
+    "subject": {
+      "type": "object",
+      "required": ["filename", "size", "hash_sha256"],
+      "properties": {
+        "filename": {"type": "string"},
+        "size": {"type": "integer", "minimum": 0},
+        "hash_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      }
+    },
+    "hash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "preview_b64": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": true
+}
