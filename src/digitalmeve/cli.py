@@ -15,18 +15,30 @@ EXIT_ERR = 1
 
 
 def _parse_meta(items: list[str] | None) -> Dict[str, str]:
+    """Parse --meta key=value items into a dict."""
     meta: Dict[str, str] = {}
     for kv in items or []:
         if "=" not in kv:
-            print(f"[error] invalid --meta '{kv}', expected key=value", file=sys.stderr)
+            print(
+                f"[error] invalid --meta '{kv}', expected key=value",
+                file=sys.stderr,
+            )
             sys.exit(EXIT_ERR)
-        k, v = kv.split("=", 1)
-        meta[k.strip()] = v.strip()
+        key, val = kv.split("=", 1)
+        meta[key.strip()] = val.strip()
     return meta
 
 
-def _call_generate(file: Path, issuer: str, outdir: Path | None, meta: Dict[str, str] | None) -> Any:
-    """Call generate_meve in a backward-compatible way (meta optional)."""
+def _call_generate(
+    file: Path,
+    issuer: str,
+    outdir: Path | None,
+    meta: Dict[str, str] | None,
+) -> Any:
+    """
+    Call generate_meve with backward compatibility:
+    try with meta/outdir; on TypeError, retry without meta.
+    """
     kwargs: Dict[str, Any] = {"file_path": file, "issuer": issuer}
     if outdir is not None:
         kwargs["outdir"] = outdir
@@ -35,16 +47,14 @@ def _call_generate(file: Path, issuer: str, outdir: Path | None, meta: Dict[str,
     try:
         return generate_meve(**kwargs)  # type: ignore[arg-type]
     except TypeError:
-        # Fallback if older generate_meve doesn't support meta/outdir keywords
         kwargs.pop("meta", None)
         return generate_meve(**kwargs)  # type: ignore[arg-type]
 
 
-def _load_proof_from_path_or_json_file(p: Path) -> Dict[str, Any]:
-    if not p.exists():
-        raise FileNotFoundError(f"input not found: {p}")
-    # Always treat as JSON file on disk
-    text = p.read_text(encoding="utf-8")
+def _load_json_file(path: Path) -> Dict[str, Any]:
+    if not path.exists():
+        raise FileNotFoundError(f"input not found: {path}")
+    text = path.read_text(encoding="utf-8")
     return json.loads(text)
 
 
@@ -52,41 +62,58 @@ def _print_json(obj: Any) -> None:
     print(json.dumps(obj, ensure_ascii=False, indent=2))
 
 
+# ------------------------- subcommands -------------------------
+
+
 def _cmd_generate(args: argparse.Namespace) -> int:
     try:
         file = Path(args.file)
         outdir = Path(args.outdir) if args.outdir else None
         meta = _parse_meta(args.meta)
-        res = _call_generate(file=file, issuer=args.issuer, outdir=outdir, meta=meta)
+
+        result = _call_generate(
+            file=file,
+            issuer=args.issuer,
+            outdir=outdir,
+            meta=meta,
+        )
+
         # Accept both behaviors:
-        # - res is a dict (proof JSON) -> print it
-        # - res is a path to a written .meve.json -> load & print the JSON
-        if isinstance(res, (str, Path)):
-            proof_path = Path(res)
-            proof = json.loads(proof_path.read_text(encoding="utf-8"))
+        # - result is a dict (proof JSON)
+        # - result is a path to a written .meve.json
+        if isinstance(result, (str, Path)):
+            proof_path = Path(result)
+            proof = _load_json_file(proof_path)
             _print_json(proof)
         else:
-            _print_json(res)
+            _print_json(result)
         return EXIT_OK
+
     except Exception as exc:  # pragma: no cover
-        print(json.dumps({"ok": False, "error": str(exc)}), file=sys.stderr)
+        _print_json({"ok": False, "error": str(exc)})
         return EXIT_ERR
 
 
 def _cmd_verify(args: argparse.Namespace) -> int:
     try:
         target = Path(args.input)
-        # Load file JSON and pass to verify_meve (or path if your verifier expects a path)
-        try:
-            payload = _load_proof_from_path_or_json_file(target)
-            res = verify_meve(payload, expected_issuer=args.expected_issuer)  # type: ignore[arg-type]
-        except Exception:
-            # Fall back: pass the path directly (if your verifier expects a path)
-            res = verify_meve(target, expected_issuer=args.expected_issuer)  # type: ignore[arg-type]
 
-        # res may be a tuple (ok, info) or dict-like
-        ok = None
-        info = None
+        # Prefer passing the loaded JSON; if verifier needs a path, fallback.
+        try:
+            payload = _load_json_file(target)
+            res = verify_meve(  # type: ignore[arg-type]
+                payload,
+                expected_issuer=args.expected_issuer,
+            )
+        except Exception:
+            res = verify_meve(  # type: ignore[arg-type]
+                target,
+                expected_issuer=args.expected_issuer,
+            )
+
+        ok: bool
+        info: Any
+
         if isinstance(res, tuple) and len(res) == 2:
             ok, info = bool(res[0]), res[1]
         elif isinstance(res, dict):
@@ -98,6 +125,7 @@ def _cmd_verify(args: argparse.Namespace) -> int:
 
         _print_json({"ok": bool(ok), "info": info})
         return EXIT_OK if ok else EXIT_ERR
+
     except Exception as exc:  # pragma: no cover
         _print_json({"ok": False, "error": str(exc)})
         return EXIT_ERR
@@ -106,12 +134,13 @@ def _cmd_verify(args: argparse.Namespace) -> int:
 def _cmd_inspect(args: argparse.Namespace) -> int:
     try:
         proof_path = Path(args.input)
-        proof = _load_proof_from_path_or_json_file(proof_path)
-        # Normalize common fields
+        proof = _load_json_file(proof_path)
+
         status = proof.get("status") or proof.get("Status")
         issuer = proof.get("issuer") or proof.get("Issuer")
         issued_at = proof.get("issued_at") or proof.get("Issued_at")
         h = (proof.get("hash_sha256") or proof.get("Hash-SHA256") or "")[:16]
+
         meta = proof.get("meta") or {}
         name = meta.get("name") or meta.get("filename") or ""
         size = meta.get("size") or meta.get("length") or ""
@@ -127,9 +156,13 @@ def _cmd_inspect(args: argparse.Namespace) -> int:
         }
         _print_json(summary)
         return EXIT_OK
+
     except Exception as exc:  # pragma: no cover
         _print_json({"ok": False, "error": str(exc)})
         return EXIT_ERR
+
+
+# --------------------------- argparse --------------------------
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -140,10 +173,21 @@ def build_parser() -> argparse.ArgumentParser:
     sub = p.add_subparsers(dest="cmd", required=True)
 
     # generate
-    pg = sub.add_parser("generate", help="Generate a .meve proof for a file")
+    pg = sub.add_parser(
+        "generate",
+        help="Generate a .meve proof for a file",
+    )
     pg.add_argument("file", help="Source document path")
-    pg.add_argument("--issuer", required=True, help="Issuer identity (email or domain)")
-    pg.add_argument("--outdir", default=None, help="Output directory for <name>.meve.json")
+    pg.add_argument(
+        "--issuer",
+        required=True,
+        help="Issuer identity (email or domain)",
+    )
+    pg.add_argument(
+        "--outdir",
+        default=None,
+        help="Output directory for <name>.meve.json",
+    )
     pg.add_argument(
         "--meta",
         nargs="*",
@@ -153,13 +197,23 @@ def build_parser() -> argparse.ArgumentParser:
     pg.set_defaults(func=_cmd_generate)
 
     # verify
-    pv = sub.add_parser("verify", help="Verify a .meve proof")
+    pv = sub.add_parser(
+        "verify",
+        help="Verify a .meve proof",
+    )
     pv.add_argument("input", help="Path to .meve.json file")
-    pv.add_argument("--expected-issuer", default=None, help="Optional expected issuer")
+    pv.add_argument(
+        "--expected-issuer",
+        default=None,
+        help="Optional expected issuer",
+    )
     pv.set_defaults(func=_cmd_verify)
 
     # inspect
-    pi = sub.add_parser("inspect", help="Print a human-readable summary of a .meve proof")
+    pi = sub.add_parser(
+        "inspect",
+        help="Print a human-readable summary of a .meve proof",
+    )
     pi.add_argument("input", help="Path to .meve.json file")
     pi.set_defaults(func=_cmd_inspect)
 
