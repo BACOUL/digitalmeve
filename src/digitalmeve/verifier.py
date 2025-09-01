@@ -7,8 +7,8 @@ from typing import Any, Dict, Iterable, Optional, Tuple, Union
 
 def verify_identity(identity: Union[str, Path]) -> bool:
     """
-    Minimal identity check used by tests.
-    Empty string = invalid, any non-empty = valid.
+    Vérification minimale de l'identité utilisée par les tests.
+    Chaîne vide -> False ; toute chaîne non vide -> True.
     """
     if identity is None:
         return False
@@ -16,7 +16,7 @@ def verify_identity(identity: Union[str, Path]) -> bool:
 
 
 def _as_dict(proof: Any) -> Optional[Dict[str, Any]]:
-    """Accept dict or JSON string and return a dict, else None."""
+    """Accepte un dict ou une chaîne JSON et retourne un dict, sinon None."""
     if isinstance(proof, dict):
         return proof
     if isinstance(proof, (bytes, str)):
@@ -31,16 +31,19 @@ def verify_meve(
     proof: Any,
     *,
     expected_issuer: Optional[str] = None,
-) -> Tuple[bool, Dict[str, str]]:
+) -> Tuple[bool, Dict[str, Any]]:
     """
-    Validate a .meve proof structure.
-    Returns (True, {}) if valid, (False, {"error": "<reason>"}) otherwise.
+    Valide la structure d'une preuve .meve.
+
+    Retourne :
+      - (True, <dict de la preuve>) si valide
+      - (False, {"error": "<raison>"}) sinon
     """
     obj = _as_dict(proof)
     if not isinstance(obj, dict):
         return False, {"error": "Invalid proof"}
 
-    # Top-level required keys
+    # Clés obligatoires au niveau racine
     required: Iterable[str] = (
         "meve_version",
         "issuer",
@@ -60,12 +63,13 @@ def verify_meve(
     if any(k not in subject for k in subj_required):
         return False, {"error": "Missing required keys"}
 
-    # Optional issuer check
+    # Vérification optionnelle de l'émetteur
     if expected_issuer is not None and obj.get("issuer") != expected_issuer:
         return False, {"error": "Issuer mismatch"}
 
-    # Hash must equal subject.hash_sha256
+    # Cohérence du hash
     if obj.get("hash") != subject.get("hash_sha256"):
         return False, {"error": "Hash mismatch"}
 
-    return True, {}
+    # ✅ Succès : on renvoie le dict complet attendu par les tests
+    return True, obj
