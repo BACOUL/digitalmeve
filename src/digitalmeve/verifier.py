@@ -1,38 +1,46 @@
 from __future__ import annotations
 
+import json
 from pathlib import Path
-from typing import Any, Dict, Iterable, Optional, Tuple, Union
+from typing import Any, Dict, Iterable, Optional, Union
 
 
 # ---------------------------
 # Public API (imported by tests)
 # ---------------------------
 
-def verify_identity(path: Union[str, Path]) -> Tuple[bool, Dict[str, Any]]:
+def verify_identity(path: Union[str, Path]) -> bool:
     """
-    Trivial identity check used by smoke tests.
-
-    Returns:
-        (ok, info)
-        - ok=False and {"error": "invalid file"} if path is empty, a directory,
-          or does not exist.
-        - ok=True otherwise.
+    Very small sanity check used by tests.
+    Returns True for an existing file path, False otherwise.
     """
     if not path:
-        return False, {"error": "invalid file"}
+        return False
     p = Path(path)
     if not p.exists() or p.is_dir():
-        return False, {"error": "invalid file"}
-    return True, {"path": str(p)}
+        return False
+    return True
+
+
+def _as_dict(proof: Any) -> Optional[Dict[str, Any]]:
+    """Accept either a dict or a JSON string and return a dict, else None."""
+    if isinstance(proof, dict):
+        return proof
+    if isinstance(proof, (bytes, str)):
+        try:
+            return json.loads(proof)
+        except Exception:
+            return None
+    return None
 
 
 def verify_meve(
     proof: Any,
     *,
     expected_issuer: Optional[str] = None,
-) -> Tuple[bool, Dict[str, Any]]:
+) -> bool:
     """
-    Validate a .meve proof structure (dict).
+    Validate a .meve proof structure.
 
     Required top-level keys:
       - meve_version (str)
@@ -41,23 +49,12 @@ def verify_meve(
       - subject (dict with filename/size/hash_sha256)
       - hash (str)  # must equal subject.hash_sha256
 
-    Args:
-        proof: The candidate proof (should be a dict).
-        expected_issuer: If provided, must match proof["issuer"].
-
     Returns:
-        (ok, info)
-        - On failure, ok=False and info={"error": "..."} where the message is one
-          of:
-            * "Missing required keys"
-            * "issuer mismatch"
-            * "hash mismatch"
-            * "invalid proof"
-        - On success, ok=True and a small normalized payload is returned.
+        True if valid, False otherwise.
     """
-    # Must be a mapping
-    if not isinstance(proof, dict):
-        return False, {"error": "invalid proof"}
+    obj = _as_dict(proof)
+    if not isinstance(obj, dict):
+        return False
 
     required: Iterable[str] = (
         "meve_version",
@@ -66,32 +63,21 @@ def verify_meve(
         "subject",
         "hash",
     )
-    if any(k not in proof for k in required):
-        # NOTE: Capital M is important for the tests
-        return False, {"error": "Missing required keys"}
+    if any(k not in obj for k in required):
+        return False
 
-    subject = proof.get("subject")
+    subject = obj.get("subject")
     if not isinstance(subject, dict):
-        return False, {"error": "invalid proof"}
+        return False
 
     subj_required: Iterable[str] = ("filename", "size", "hash_sha256")
     if any(k not in subject for k in subj_required):
-        return False, {"error": "Missing required keys"}
+        return False
 
-    # issuer check (exact string compare)
-    if expected_issuer is not None and proof.get("issuer") != expected_issuer:
-        return False, {"error": "issuer mismatch"}
+    if expected_issuer is not None and obj.get("issuer") != expected_issuer:
+        return False
 
-    # hash check: top-level hash must mirror subject.hash_sha256
-    if proof.get("hash") != subject.get("hash_sha256"):
-        return False, {"error": "hash mismatch"}
+    if obj.get("hash") != subject.get("hash_sha256"):
+        return False
 
-    # All good — return a compact normalized view
-    return True, {
-        "issuer": proof["issuer"],
-        "meve_version": proof["meve_version"],
-        "filename": subject["filename"],
-        "size": subject["size"],
-        "hash": proof["hash"],
-        "timestamp": proof["timestamp"],
-    }
+    return True
