@@ -1,10 +1,10 @@
-# MEVE — Generator Guide (Developer)
+# ⚙️ MEVE — Generator Guide (Developer)
 
 This guide explains how to generate `.meve.json` proof files with **DigitalMeve**.
 
 ---
 
-## 1) Quick start (Python)
+## 🚀 1) Quick Start (Python)
 
 ```python
 from digitalmeve.core import generate_meve
@@ -22,7 +22,7 @@ Result (dict example):
   "subject": {
     "filename": "myfile.pdf",
     "size": 12345,
-    "hash_sha256": "abcdef123456...",
+    "hash_sha256": "abcdef123456..."
   },
   "hash": "abcdef123456...",
   "preview_b64": "..."
@@ -31,12 +31,10 @@ Result (dict example):
 
 ---
 
-2) Output file (sidecar)
+💾 2) Output File (Sidecar)
 
 By default, generate_meve only returns a Python dict.
-
-To save as file:
-
+To persist the proof on disk:
 
 meve = generate_meve("myfile.pdf", outdir="out", issuer="My Company")
 
@@ -47,38 +45,38 @@ out/myfile.pdf.meve.json
 
 ---
 
-3) Fields explanation
+🔎 3) Fields Explanation
 
-meve_version → current version ("1.0")
+meve_version → current spec version ("1.0")
 
 issuer → issuer name (Personal, Pro, or Official)
 
-timestamp → UTC ISO8601
+timestamp → UTC ISO8601 timestamp
 
-metadata → free key-value (optional)
+metadata → free key-value pairs (optional)
 
-subject → description of the certified file
+subject → description of the certified file:
 
 filename → original filename
 
 size → file size in bytes
 
-hash_sha256 → SHA-256 hash of file content
+hash_sha256 → SHA-256 hash of the file content
 
 
-hash → same as subject.hash_sha256 (top-level shortcut)
+hash → same as subject.hash_sha256 (shortcut)
 
-preview_b64 → short base64 preview (first bytes of file)
+preview_b64 → base64 preview of the first bytes of the file
 
 
 
 ---
 
-4) Error handling
+⚠️ 4) Error Handling
 
 File not found → FileNotFoundError
 
-Permission denied → standard Python OSError
+Permission denied → OSError
 
 Unsupported input type → TypeError if not str or Path
 
@@ -86,21 +84,19 @@ Unsupported input type → TypeError if not str or Path
 
 ---
 
-5) Best practices
+✅ 5) Best Practices
 
 Always generate the .meve.json immediately after finalizing a document.
 
-Store .meve.json in the same folder as the file.
+Store the .meve.json in the same folder as the original file.
 
-For Pro/Official issuers, use verified identity flow (coming soon).
+For Pro/Official issuers, use the verified identity flow (coming soon).
 
-Never modify .meve.json manually — any edit invalidates the proof.
+Never modify a .meve.json manually — any change invalidates the proof.
 
 
 
 ---
 
 📚 Next: Verification Guide
-📖 Full specification: Specification
-
----
+📖 Full Spec: Specification
