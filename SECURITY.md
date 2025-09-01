@@ -1,49 +1,51 @@
-# Security Policy
+# 🔒 Security Policy — DigitalMeve
 
-We take security seriously. Thank you for helping keep DigitalMeve, its users, and the ecosystem safe.
+We take security seriously at **DigitalMeve**.  
+If you discover a vulnerability, please follow the process below.
 
-## Supported Versions
+---
 
-| Version  | Status        |
-|----------|---------------|
-| 1.7.x    | ✔ Supported   |
-| < 1.7.0  | ✖ End-of-life |
+## 📢 Reporting a Vulnerability
 
-We backport only critical fixes.
+- Please **do not open a public issue** for security problems.  
+- Instead, send a private report to: **security@digitalmeve.com**  
+- Include as much detail as possible:
+  - Steps to reproduce
+  - Potential impact
+  - Suggested fix (if any)
 
-## How to Report a Vulnerability
+We will acknowledge receipt within **48 hours** and provide a status update within **5 business days**.
 
-**Please do not open public Issues for security reports.**
+---
 
-Use one of these private channels:
+## ✅ Supported Versions
 
-1. **GitHub Security Advisory** (preferred)  
-   - Go to the repository’s **Security** tab → **Advisories** → **Report a vulnerability**.
+We currently support the **latest stable release** only:  
 
-2. **Email**  
-   - Send details to **security@digitalmeve.com** (PGP optional).  
-   - Include: affected version(s), environment, steps to reproduce, PoC, impact, and any suggested mitigations.
+| Version   | Supported |
+|-----------|-----------|
+| 1.7.0     | ✅ Yes    |
+| < 1.7.0   | ❌ No     |
 
-We will acknowledge receipt within **3 business days** and keep you informed of progress.
+---
 
-## Disclosure Policy
+## 🛠 Our Commitment
 
-- We follow **coordinated disclosure**:
-  - We validate, develop a fix, and prepare a release.
-  - We credit reporters (unless you prefer anonymity).
-  - We may request a short embargo until patches are available.
+- We will confirm the vulnerability and assess severity.  
+- If confirmed, we will release a patch as quickly as possible.  
+- Credit will be given to the reporter (unless anonymity is requested).  
 
-## Hardening Notes
+---
 
-- No user documents are stored by the project; proofs are generated locally.
-- Verification can run **offline**; no network dependency for core validation.
-- Design is compatible with: transparency logs (Merkle roots), key rotation, revocation lists.
-- Sidecar `.meve.json` avoids modifying original files; large files supported.
+## 🚫 Out of Scope
 
-## Development Security Hygiene
+The following are **not considered vulnerabilities**:
+- Self-signed `.meve` proofs marked as **Personal**
+- Misconfigured third-party environments
+- Issues already documented in [README.md](./README.md)
 
-- Mandatory CI checks: lint, tests, packaging.
-- `pre-commit` hooks recommended for contributors.
-- Dependencies are pinned via `pyproject.toml`; supply chain checks run in CI.
+---
 
-Thank you for responsibly disclosing security issues. 🙏
+## 🙏 Thanks
+
+We greatly appreciate the security community for helping make **DigitalMeve** safer for everyone.
