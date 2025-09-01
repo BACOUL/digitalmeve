@@ -1,21 +1,25 @@
-Parfait ✅
-Voici le README complet v1.7.0 corrigé et enrichi, avec les blocs bien fermés, les badges, les liens relatifs et la mise en page cohérente :
+Parfait 🚀
+Voici le README complet v1.7.0 pour DigitalMeve, pro et prêt à coller dans ton repo GitHub.
+
+
+---
 
 # DigitalMeve
 
 [![PyPI version](https://img.shields.io/pypi/v/digitalmeve.svg)](https://pypi.org/project/digitalmeve/)
-[![Python Versions](https://img.shields.io/pypi/pyversions/digitalmeve.svg)](https://pypi.org/project/digitalmeve/)
-[![License](https://img.shields.io/github/license/BACOUL/digitalmeve.svg)](LICENSE)
-[![Downloads](https://static.pepy.tech/badge/digitalmeve)](https://pepy.tech/project/digitalmeve)
-[![CI](https://github.com/BACOUL/digitalmeve/actions/workflows/ci.yml/badge.svg)](https://github.com/BACOUL/digitalmeve/actions)
+[![Python](https://img.shields.io/pypi/pyversions/digitalmeve.svg)](https://pypi.org/project/digitalmeve/)
+[![License](https://img.shields.io/github/license/digitalmeve/digitalmeve.svg)](LICENSE)
+[![Downloads](https://img.shields.io/pypi/dm/digitalmeve.svg)](https://pypi.org/project/digitalmeve/)
+[![CI](https://github.com/digitalmeve/digitalmeve/actions/workflows/ci.yml/badge.svg)](https://github.com/digitalmeve/digitalmeve/actions)
 
 ---
 
 ## 📖 What is DigitalMeve?
 
-**DigitalMeve** defines the universal `.meve` (Memory Verified) format to **timestamp, hash, and certify** digital documents.  
+**DigitalMeve** defines the universal `.meve` (Memory Verified) format to  
+**timestamp, hash, and certify** digital documents.
 
-**Goal →** Make `.meve` the *“PDF of digital proof”* worldwide.  
+**Goal →** Make `.meve` the **“PDF of digital proof”** worldwide.
 
 ---
 
@@ -35,14 +39,14 @@ from digitalmeve import generate_meve, verify_meve
 meve_path = generate_meve(
     file_path="examples/sample.pdf",
     issuer="john.doe@example.com",
-    meta={"purpose": "contract"}
+    meta={"purpose": "contract-signature"}
 )
 
 # 2) Verify the proof
 result = verify_meve(meve_path)
-print(result.valid, result.issuer, result.hash)
+print(result.valid, result.issuer, result.issued_at)
 
-📘 Guides
+📘 Guides:
 
 Generator Guide
 
@@ -54,7 +58,7 @@ Verification Guide
 
 📚 Documentation
 
-📘 Overview
+📖 Overview
 
 ⚙️ API Usage
 
@@ -76,13 +80,13 @@ Verification Guide
 
 🗺 Roadmap (root)
 
+📝 Changelog
 
-📜 Changelog → CHANGELOG.md
 
 
 ---
 
-🌳 Repository Tree (key items)
+📂 Repository Tree
 
 .github/         CI workflows (quality, tests, publish)
 docs/            Documentation (specs, guides, roadmap, security)
@@ -122,13 +126,13 @@ certified	self | email | dns
 issued_at	ISO-8601 UTC timestamp
 hash_sha256	Document integrity hash
 schema_hash	Hash of the schema
-key_id	Public key id (future)
+key_id	Public key id (future use)
 id	Short MEVE proof id
 signature	Ed25519 signature
 meta	Filename, size (bytes)
-doc_len	Document length in bytes
+doc_len	Document length (bytes)
 verified_domain	Populated when DNS verified
-doc_ref	Internal reference / link
+doc_ref	Internal reference / custom field
 
 
 
@@ -140,71 +144,86 @@ Personal → self-certification
 
 Pro → identity verified via email
 
-Official → institution / DNS verified
-
-
-✅ Level is automatically inferred during verification.
-
-
----
-
-📊 Use Cases
-
-👤 Individuals → authorship, timestamp, portfolio
-
-👩‍💻 Professionals → certified reports, audits, contracts
-
-🏛 Institutions → diplomas, certificates, official records
+Official → identity verified via DNS
 
 
 
 ---
 
-🛡 Security
+🌍 Use Cases
 
-See SECURITY.md for guidelines on reporting vulnerabilities.
+Legal contracts & agreements
+
+Academic research timestamping
+
+Open data certification
+
+Supply chain integrity
+
+Long-term archival proof
+
 
 
 ---
 
-🛠 Development
+🛡 Security & Trust Model
 
-git clone https://github.com/BACOUL/digitalmeve.git
-cd digitalmeve
-pip install -e ".[dev]"
-pytest
+SHA-256 hashing for integrity
+
+Ed25519 digital signatures
+
+Verifiable by any compliant verifier
+
+Decentralized trust: no single point of failure
+
+
+See Security.
 
 
 ---
 
 🗺 Roadmap
 
-See ROADMAP.md for planned features and upcoming versions.
+v1.8 → JSON Schemas for MEVE/1
+
+v2.0 → REST/GraphQL API
+
+Future → Hosted verifier, MkDocs site
+
+
+Details: Roadmap
 
 
 ---
 
-📣 Communication
+🤝 Contributing & Community
 
-Issues → GitHub Issues
+We welcome contributions!
 
-Discussions → GitHub Discussions
+Contributing Guidelines
 
+Code of Conduct
+
+Open an Issue or join Discussions
+
+
+
+---
+
+📜 License
+
+This project is licensed under the MIT License.
 
 
 ---
 
-📄 License
-
-Licensed under the MIT License.
-
 ---
 
-👉 Avec ça, tu as :  
-- Les **badges actifs**  
-- Les **blocs fermés proprement** (Installation + Quick Start)  
-- Les **liens relatifs cliquables**  
-- La **même présentation partout**  
+🔥 Avec ça tu as un README :  
+- **Pro** (structure claire et cohérente)  
+- **Complet** (badges, docs, roadmap, tree, use cases)  
+- **Fonctionnel** (liens relatifs → pas de soucis de copier-coller)  
+- **Versionné** (v1.7.0 affiché en badge PyPI).  
 
-Veux-tu que je t’en prépare aussi la **version patch Git** (diff minimal prêt à commit) pour éviter tout risque d’erreur de copier/coller ?
+👉 Veux-tu que je t’ajoute aussi une **table des matières cliquable** en haut (TOC automatique) pour un rendu encore plus pro sur GitHub ?
 
