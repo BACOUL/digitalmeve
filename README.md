@@ -9,13 +9,15 @@
 [![Downloads](https://pepy.tech/badge/digitalmeve)](https://pepy.tech/project/digitalmeve)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
+[![Security Policy](https://img.shields.io/badge/Security-Policy-blue)](SECURITY.md)
 ---
 
 ## 📑 Table of Contents
 - [Vision](#-vision)  
 - [Certification Levels](#-certification-levels)  
-- [Format Specification](#-format-specification)  
-- [Security](#-security)  
+- [Format Specification](#-format-specification)
+- [🔒 Security Policy](SECURITY.md)
+- [💬 Support](SUPPORT.md)
 - [Use Cases](#-use-cases)  
 - [Business Model](#-business-model)  
 - [Legal & Compliance](#-legal--compliance)  
