@@ -1,9 +1,15 @@
-# Examples of MEVE usage
+# 📂 Examples of MEVE Usage
 
-## Example 1 — Basic file proof
-Input file: `contract.pdf`
+This document shows practical examples of how `.MEVE` proofs are generated, structured, and verified.
 
-Generated proof (`contract.pdf.meve.json`):
+---
+
+## 📝 Example 1 — Basic File Proof
+
+**Input file**: `contract.pdf`
+
+**Generated proof** (`contract.pdf.meve.json`):
+
 ```json
 {
   "meve_version": "1.0",
@@ -18,7 +24,7 @@ Generated proof (`contract.pdf.meve.json`):
   "metadata": {}
 }
 
-Verification:
+Verification (CLI):
 
 digitalmeve verify contract.pdf.meve.json
 ✔ Valid — hash and issuer verified
@@ -26,11 +32,11 @@ digitalmeve verify contract.pdf.meve.json
 
 ---
 
-Example 2 — With metadata
+🏞 Example 2 — With Metadata
 
 Input file: photo.jpg
 
-Proof snippet:
+Generated proof snippet:
 
 {
   "subject": {
@@ -44,16 +50,30 @@ Proof snippet:
   }
 }
 
+Metadata is optional and can include arbitrary key/value pairs.
+
 
 ---
 
-Example 3 — Professional certification
+👔 Example 3 — Professional Certification
 
 Issuer: DigitalMeve Pro Test Suite
 
 Proof includes:
 
+{
+  "issuer": "alice@company.com",
+  "issuer_level": "Pro",
+  "certified": "DigitalMeve (email)",
+  "signature": "..."
+}
+
 Verified email → issuer level = Pro
 
 Standard JSON with extra field "issuer_level": "Pro"
 
+
+
+---
+
+✅ These examples show how .MEVE can be used for personal proofs, enriched proofs with metadata, and professional-level certifications.
