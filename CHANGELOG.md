@@ -2,11 +2,79 @@
 
 All notable changes to this project will be documented here.
 
+# Changelog — DigitalMeve
+
+All notable changes to this project will be documented in this file.  
+Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and
+versions follow [Semantic Versioning](https://semver.org/).
+
+## [Unreleased]
+### Added
+- Documentation: expanded guides under `docs/` (API usage, generator guide, verification guide, overview, specification, security, roadmap, Pro/Official drafts, examples).
+- Project hygiene: `SECURITY.md`, improved issue/PR templates.
+- CI: stabilized quality/tests/publish workflows matrices.
+
+### Changed
+- README: professional structure with badges, quickstart, spec links.
+- Internal wording and consistency across docs (EN-first).
+
+### Fixed
+- Minor typos and broken links in docs.
+
 ---
-# Changelog
 
-All notable changes to this project will be documented in this file.
+## [1.7.0] — 2025-08-30
+### Added
+- `generate_meve(...)` now returns a richer dict including:
+  - `meve_version`, `issuer`, `timestamp`, `metadata`
+  - `subject` `{ filename, size, hash_sha256 }`
+  - top-level `hash` (duplicate of `subject.hash_sha256`)
+  - `preview_b64` (short base64 preview for quick checks)
+- Sidecar writing support: `outdir` parameter writes `<file>.meve.json`.
 
+### Changed
+- Verifier accepts dicts, JSON strings, bytes, or `*.meve.json` paths.
+- Error messages normalized: `"Missing required keys"`, `"Issuer mismatch"`, `"Hash mismatch"`, `"Invalid proof"`.
+
+### Fixed
+- Test suite alignment across Python 3.10/3.11/3.12.
+- CI workflow stability for parallel matrix runs.
+
+---
+
+## [1.6.1] — 2025-08-30
+### Fixed
+- Core: small robustness improvements in verifier input parsing.
+- Docs: initial README cleanup.
+
+---
+
+## [1.6.0] — 2025-08-30
+### Added
+- Initial public release on PyPI.
+- Basic generator & verifier functions.
+- GitHub Actions: quality, tests, and publish (OIDC) workflows.
+
+---
+
+## [1.5.0] — 2025-08-29
+### Added
+- Early docs and CI scaffolding.
+
+---
+
+## [1.0.0] — 2025-08-28
+### Added
+- Project bootstrap.
+
+---
+
+[Unreleased]: ../../compare/v1.7.0...HEAD
+[1.7.0]: ../../releases/tag/v1.7.0
+[1.6.1]: ../../releases/tag/v1.6.1
+[1.6.0]: ../../releases/tag/v1.6.0
+[1.5.0]: ../../releases/tag/v1.5.0
+[1.0.0]: ../../releases/tag/v1.0.0
 ## [1.7.0] - 2025-08-30
 ### Added
 - Polished generator & verifier (consistent keys, clearer error messages)
