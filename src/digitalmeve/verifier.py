@@ -96,5 +96,23 @@ def verify_meve(
     if obj.get("hash") != subject.get("hash_sha256"):
         return False, {"error": "Hash mismatch"}
 
+    # Validation JSON Schema optionnelle (souple)
+    try:
+        import jsonschema  # type: ignore
+
+        # repo_root = .../ (depuis .../src/digitalmeve/verifier.py)
+        repo_root = Path(__file__).resolve().parents[2]
+        schema_path = repo_root / "schema" / "meve-1.schema.json"
+        if schema_path.exists():
+            with schema_path.open("r", encoding="utf-8") as f:
+                schema = json.load(f)
+            try:
+                jsonschema.validate(instance=obj, schema=schema)
+            except jsonschema.ValidationError as e:  # type: ignore
+                return False, {"error": f"Schema validation failed: {e.message}"}
+    except Exception:
+        # jsonschema absent ou autre souci : on n'échoue pas, la validation reste best-effort
+        pass
+
     # ✅ Succès : renvoyer le dict complet (les tests l'utilisent)
     return True, obj
