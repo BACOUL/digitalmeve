@@ -15,3 +15,7 @@ dependencies = []
 
 [tool.setuptools.packages.find]
 where = ["src"]
+[project.scripts]
+digitalmeve = "digitalmeve.cli:main"
+digitalmeve-generate = "digitalmeve.cli:main_generate"
+digitalmeve-verify = "digitalmeve.cli:main_verify"
