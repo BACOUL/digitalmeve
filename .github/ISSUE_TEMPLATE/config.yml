@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 🔒 Security vulnerabilities
+    url: https://github.com/BACOUL/digitalmeve/security/policy
+    about: Please report security issues privately. Read our Security Policy.
+  - name: 📚 Documentation & questions
+    url: https://github.com/BACOUL/digitalmeve/discussions
+    about: Use Discussions for questions or general help.
