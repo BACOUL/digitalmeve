@@ -1,46 +1,51 @@
 # 🔐 Security Policy — DigitalMeve
 
 ## Supported Versions
-We support the **latest stable release** of DigitalMeve on PyPI.  
-Older versions may not receive security updates.
 
-| Version   | Supported          |
-|-----------|--------------------|
-| 1.7.0     | ✅ (current)       |
-| < 1.7.0   | ❌ (unsupported)   |
+| Version   | Supported |
+|-----------|-----------|
+| 1.7.x     | ✅ Yes    |
+| < 1.7     | ❌ No     |
+
+We only provide **security patches** for the latest stable release.
 
 ---
 
 ## Reporting a Vulnerability
-If you discover a security issue:
 
-- **Do NOT open a public issue.**
-- Please email us at: `security@digitalmeve.com`  
-- Include as much detail as possible (steps, logs, proof of concept).
+If you discover a security vulnerability, **please report it responsibly**:
 
-We commit to:
-- First response **within 72h**.
-- Status updates every 7 days until resolution.
-- Public disclosure only **after a fix is available**.
+- Email: [security@digitalmeve.com](mailto:security@digitalmeve.com)  
+- Expected first response: **within 72 hours**  
+- Do **not** disclose publicly until a fix or mitigation is available.  
+
+We follow **responsible disclosure practices**: early contact, private fix, coordinated release.
 
 ---
 
 ## Scope
-- Core library (`/src/digitalmeve/`)
-- CLI and verification tools
-- GitHub Actions workflows
-- Documentation website
+
+Covered by this policy:
+
+- Core library (`/src/digitalmeve`)
+- Reference CLI & API
+- Official documentation (`/docs`)
+- GitHub workflows (`.github/workflows`)
+
+Not in scope:
+
+- Third-party forks
+- Unofficial integrations
 
 ---
 
-## Out of Scope
-- Content of documents protected by `.meve` (we only certify hashes, not meaning).
-- Third-party integrations (unless officially maintained by DigitalMeve).
+## Best Practices for Users
+
+- Always use the **latest release** from PyPI.  
+- Verify `.meve.json` proofs with the **official verifier**.  
+- Never modify `.meve.json` manually.  
+- For sensitive integrations, run verification **offline** (no data upload).  
 
 ---
 
-## Responsible Disclosure
-We follow the principle of **coordinated disclosure**.  
-Please do not exploit vulnerabilities beyond what is necessary to prove them.
-
-🙏 Thank you for helping keep DigitalMeve safe for everyone.
+✍️ Maintained under DigitalMeve Security Team.
