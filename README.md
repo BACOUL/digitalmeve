@@ -11,94 +11,57 @@
 
 ---
 
-## 📖 Description  
-
-**DigitalMeve** defines the universal format **`.meve`** (Memory Verified) to **timestamp, hash and certify** any digital content.  
-
-✔ Existence proof (UTC timestamp)  
-✔ Integrity proof (SHA-256 hash)  
-✔ Issuer proof (Personal / Pro / Official)  
-
-👉 Goal: make `.meve` the **“PDF of digital proof”** worldwide.  
-
----
-
-## 📦 Installation  
-
-```bash
-pip install digitalmeve
-
+## 📑 Table of Contents
+- [Vision](#-vision)  
+- [Certification Levels](#-certification-levels)  
+- [Format Specification](#-format-specification)  
+- [Security](#-security)  
+- [Use Cases](#-use-cases)  
+- [Business Model](#-business-model)  
+- [Legal & Compliance](#-legal--compliance)  
+- [Roadmap](#-roadmap)  
+- [Documentation](#-documentation)  
+- [Contributing](#-contributing)  
+- [License](#-license)  
+- [Status](#-status)  
 
 ---
 
-📑 Table of Contents
+## 🚀 Vision  
 
-🚀 Vision
+DigitalMeve introduces **`.meve` (Memory Verified)**:  
+A lightweight and universal proof format ensuring in **2 seconds**:  
+1. Existence of a file at a given time.  
+2. Integrity of its exact bytes (SHA-256).  
+3. Authenticity of the issuer (Personal / Pro / Official).  
 
-🔑 Certification Levels
-
-📂 Format Specification
-
-🛡 Security
-
-📊 Use Cases
-
-📜 Roadmap
-
-📚 Documentation
-
-🛠 Contributing
-
-⚖ License
-
-✅ Status
-
-
+**Goal** → make `.meve` the **“PDF of digital proof”** worldwide.  
 
 ---
 
-🚀 Vision
+## 🔑 Certification Levels  
 
-A lightweight, universal file format proving in 2 seconds:
+- **Personal** → Self-certification (existence proof only).  
+- **Pro** → Verified email identity (professional / company).  
+- **Official** → Verified DNS / institutional domain.  
 
-1. The existence of a file at a given date.
-
-
-2. Its integrity (hash SHA-256).
-
-
-3. The authenticity of its issuer.
-
-
-
+⚡ Levels are **computed automatically** by the verifier (never user-declared).  
 
 ---
 
-🔑 Certification Levels
+## 📂 Format Specification  
 
-Personal → self-certification (free, existence only).
+See full spec → [docs/specification.md](./docs/specification.md)  
 
-Pro → verified professional email (paid).
-
-Official → verified DNS / institution (green badge).
-
-
-⚡ Levels are automatically computed by the verifier, never self-declared.
-
-
----
-
-📂 Format Specification
-
-Example of .meve.json:
-
+Minimal `.meve.json` structure:  
+```json
 {
   "meve_version": "1.0",
   "issuer": "Personal",
   "timestamp": "2025-08-30T12:34:56Z",
   "subject": {
-    "filename": "contract.pdf",
-    "size": 52344,
+    "filename": "sample.pdf",
+    "size": 12345,
     "hash_sha256": "abcd1234..."
   },
   "hash": "abcd1234...",
@@ -106,93 +69,95 @@ Example of .meve.json:
   "preview_b64": "..."
 }
 
-📖 Full spec → Specification
-
 
 ---
 
 🛡 Security
 
-Tamper-proof → any byte change invalidates the proof.
+Tamper-proof → any byte change invalidates the hash.
 
-Verifier-first → runs locally (CLI / Python / browser WASM).
+Verifier → works offline, CLI or browser (no forced upload).
 
-Transparency log → prevents backdating.
+Transparency log → prevents backdating (future).
 
-Sidecar JSON → scalable for large files (>50 MB).
+Fallback → .meve.json sidecar for large files (>50MB).
 
 
-📖 Details → Security
+More details → docs/security.md
 
 
 ---
 
 📊 Use Cases
 
-👤 Individuals
+Individuals
 
 Proof of authorship (art, manuscripts).
 
+Timestamp for personal agreements.
+
 Insurance evidence (photos/videos).
 
-Personal agreements.
 
+Professionals
 
-👔 Professionals
-
-Certified invoices & contracts.
+Certified invoices, contracts, designs.
 
 Intellectual property pre-proof.
 
-Developer code signing.
+Legal & compliance archives.
 
 
-🏛 Institutions
+Institutions
 
-Diplomas & academic records.
+Universities → certified diplomas.
 
-Legal contracts & court decisions.
+Governments → official documents.
 
-Official documents.
+Courts / notaries → judgments & contracts.
 
 
-📖 See → Examples
+Examples → docs/examples.md
 
 
 ---
 
-📜 Roadmap
+💰 Business Model
 
-Phase 1 (MVP, ✅ in progress)
+Free → Individuals (Personal level).
 
-.meve Generator (Python CLI + SDK).
+Pro (paid) → Email/domain verified (API, dashboard).
 
-.meve Verifier (CLI, web prototype).
-
-SHA-256 + timestamp + issuer.
+Official (licensed) → Institutions (DNS, SLA).
 
 
-Phase 2 (next 6 months)
-
-Pro email verification.
-
-Official DNS verification.
-
-Certified PDF export.
-
-Public API.
+KPIs → verifications/day, invalid proofs detected, verified domains, TTFV (Time-to-first-verify).
 
 
-Phase 3 (1–2 years)
+---
 
-International standardization (ISO/AFNOR).
+⚖ Legal & Compliance
 
-ERP/CRM/university integrations.
+eIDAS / ESIGN → .meve = integrity & existence proof, not a qualified e-signature.
 
-Open-source desktop/mobile verifier.
+RGPD/GDPR → no storage of documents, only minimal metadata.
+
+CGU/AUP → no illegal or harmful content.
 
 
-📖 Full roadmap → Roadmap
+
+---
+
+🗺 Roadmap
+
+See docs/roadmap.md
+
+Phase 1 (MVP) → generator + verifier, SHA-256, timestamp.
+
+Phase 2 → Pro email verification, Official DNS verification, certified PDF export.
+
+Phase 3 → International standardization, ERP/CRM/university integration.
+
 
 
 ---
@@ -201,17 +166,15 @@ Open-source desktop/mobile verifier.
 
 Overview
 
-API Usage
-
-Generator Guide
-
-Verification Guide
-
 Specification
 
 Security
 
 Examples
+
+Generator Guide
+
+Verification Guide
 
 Pro Verification
 
@@ -223,15 +186,13 @@ Official Verification
 
 🛠 Contributing
 
-We welcome contributions!
+See → CONTRIBUTING.md
 
-See Contributing
+Open issues for bugs or features.
 
-Follow Code of Conduct
+Submit PRs with tests & lint passing.
 
-Report issues → Bug report
-
-Suggest features → Feature request
+Follow coding standards (Black, Flake8, pytest).
 
 
 
@@ -239,7 +200,7 @@ Suggest features → Feature request
 
 ⚖ License
 
-This repository is licensed under the MIT License.
+Licensed under the MIT License.
 See LICENSE.
 
 
@@ -249,15 +210,13 @@ See LICENSE.
 
 Current version: 1.7.0
 
-Releases: GitHub Releases
+Release page: Releases
 
-PyPI: digitalmeve
+Tests: 
 
 
-
----
-
-🌟 DigitalMeve — Trust in every file.
 
 ---
+
+✍️ DigitalMeve — “The PDF of Digital Proof”
 
