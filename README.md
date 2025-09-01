@@ -1,10 +1,19 @@
-Parfait 🙌
-Voici le README complet enrichi (v1.7.0, anglais) avec une présentation professionnelle, cohérente et tous les liens cliquables. Tu peux le coller tel quel dans ton repo GitHub, le rendu sera clair et homogène du haut en bas.
+Parfait 🙌 merci pour la confirmation.
+Voici le README complet enrichi v1.7.0 avec :
+
+✅ Badges dynamiques absolus
+
+✅ Version indiquée dans le titre
+
+✅ Tous les liens docs en relatif cliquable
+
+✅ Structure cohérente (v9 enrichie + homogénéisée)
+
 
 
 ---
 
-# 🌍 DigitalMeve — The .MEVE Standard
+# 🌍 DigitalMeve — The .MEVE Standard (v1.7.0)
 
 [![Quality](https://github.com/BACOUL/digitalmeve/actions/workflows/quality.yml/badge.svg?branch=main)](https://github.com/BACOUL/digitalmeve/actions/workflows/quality.yml)
 [![Tests](https://github.com/BACOUL/digitalmeve/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/BACOUL/digitalmeve/actions/workflows/tests.yml)
@@ -12,20 +21,20 @@ Voici le README complet enrichi (v1.7.0, anglais) avec une présentation profess
 [![PyPI - Version](https://img.shields.io/pypi/v/digitalmeve.svg?label=DigitalMeve&logo=pypi)](https://pypi.org/project/digitalmeve/)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/digitalmeve.svg?logo=python&label=Python)](https://pypi.org/project/digitalmeve/)
 [![Downloads](https://pepy.tech/badge/digitalmeve)](https://pepy.tech/project/digitalmeve)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/BACOUL/digitalmeve/blob/main/LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 ---
 
-## 📖 Overview
+## 📖 What is DigitalMeve?
 
-**DigitalMeve** defines the universal format **`.meve`** (*Memory Verified*).  
+**DigitalMeve** defines the universal **`.meve`** (*Memory Verified*) format.  
 A `.meve` file certifies in **2 seconds**:
 
 1. 📌 The **existence** of a document at a specific time  
 2. 🔐 The **integrity** of the document (via SHA-256)  
 3. ✅ The **authenticity** of the issuer (Personal / Pro / Official)  
 
-👉 **Goal**: Make `.meve` the *“PDF of digital proof”* worldwide.  
+👉 **Goal** → Make `.meve` the *“PDF of digital proof”* worldwide.  
 
 ---
 
@@ -52,7 +61,7 @@ meve_path = generate_meve(
 result = verify_meve(meve_path)
 print(result.valid, result.issuer, result.hash)
 
-📘 Guides:
+📘 Guides
 
 Generator Guide
 
@@ -94,8 +103,8 @@ Verification Guide
 
 📂 Repository Tree
 
-.github/                 → CI workflows (quality, tests, publish)
-docs/                    → Documentation (specs, guides, roadmap, security)
+.github/                 → Workflows CI/CD (quality, tests, publish)
+docs/                    → Documentation (specifications, guides…)
 examples/                → Usage examples
 schema/                  → JSON Schemas (MEVE/1) ← planned in v1.8
 src/digitalmeve/         → Core library (generator / verifier)
@@ -126,19 +135,19 @@ requirements.txt
 
 Field	Meaning / Notes
 
-status	Personal / Pro / Official
+status	Personal ｜ Pro ｜ Official
 issuer	Email or domain
-certified	self / email / dns (authenticity method)
+certified	self ｜ email ｜ dns
 issued_at	ISO-8601 UTC timestamp
 hash_sha256	Document integrity hash
-schema_hash	Hash of schema manifest
-key_id	Public key ID (future: HSM/KMS)
-id	Short MEVE proof ID
+schema_hash	Hash of the schema used
+key_id	Public key id (future use)
+id	Short MEVE proof id
 signature	Ed25519 signature (planned)
-meta	Filename, size, MIME type
-doc_len	Document length (bytes)
-verified_domain	Populated when DNS verification is used
-doc_ref	Internal reference / pointer
+meta	Filename, size (bytes), purpose, …
+doc_len	Document length in bytes
+verified_domain	Populated when DNS-verified
+doc_ref	Internal reference / cross-link
 
 
 📑 Full specification → Specification
@@ -155,30 +164,12 @@ doc_ref	Internal reference / pointer
 🟩 Official → DNS-verified institution
 
 
-✔ Levels are automatically computed by the verifier.
+✔ The certification level is always computed automatically.
 
 
 ---
 
-🛡 Security
-
-🔐 Tamper-proof: any modification invalidates the proof
-
-⚡ Offline verification (CLI / WASM planned)
-
-📦 Sidecar .meve.json for large files
-
-🌳 Transparency log (Merkle root, planned)
-
-🛑 Clear error messages
-
-
-See Security Policy
-
-
----
-
-📊 Use Cases
+🧩 Use Cases
 
 👤 Individuals
 
@@ -202,6 +193,24 @@ Governments → official documents
 
 Courts → legal contracts, judgments
 
+
+
+---
+
+🛡 Security
+
+🔐 Tamper-proof: any modification invalidates the proof
+
+⚡ Offline verification (CLI / WASM planned)
+
+📦 Sidecar .meve.json for large files
+
+🌳 Transparency log (Merkle root, planned)
+
+🛑 Explicit error messages
+
+
+See SECURITY.md
 
 
 ---
@@ -288,11 +297,11 @@ See LICENSE for details.
 
 ---
 
-🔥 Ce README est :  
-- **Complet** (toutes les sections présentes)  
-- **Enrichi** (emojis, meilleure lisibilité)  
-- **Cohérent** du haut en bas  
-- Avec des **liens 100 % cliquables**  
+✅ Avec cette version tu as :  
+- Les **badges dynamiques** (qualité, tests, publish, PyPI, downloads, license)  
+- La **version** dans le titre  
+- Les **liens docs relatifs** (donc cliquables sur GitHub)  
+- Une structure enrichie et homogène  
 
-👉 Tu veux que je t’en génère aussi une **version française parallèle (README.fr.md)**, pour un repo bilingue ?
+👉 Tu veux que je t’en génère aussi directement le fichier `README.md` prêt à déposer dans ton repo ?
 
