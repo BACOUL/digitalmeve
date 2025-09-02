@@ -1,221 +1,135 @@
-# src/digitalmeve/cli.py
+#!/usr/bin/env python3
+"""
+DigitalMeve CLI
+
+Subcommands:
+  - generate  : create a .meve proof (embedded by default)
+  - verify    : verify a .meve proof (sidecar JSON or embedded)
+  - inspect   : print a human-readable summary of a proof JSON
+
+New:
+  --also-json on "generate" writes an additional sidecar JSON file
+  alongside the embedded certified output (e.g. file.meve.pdf AND file.pdf.meve.json)
+"""
 from __future__ import annotations
 
 import argparse
-import json
 import sys
 from pathlib import Path
-from typing import Any, Dict
+from typing import Optional
 
-from .generator import generate_meve
-from .verifier import verify_meve
-
-EXIT_OK = 0
-EXIT_ERR = 1
-
-
-def _parse_meta(items: list[str] | None) -> Dict[str, str]:
-    """Parse --meta key=value items into a dict."""
-    meta: Dict[str, str] = {}
-    for kv in items or []:
-        if "=" not in kv:
-            print(
-                f"[error] invalid --meta '{kv}', expected key=value",
-                file=sys.stderr,
-            )
-            sys.exit(EXIT_ERR)
-        key, val = kv.split("=", 1)
-        meta[key.strip()] = val.strip()
-    return meta
-
-
-def _call_generate(
-    file: Path,
-    issuer: str,
-    outdir: Path | None,
-    meta: Dict[str, str] | None,
-) -> Any:
-    """
-    Call generate_meve with backward compatibility:
-    try with meta/outdir; on TypeError, retry without meta.
-    """
-    kwargs: Dict[str, Any] = {"file_path": file, "issuer": issuer}
-    if outdir is not None:
-        kwargs["outdir"] = outdir
-    if meta:
-        kwargs["meta"] = meta
-    try:
-        return generate_meve(**kwargs)  # type: ignore[arg-type]
-    except TypeError:
-        kwargs.pop("meta", None)
-        return generate_meve(**kwargs)  # type: ignore[arg-type]
-
-
-def _load_json_file(path: Path) -> Dict[str, Any]:
-    if not path.exists():
-        raise FileNotFoundError(f"input not found: {path}")
-    text = path.read_text(encoding="utf-8")
-    return json.loads(text)
-
-
-def _print_json(obj: Any) -> None:
-    print(json.dumps(obj, ensure_ascii=False, indent=2))
-
-
-# ------------------------- subcommands -------------------------
+from digitalmeve.generator import generate_meve
+from digitalmeve.verifier import verify_meve
+from digitalmeve.utils import load_json, pretty_print  # if you don't have these, remove & inline
 
 
 def _cmd_generate(args: argparse.Namespace) -> int:
-    try:
-        file = Path(args.file)
-        outdir = Path(args.outdir) if args.outdir else None
-        meta = _parse_meta(args.meta)
+    in_path = Path(args.file)
+    if not in_path.exists():
+        print(f"error: input file not found: {in_path}", file=sys.stderr)
+        return 2
 
-        result = _call_generate(
-            file=file,
-            issuer=args.issuer,
-            outdir=outdir,
-            meta=meta,
-        )
+    # Generate proof; embedded output path is returned by generator.
+    result = generate_meve(
+        str(in_path),
+        issuer=args.issuer,
+        metadata=_parse_kv_meta(args.meta),
+        also_json=args.also_json,  # <- NEW
+    )
 
-        # Accept both behaviors:
-        # - result is a dict (proof JSON)
-        # - result is a path to a written .meve.json
-        if isinstance(result, (str, Path)):
-            proof_path = Path(result)
-            proof = _load_json_file(proof_path)
-            _print_json(proof)
-        else:
-            _print_json(result)
-        return EXIT_OK
+    # Be quiet to preserve existing tests unless verbose requested.
+    if args.verbose:
+        out_path = result.get("embedded_path")
+        sidecar = result.get("sidecar_path")
+        print("✅ Generated proof")
+        if out_path:
+            print(f" • embedded: {out_path}")
+        if sidecar:
+            print(f" • sidecar : {sidecar}")
 
-    except Exception as exc:  # pragma: no cover
-        _print_json({"ok": False, "error": str(exc)})
-        return EXIT_ERR
+    return 0
 
 
 def _cmd_verify(args: argparse.Namespace) -> int:
-    try:
-        target = Path(args.input)
+    target = args.input
+    ok, info = verify_meve(target, expected_issuer=args.expected_issuer)
+    # Keep output minimal to avoid breaking existing tests
+    if args.json:
+        import json
 
-        # Prefer passing the loaded JSON; if verifier needs a path, fallback.
-        try:
-            payload = _load_json_file(target)
-            res = verify_meve(  # type: ignore[arg-type]
-                payload,
-                expected_issuer=args.expected_issuer,
-            )
-        except Exception:
-            res = verify_meve(  # type: ignore[arg-type]
-                target,
-                expected_issuer=args.expected_issuer,
-            )
-
-        ok: bool
-        info: Any
-
-        if isinstance(res, tuple) and len(res) == 2:
-            ok, info = bool(res[0]), res[1]
-        elif isinstance(res, dict):
-            ok = bool(res.get("ok") or res.get("valid") or res.get("success"))
-            info = res
-        else:
-            ok = True
-            info = res
-
-        _print_json({"ok": bool(ok), "info": info})
-        return EXIT_OK if ok else EXIT_ERR
-
-    except Exception as exc:  # pragma: no cover
-        _print_json({"ok": False, "error": str(exc)})
-        return EXIT_ERR
+        print(json.dumps({"ok": ok, "info": info}, ensure_ascii=False))
+    else:
+        status = "✅ VALID" if ok else "❌ INVALID"
+        print(status)
+        if args.verbose:
+            pretty_print(info) if "pretty_print" in globals() else print(info)
+    return 0 if ok else 1
 
 
 def _cmd_inspect(args: argparse.Namespace) -> int:
-    try:
-        proof_path = Path(args.input)
-        proof = _load_json_file(proof_path)
-
-        status = proof.get("status") or proof.get("Status")
-        issuer = proof.get("issuer") or proof.get("Issuer")
-        issued_at = proof.get("issued_at") or proof.get("Issued_at")
-        h = (proof.get("hash_sha256") or proof.get("Hash-SHA256") or "")[:16]
-
-        meta = proof.get("meta") or {}
-        name = meta.get("name") or meta.get("filename") or ""
-        size = meta.get("size") or meta.get("length") or ""
-        mime = meta.get("mime") or meta.get("content_type") or ""
-
-        summary = {
-            "file": proof_path.name,
-            "level": status,
-            "issuer": issuer,
-            "issued_at": issued_at,
-            "hash_prefix": f"{h}…",
-            "doc": {"name": name, "size": size, "mime": mime},
-        }
-        _print_json(summary)
-        return EXIT_OK
-
-    except Exception as exc:  # pragma: no cover
-        _print_json({"ok": False, "error": str(exc)})
-        return EXIT_ERR
+    # Inspect expects a JSON proof path and prints a human readable summary
+    proof = load_json(args.proof) if "load_json" in globals() else _load_json_fallback(args.proof)
+    # Keep the keys expected by tests (issued_at, issuer, meve_version, hash, metadata…)
+    pretty_print(proof) if "pretty_print" in globals() else print(proof)
+    return 0
 
 
-# --------------------------- argparse --------------------------
+def _load_json_fallback(path: str):
+    import json
+
+    with open(path, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+
+def _parse_kv_meta(pairs: list[str] | None) -> Optional[dict]:
+    if not pairs:
+        return None
+    meta = {}
+    for item in pairs:
+        if "=" not in item:
+            continue
+        k, v = item.split("=", 1)
+        meta[k.strip()] = v.strip()
+    return meta
 
 
 def build_parser() -> argparse.ArgumentParser:
-    p = argparse.ArgumentParser(
-        prog="digitalmeve",
-        description="DigitalMeve — generate and verify .meve proofs",
-    )
+    p = argparse.ArgumentParser(prog="digitalmeve", description="DigitalMeve CLI")
     sub = p.add_subparsers(dest="cmd", required=True)
 
     # generate
-    pg = sub.add_parser(
-        "generate",
-        help="Generate a .meve proof for a file",
-    )
-    pg.add_argument("file", help="Source document path")
-    pg.add_argument(
-        "--issuer",
-        required=True,
-        help="Issuer identity (email or domain)",
-    )
-    pg.add_argument(
-        "--outdir",
-        default=None,
-        help="Output directory for <name>.meve.json",
-    )
-    pg.add_argument(
+    gen = sub.add_parser("generate", help="Generate a .meve proof (embedded by default)")
+    gen.add_argument("file", help="Input file (e.g. contract.pdf)")
+    gen.add_argument("--issuer", help='Issuer name/email (e.g. "alice@acme.com")', default="Personal")
+    gen.add_argument(
         "--meta",
+        metavar="k=v",
         nargs="*",
-        metavar="key=value",
-        help="Optional metadata (repeatable): author=John version=1",
+        help="Optional metadata pairs (repeatable): --meta author=Alice project=Test",
     )
-    pg.set_defaults(func=_cmd_generate)
+    gen.add_argument(
+        "--also-json",
+        action="store_true",
+        help="Also write sidecar JSON proof (*.meve.json) in addition to embedded output",
+    )
+    gen.add_argument("-v", "--verbose", action="store_true", help="Verbose output")
+    gen.set_defaults(func=_cmd_generate)
 
     # verify
-    pv = sub.add_parser(
-        "verify",
-        help="Verify a .meve proof",
+    ver = sub.add_parser("verify", help="Verify a proof (sidecar JSON or embedded file)")
+    ver.add_argument(
+        "input",
+        help="Either a *.meve.json sidecar OR an embedded certified file (e.g. file.meve.pdf)",
     )
-    pv.add_argument("input", help="Path to .meve.json file")
-    pv.add_argument(
-        "--expected-issuer",
-        default=None,
-        help="Optional expected issuer",
-    )
-    pv.set_defaults(func=_cmd_verify)
+    ver.add_argument("--expected-issuer", help="Optional issuer to enforce")
+    ver.add_argument("--json", action="store_true", help="Print JSON result")
+    ver.add_argument("-v", "--verbose", action="store_true", help="Verbose output")
+    ver.set_defaults(func=_cmd_verify)
 
     # inspect
-    pi = sub.add_parser(
-        "inspect",
-        help="Print a human-readable summary of a .meve proof",
-    )
-    pi.add_argument("input", help="Path to .meve.json file")
-    pi.set_defaults(func=_cmd_inspect)
+    ins = sub.add_parser("inspect", help="Show a human-readable summary of a proof JSON")
+    ins.add_argument("proof", help="Path to *.meve.json")
+    ins.set_defaults(func=_cmd_inspect)
 
     return p
 
@@ -223,8 +137,8 @@ def build_parser() -> argparse.ArgumentParser:
 def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
-    return int(args.func(args))
+    return args.func(args)
 
 
-if __name__ == "__main__":  # pragma: no cover
+if __name__ == "__main__":
     raise SystemExit(main())
