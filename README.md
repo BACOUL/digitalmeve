@@ -208,3 +208,8 @@ Future API endpoints (for Framer integration and external apps):
 - Published automatically to [PyPI](https://pypi.org/project/digitalmeve/)  
 - Workflow: version bump → tag → GitHub Actions → PyPI publish  
 - Full changelog available in [CHANGELOG.md](CHANGELOG.md)
+
+## 15. ⚖ License
+
+This project is licensed under the **MIT License**.  
+See the full text in [LICENSE](LICENSE).
