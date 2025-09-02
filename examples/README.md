@@ -1,50 +1,52 @@
 # 📂 DigitalMeve — Examples
 
-This folder contains **reproducible examples** of `.meve.json` proofs.
+This folder contains **example files** and their corresponding **.meve proofs**, as well as helper scripts to regenerate and verify them.
 
 ---
 
-## 1. Contract Proof
-Input file: `contract.pdf`  
-Generated proof: [`contract.pdf.meve.json`](contract.pdf.meve.json)
+## 📌 Structure
 
-Command used:
+examples/ ├── files/       # input demo files (PDF, JPG, etc.) ├── proofs/      # generated .meve proofs (.json) ├── make_examples.sh   # script to generate example proofs ├── verify_examples.sh # script to verify all example proofs └── README.md    # this file
+
+---
+
+## 🛠 Usage
+
+### 1. Generate proofs for example files
+
+Run:
+
 ```bash
-digitalmeve generate examples/contract.pdf --issuer "demo@digitalmeve.test" --outdir examples/
+./make_examples.sh
 
-Verification:
-
-digitalmeve verify examples/contract.pdf.meve.json --expected-issuer "demo@digitalmeve.test"
+This will create .meve.json proofs in the proofs/ folder for each file inside files/.
 
 
 ---
 
-2. Photo Proof
+2. Verify all generated proofs
 
-Input file: photo.jpg
-Generated proof: photo.jpg.meve.json
+Run:
 
-Command used:
+./verify_examples.sh
 
-digitalmeve generate examples/photo.jpg --issuer "alice@example.com" --outdir examples/
-
-
----
-
-3. Diploma Proof
-
-Input file: diploma.pdf
-Generated proof: diploma.pdf.meve.json
-
-Command used:
-
-digitalmeve generate examples/diploma.pdf --issuer "university@example.org" --outdir examples/
+This will check all .meve.json files inside proofs/ and show whether they are valid.
 
 
 ---
 
-🔄 Re-generate all proofs
+📖 Documentation
 
-You can re-generate all example proofs with:
+For detailed examples and explanation of the proof structure, see:
 
-bash scripts/make_examples.sh
+Examples Guide
+
+Specification
+
+Verification Guide
+
+
+
+---
+
+✅ With these scripts, anyone can generate and verify live examples of DigitalMeve proofs in just a few seconds.
