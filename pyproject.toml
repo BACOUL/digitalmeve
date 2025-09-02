@@ -1,34 +1,44 @@
 [build-system]
-requires = ["setuptools>=61.0"]
+requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "digitalmeve"
-version = "1.7.1-dev"
-description = "DigitalMeve library"
-authors = [
-  { name = "BACoul", email = "bacoul@example.com" }
-]
+version = "1.7.1.dev0"
+description = "DigitalMeve — The .MEVE Standard: timestamp, hash, and certify digital documents."
 readme = "README.md"
 requires-python = ">=3.10"
-# Pas de dépendances runtime pour l’instant
-dependencies = []
+license = { file = "LICENSE" }
+authors = [
+  { name = "DigitalMeve Team" }
+]
+keywords = ["proof", "verification", "hash", "timestamp", "json", "digitalmeve", "meve"]
+
+dependencies = [
+  "pikepdf>=9.0.0",      # Embedding MEVE proof into PDF metadata
+  "pillow>=10.0.0",      # (à venir) pour PNG embedding + image ops
+  "click>=8.1.7",        # CLI interface
+]
 
 [project.optional-dependencies]
-# Pour le dev local et la CI (tests + validation de schéma)
 dev = [
-  "pytest>=7",
-  "jsonschema>=4.0.0",
-]
-test = [
-  "pytest>=7",
-  "jsonschema>=4.0.0",
+  "pytest>=7.0",
+  "pytest-cov>=4.0",
+  "ruff>=0.4.0",
+  "black>=23.0",
+  "pre-commit>=3.3",
 ]
 
 [tool.setuptools.packages.find]
 where = ["src"]
 
-[project.scripts]
-digitalmeve = "digitalmeve.cli:main"
-digitalmeve-generate = "digitalmeve.cli:main_generate"
-digitalmeve-verify = "digitalmeve.cli:main_verify"
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.black]
+line-length = 88
+target-version = ["py310", "py311", "py312"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py310"
