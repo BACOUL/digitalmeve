@@ -84,3 +84,20 @@ digitalmeve generate path/to/file.pdf --issuer "Alice"
 digitalmeve verify path/to/file.pdf.meve.json --expected-issuer "Alice"
 
 digitalmeve inspect path/to/file.pdf.meve.json
+
+
+## 6. ✨ Features (Highlights)
+
+- **SHA-256 hashing** → guarantees file integrity.  
+- **Timestamp (UTC ISO-8601)** → proof of existence at a given time.  
+- **Issuer levels** →  
+  - *Personal*: self-certification.  
+  - *Pro*: email verified.  
+  - *Official*: DNS/institution verified.  
+- **JSON Schema validation** → all proofs are machine-verifiable against [`schemas/meve-1.schema.json`](schemas/meve-1.schema.json).  
+- **Metadata embedding** → free-form key/values (author, project, notes…).  
+- **Sidecar `.meve.json` files** → scalable for any file type or size.  
+- **CLI & Python API** → generate, verify, inspect proofs in seconds.  
+- **CI/CD ready** → tested with GitHub Actions (tests, quality, PyPI publish).
+
+- 
