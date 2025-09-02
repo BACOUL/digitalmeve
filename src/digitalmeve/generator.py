@@ -1,18 +1,20 @@
 from __future__ import annotations
 
-import json
 from base64 import b64encode
 from datetime import datetime, timezone
 from hashlib import sha256
 from pathlib import Path
-from typing import Any, Dict, Optional, Union
+from typing import Dict, Optional, Any, Union
+
+import json
+
 
 _MEVE_VERSION = "1.0"
-_PREVIEW_BYTES = 128  # Nombre d’octets pour l’aperçu
+_PREVIEW_BYTES = 128  # petite empreinte lisible pour debug/aperçu
 
 
 def _file_sha256(path: Path) -> str:
-    """Calcule le hash SHA-256 hexadécimal du fichier."""
+    """Retourne l’empreinte SHA-256 hexadécimale du fichier `path`."""
     h = sha256()
     with path.open("rb") as f:
         for chunk in iter(lambda: f.read(8192), b""):
@@ -21,13 +23,26 @@ def _file_sha256(path: Path) -> str:
 
 
 def _preview_b64(path: Path, limit: int = _PREVIEW_BYTES) -> str:
-    """Retourne un aperçu base64 des premiers octets du fichier."""
+    """
+    Retourne un aperçu base64 des `limit` premiers octets du fichier.
+
+    Paramètres
+    ----------
+    path : pathlib.Path
+        Chemin vers le fichier.
+    limit : int, défaut 128
+        Nombre d’octets lus pour l’aperçu.
+
+    Retour
+    ------
+    str
+        Chaîne base64 des premiers octets. Chaîne vide si échec.
+    """
     try:
         with path.open("rb") as f:
             head = f.read(limit)
         return b64encode(head).decode("ascii")
     except Exception:
-        # L’aperçu est optionnel ; si erreur, on renvoie vide
         return ""
 
 
@@ -38,39 +53,53 @@ def generate_meve(
     metadata: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
     """
-    Génère une preuve MEVE minimale pour un fichier donné.
+    Génère une preuve MEVE minimale (dictionnaire) pour un fichier donné.
 
-    Parameters
+    Étapes :
+    - Calcule le SHA-256 et un aperçu base64.
+    - Construit un dictionnaire conforme au schéma attendu.
+    - Écrit optionnellement un sidecar JSON `<filename>.meve.json`.
+
+    Paramètres
     ----------
     file_path : str | Path
-        Fichier à certifier.
-    outdir : str | Path | None, optional
-        Répertoire pour écrire le fichier `.meve.json`.
-    issuer : str, default "Personal"
-        Identité de l’émetteur.
+        Chemin du fichier source.
+    outdir : str | Path | None
+        Répertoire de sortie pour le JSON, si fourni.
+    issuer : str
+        Émetteur de la preuve (par défaut "Personal").
     metadata : dict | None
-        Métadonnées additionnelles.
+        Métadonnées optionnelles à inclure.
 
-    Returns
-    -------
+    Retour
+    ------
     dict
-        Preuve MEVE complète.
+        La structure MEVE générée.
     """
     path = Path(file_path)
     if not path.exists():
-        raise FileNotFoundError(f"file not found: {path}")
+        raise FileNotFoundError(f"Fichier introuvable: {path}")
 
-    # Calculs
+    # calculs de base
     content_hash = _file_sha256(path)
     preview = _preview_b64(path)
     ts = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
 
-    # Structure de preuve
+    # déterminer le statut
+    if "@" in issuer:
+        status = "Pro"
+        certified = "email"
+    else:
+        status = "Personal"
+        certified = "self"
+
     proof: Dict[str, Any] = {
         "meve_version": _MEVE_VERSION,
         "issuer": issuer,
         "issued_at": ts,
         "timestamp": ts,
+        "status": status,
+        "certified": certified,
         "metadata": metadata or {},
         "subject": {
             "filename": path.name,
@@ -79,14 +108,12 @@ def generate_meve(
         },
         "hash": content_hash,
         "preview_b64": preview,
-        # Champs avancés (vides par défaut pour compatibilité schéma)
         "verified_domain": "",
         "key_id": "",
         "signature": "",
         "doc_ref": "",
     }
 
-    # Écriture optionnelle sur disque
     if outdir is not None:
         out = Path(outdir)
         out.mkdir(parents=True, exist_ok=True)
