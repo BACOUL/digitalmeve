@@ -4,7 +4,7 @@ from pathlib import Path
 import json
 
 from digitalmeve.generator import generate_meve
-from digitalmeve.verifier import verify_proof
+from digitalmeve.verifier import verify_meve   # ✅ correction ici
 from digitalmeve.utils import pretty_print
 
 
@@ -34,7 +34,7 @@ def _cmd_verify(args: argparse.Namespace) -> int:
     with open(proof_file, "r", encoding="utf-8") as f:
         proof = json.load(f)
 
-    ok = verify_proof(proof)
+    ok = verify_meve(proof)   # ✅ correction ici
     if not ok:
         print("❌ Verification failed", file=sys.stderr)
         return 1
