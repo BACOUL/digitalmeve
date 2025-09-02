@@ -4,7 +4,7 @@
 """
 DigitalMeve CLI (MVP)
 Commands:
-  - generate <file> [--issuer "Alice"]
+  - generate <file> [--issuer "Alice"] [--outdir DIR]
   - verify <proof.json> [--expected-issuer "Alice"]
   - inspect <proof.json>
 """
@@ -17,11 +17,10 @@ import json
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, Tuple
+from typing import Any, Dict
 
 
-# ---------- small utils (avoid importing non-existing helpers) ----------
-
+# ---------- utils ----------
 
 def _now_iso() -> str:
     return datetime.now(timezone.utc).isoformat(timespec="seconds").replace(
@@ -38,7 +37,6 @@ def _sha256_of_file(path: Path) -> str:
 
 
 def _read_json_file(path: Path) -> Dict[str, Any]:
-    """Read JSON with nice errors for CLI UX."""
     if not path.exists():
         raise FileNotFoundError(f"proof file not found: {path}")
     text = path.read_text(encoding="utf-8").strip()
@@ -57,8 +55,7 @@ def _write_json_file(path: Path, data: Dict[str, Any]) -> None:
     )
 
 
-# ----------------------------- core actions -----------------------------
-
+# ---------- core ----------
 
 def _build_proof_for_file(src: Path, issuer: str) -> Dict[str, Any]:
     return {
@@ -79,14 +76,20 @@ def _cmd_generate(args: argparse.Namespace) -> int:
     issuer = args.issuer or "test@example.com"
     proof = _build_proof_for_file(src, issuer)
 
-    sidecar = Path(f"{src}.meve.json")
+    # si --outdir est donné, le proof.json va là-bas
+    if args.outdir:
+        outdir = Path(args.outdir)
+        outdir.mkdir(parents=True, exist_ok=True)
+        sidecar = outdir / f"{src.name}.meve.json"
+    else:
+        sidecar = Path(f"{src}.meve.json")
+
     try:
         _write_json_file(sidecar, proof)
-    except Exception as e:  # pragma: no cover (IO edge)
+    except Exception as e:
         print(f"error: cannot write proof: {e}", file=sys.stderr)
         return 2
 
-    # Print sidecar path on stdout so tests can capture it.
     print(str(sidecar))
     return 0
 
@@ -111,7 +114,6 @@ def _cmd_verify(args: argparse.Namespace) -> int:
         print(f"error: {e}", file=sys.stderr)
         return 2
 
-    # Minimal structural checks expected by tests
     required = ["meve_version", "issued_at", "issuer", "hash"]
     missing = [k for k in required if k not in proof]
     if missing:
@@ -126,16 +128,11 @@ def _cmd_verify(args: argparse.Namespace) -> int:
         )
         return 1
 
-    # If a sibling file exists (e.g., file.pdf for file.pdf.meve.json),
-    # re-check the hash for extra safety in tests.
     sib = _guess_sibling_file(path)
     if sib and sib.exists():
         actual = _sha256_of_file(sib)
         if actual != proof.get("hash"):
-            print(
-                "invalid proof: hash mismatch against sibling file",
-                file=sys.stderr,
-            )
+            print("invalid proof: hash mismatch", file=sys.stderr)
             return 1
 
     print("OK")
@@ -143,7 +140,6 @@ def _cmd_verify(args: argparse.Namespace) -> int:
 
 
 def _guess_sibling_file(proof_path: Path) -> Path | None:
-    # input like ".../file.pdf.meve.json" -> sibling ".../file.pdf"
     name = proof_path.name
     if name.endswith(".meve.json"):
         sibling = name[: -len(".meve.json")]
@@ -151,8 +147,7 @@ def _guess_sibling_file(proof_path: Path) -> Path | None:
     return None
 
 
-# ------------------------------- argparse -------------------------------
-
+# ---------- argparse ----------
 
 def _build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(prog="digitalmeve", add_help=True)
@@ -160,7 +155,8 @@ def _build_parser() -> argparse.ArgumentParser:
 
     g = sub.add_parser("generate", help="generate a .meve.json proof")
     g.add_argument("file", help="path to the input file")
-    g.add_argument("--issuer", default=None, help='issuer name, e.g. "Alice"')
+    g.add_argument("--issuer", default=None, help="issuer name, e.g. 'Alice'")
+    g.add_argument("--outdir", default=None, help="directory to save proof file")
     g.set_defaults(func=_cmd_generate)
 
     v = sub.add_parser("verify", help="verify a .meve.json proof")
@@ -168,7 +164,7 @@ def _build_parser() -> argparse.ArgumentParser:
     v.add_argument(
         "--expected-issuer",
         default=None,
-        help="optional issuer to enforce, e.g. 'Alice'",
+        help="optional issuer to enforce",
     )
     v.set_defaults(func=_cmd_verify)
 
@@ -185,5 +181,5 @@ def main(argv: list[str] | None = None) -> int:
     return args.func(args)
 
 
-if __name__ == "__main__":  # pragma: no cover
+if __name__ == "__main__":
     raise SystemExit(main())
