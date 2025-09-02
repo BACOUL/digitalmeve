@@ -71,8 +71,7 @@ proof = generate_meve("mydoc.pdf", issuer="Alice")
 ok, info = verify_meve("mydoc.pdf.meve.json", expected_issuer="Alice")
 print(ok, info)
 
----
-TL;DR → DigitalMeve = the **PDF of digital proof**: simple, portable, verifiable.
+✅ With .meve, you can prove existence, integrity, and authenticity of any digital file in seconds.
 
 ## 4. 📦 Installation
 
