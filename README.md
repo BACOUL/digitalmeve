@@ -67,3 +67,9 @@ from digitalmeve.verifier import verify_meve
 proof = generate_meve("mydoc.pdf", issuer="Alice")
 ok, info = verify_meve("mydoc.pdf.meve.json", expected_issuer="Alice")
 print(ok, info)
+
+## 4. 📦 Installation
+
+DigitalMeve is available on [PyPI](https://pypi.org/project/digitalmeve/) and requires **Python 3.10+**.  
+Install it with:
+pip install digitalmeve
