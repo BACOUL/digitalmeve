@@ -1,0 +1,15 @@
+#!/bin/bash
+set -e
+
+echo "Generating example MEVE proofs..."
+
+# Ensure proofs directory exists
+mkdir -p examples/proofs
+
+# Generate proofs for each sample file
+digitalmeve generate examples/files/contract.pdf -o examples/proofs/contract.pdf.meve.json
+digitalmeve generate examples/files/diploma.pdf -o examples/proofs/diploma.pdf.meve.json
+digitalmeve generate examples/files/invoice.pdf -o examples/proofs/invoice.pdf.meve.json
+digitalmeve generate examples/files/photo.jpg -o examples/proofs/photo.jpg.meve.json
+
+echo "✅ All example proofs generated in examples/proofs/"
