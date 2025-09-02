@@ -73,3 +73,14 @@ print(ok, info)
 DigitalMeve is available on [PyPI](https://pypi.org/project/digitalmeve/) and requires **Python 3.10+**.  
 Install it with:
 pip install digitalmeve
+
+## 5. ⚡ Quickstart (CLI)
+
+After installing, you can immediately generate and verify `.meve` proofs using the CLI.
+
+Generate a proof:
+digitalmeve generate path/to/file.pdf --issuer "Alice"
+
+digitalmeve verify path/to/file.pdf.meve.json --expected-issuer "Alice"
+
+digitalmeve inspect path/to/file.pdf.meve.json
