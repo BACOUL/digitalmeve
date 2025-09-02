@@ -1,0 +1,18 @@
+#!/bin/bash
+# verify_examples.sh
+# Verify all example proofs in examples/proofs/
+
+set -e
+
+echo "🔍 Verifying DigitalMeve example proofs..."
+echo
+
+for proof in proofs/*.meve.json; do
+  if [ -f "$proof" ]; then
+    echo "➡ Verifying $proof"
+    digitalmeve verify "$proof"
+    echo
+  fi
+done
+
+echo "✅ All proofs verified successfully."
