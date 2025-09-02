@@ -1,46 +1,36 @@
-diff --git a/src/digitalmeve/generator.py b/src/digitalmeve/generator.py
-@@
--    proof: Dict[str, Any] = {
--        "meve_version": _MEVE_VERSION,
--        "issuer": issuer,
--        "timestamp": ts,
--        "metadata": metadata or {},
--        "subject": {
--            "filename": path.name,
--            "size": path.stat().st_size,
--            "hash_sha256": content_hash,
--        },
--        # duplication utile et demandée par les tests
--        "hash": content_hash,
--        "preview_b64": preview,
--    }
-+    size_bytes = path.stat().st_size
-+    proof: Dict[str, Any] = {
-+        "meve_version": _MEVE_VERSION,
-+        "issuer": issuer,
-+        # champs exigés par le schéma
-+        "status": "Personal",
-+        "certified": "self",
-+        "issued_at": ts,
-+        "hash_sha256": content_hash,
-+        # info libre conforme au schéma (clé = meta)
-+        "meta": {
-+            **(metadata or {}),
-+            "filename": path.name,
-+            "size_bytes": size_bytes,
-+        },
-+        # compatibilité et infos supplémentaires utiles
-+        "timestamp": ts,  # laissé pour compat si utilisé ailleurs
-+        "subject": {
-+            "filename": path.name,
-+            "size": size_bytes,
-+            "hash_sha256": content_hash,
-+        },
-+        "hash": content_hash,       # doublon volontaire
-+        "preview_b64": preview,     # purement informatif
-+        # champs optionnels présents dans le schéma (vides par défaut)
-+        "verified_domain": "",
-+        "key_id": "",
-+        "signature": "",
-+        "doc_ref": "",
-+    }
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://digitalmeve.com/schemas/meve-1.schema.json",
+  "title": "MEVE/1 Proof",
+  "type": "object",
+  "required": ["status", "issuer", "certified", "issued_at", "hash_sha256"],
+  "properties": {
+    "status": { "type": "string", "enum": ["Personal", "Pro", "Official"] },
+    "issuer": { "type": "string", "minLength": 1 },
+    "certified": { "type": "string", "enum": ["self", "email", "dns"] },
+    "issued_at": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$",
+      "description": "UTC ISO-8601 with Z, no microseconds"
+    },
+    "hash_sha256": { "type": "string", "pattern": "^[0-9a-fA-F]{64}$" },
+    "meve_version": { "type": "string", "pattern": "^\\d+\\.\\d+$" },
+    "meta": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "filename": { "type": "string" },
+        "name": { "type": "string" },
+        "size_bytes": { "type": "integer", "minimum": 0 },
+        "size": { "type": "integer", "minimum": 0 },
+        "mime": { "type": "string" }
+      }
+    },
+    "doc_len": { "type": "integer", "minimum": 0 },
+    "verified_domain": { "type": "string" },
+    "key_id": { "type": "string" },
+    "signature": { "type": "string" },
+    "doc_ref": { "type": "string" }
+  },
+  "additionalProperties": true
+}
