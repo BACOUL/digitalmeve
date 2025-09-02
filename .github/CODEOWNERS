@@ -1,7 +1,9 @@
-# CODEOWNERS — DigitalMeve
-# These people will be automatically requested for review
-# when someone opens a pull request that affects the repo.
+# Propriétaires par défaut
+*                                   @BACoul
 
-*       @BACOUL
-/docs/* @BACOUL
-/src/*  @BACOUL
+# Dossiers critiques
+/src/digitalmeve/**                 @BACoul
+/tests/**                           @BACoul
+/.github/workflows/**               @BACoul
+/docs/**                            @BACoul
+/schemas/**                         @BACoul
