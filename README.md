@@ -61,7 +61,6 @@ CLI:
 `digitalmeve inspect mydoc.pdf.meve.json`  
 
 Python:  
-```python
 from digitalmeve.generator import generate_meve
 from digitalmeve.verifier import verify_meve
 
