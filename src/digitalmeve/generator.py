@@ -25,8 +25,17 @@ def _preview_b64(path: Path, limit: int = _PREVIEW_BYTES) -> str:
             head = f.read(limit)
         return b64encode(head).decode("ascii")
     except Exception:
-        # preview is optional
-        return ""
+        return ""  # preview is optional
+
+
+def _iso8601_z_now() -> str:
+    # ISO-8601 UTC with trailing Z and **no microseconds**
+    return (
+        datetime.now(timezone.utc)
+        .replace(microsecond=0)
+        .isoformat()
+        .replace("+00:00", "Z")
+    )
 
 
 def generate_meve(
@@ -39,13 +48,12 @@ def generate_meve(
     """
     Generate a minimal MEVE proof (as dict) for the given file.
 
-    - Computes SHA-256 hash and a base64 preview.
-    - Builds a dict with keys required by the test suite:
-        * meve_version, issuer, timestamp, metadata
-        * subject: { filename, size, hash_sha256 }
-        * hash (duplicate of subject.hash_sha256)
-        * preview_b64 (first bytes, informational)
-    - Optionally writes a sidecar JSON `<filename>.meve.json`.
+    Keys produced:
+      - meve_version, issuer, issued_at (ISO-8601 Z, no micros), metadata
+      - subject: { filename, size, hash_sha256 }
+      - hash (duplicate of subject.hash_sha256)
+      - preview_b64 (optional)
+      - timestamp (kept for backward-compat, same as issued_at)
     """
     path = Path(file_path)
     if not path.exists():
@@ -53,23 +61,24 @@ def generate_meve(
 
     content_hash = _file_sha256(path)
     preview = _preview_b64(path)
-    ts = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+    issued_at = _iso8601_z_now()
 
     proof: Dict[str, Any] = {
         "meve_version": _MEVE_VERSION,
         "issuer": issuer,
-        "timestamp": ts,
+        "issued_at": issued_at,   # <-- requis par les tests
+        "timestamp": issued_at,   # compat
         "metadata": metadata or {},
         "subject": {
             "filename": path.name,
             "size": path.stat().st_size,
             "hash_sha256": content_hash,
         },
-        "hash": content_hash,        # convenience duplicate
-        "preview_b64": preview,      # optional, not used by verification
+        "hash": content_hash,
+        "preview_b64": preview,
     }
 
-    # If an output directory is given, write there
+    # Écriture éventuelle d'un sidecar JSON
     if outdir is not None:
         out = Path(outdir)
         out.mkdir(parents=True, exist_ok=True)
@@ -78,7 +87,6 @@ def generate_meve(
         with outfile.open("w", encoding="utf-8") as f:
             json.dump(proof, f, ensure_ascii=False, separators=(",", ":"), indent=None)
 
-    # If user asked for a JSON sidecar next to the original file
     if also_json and outdir is None:
         outfile = path.with_name(f"{path.name}.meve.json")
         import json
