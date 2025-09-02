@@ -116,3 +116,15 @@ digitalmeve inspect path/to/file.pdf.meve.json
 - [Glossary](docs/glossary.md)  
 
 **Schema Reference:** [`MEVE/1 JSON Schema`](schemas/meve-1.schema.json)  
+
+## 8. 🧪 Examples (runnable)
+
+DigitalMeve provides reproducible examples to demonstrate `.meve` proofs in action.  
+
+Scripts included:  
+- `./examples/make_examples.sh` → generate sample proofs (invoice, photo, diploma).  
+- `./examples/verify_examples.sh` → verify all generated proofs.  
+
+Resources:  
+- [Examples folder](examples/)  
+- [Examples Guide](docs/examples.md)
