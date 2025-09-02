@@ -34,7 +34,6 @@ DigitalMeve already includes a strong foundation:
 
 ### 🔑 Main commands
 
-```bash
 # Generate a .meve.json proof
 digitalmeve generate path/to/file.pdf --issuer "Alice"
 
