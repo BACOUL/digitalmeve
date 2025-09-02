@@ -191,3 +191,13 @@ DigitalMeve defines three levels of certification:
 - Broad adoption across industries  
 
 📖 Full details → [docs/roadmap.md](docs/roadmap.md)
+
+## 13. 🌐 Web Integration (planned)
+
+Future API endpoints (for Framer integration and external apps):
+
+- **POST /api/generate** → upload file + issuer → returns `.meve.json` (not stored).  
+- **POST /api/verify** → submit proof JSON → returns `{ ok, info }`.  
+
+🔗 Schema reference → [schemas/meve-1.schema.json](schemas/meve-1.schema.json)  
+📦 PyPI package → [DigitalMeve on PyPI](https://pypi.org/project/digitalmeve/)
