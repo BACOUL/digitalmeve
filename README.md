@@ -202,15 +202,9 @@ Future API endpoints (for Framer integration and external apps):
 🔗 Schema reference → [schemas/meve-1.schema.json](schemas/meve-1.schema.json)  
 📦 PyPI package → [DigitalMeve on PyPI](https://pypi.org/project/digitalmeve/)
 
-## 14. 🛠 Development (Contribute)
+## 14. 📦 Releases
 
-Requirements: **Python 3.10+**
-
-Run checks locally:
-
-pre-commit run --all-files
-pytest -q
-
-Contribution guide → CONTRIBUTING.md |
-Code of Conduct → CODE_OF_CONDUCT.md |
-Security policy → SECURITY.md
+- Current version: **1.7.1-dev**  
+- Published automatically to [PyPI](https://pypi.org/project/digitalmeve/)  
+- Workflow: version bump → tag → GitHub Actions → PyPI publish  
+- Full changelog available in [CHANGELOG.md](CHANGELOG.md)
