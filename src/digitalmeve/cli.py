@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 """
 DigitalMeve CLI
-Subcommands:
-  - generate  : create a .meve proof (embedded by default)
-  - verify    : verify a .meve proof (sidecar JSON or embedded)
-  - inspect   : print a human-readable summary of a proof JSON
 
-New:
-  --also-json on "generate" writes an additional sidecar JSON file
-  alongside the embedded certified output (e.g. file.meve.pdf AND
-  file.pdf.meve.json)
+Subcommands:
+  - generate : create a .meve proof (embedded by default)
+  - verify   : verify a .meve proof (sidecar JSON or embedded)
+  - inspect  : print a human-readable summary of a proof JSON
+
+Options:
+  --outdir     : output directory for generated files
+  --also-json  : also write sidecar JSON (*.meve.json)
 """
 from __future__ import annotations
 
@@ -34,6 +34,7 @@ def _cmd_generate(args: argparse.Namespace) -> int:
         issuer=args.issuer,
         metadata=_parse_kv_meta(args.meta),
         also_json=args.also_json,
+        outdir=str(args.outdir) if args.outdir else None,
     )
 
     if args.verbose:
@@ -49,8 +50,7 @@ def _cmd_generate(args: argparse.Namespace) -> int:
 
 
 def _cmd_verify(args: argparse.Namespace) -> int:
-    target = args.input
-    ok, info = verify_meve(target, expected_issuer=args.expected_issuer)
+    ok, info = verify_meve(args.input, expected_issuer=args.expected_issuer)
     if args.json:
         print(json.dumps({"ok": ok, "info": info}, ensure_ascii=False))
     else:
@@ -71,7 +71,7 @@ def _cmd_inspect(args: argparse.Namespace) -> int:
 def _parse_kv_meta(pairs: list[str] | None) -> Optional[dict]:
     if not pairs:
         return None
-    meta = {}
+    meta: dict[str, str] = {}
     for item in pairs:
         if "=" not in item:
             continue
@@ -89,8 +89,8 @@ def build_parser() -> argparse.ArgumentParser:
     gen.add_argument("file", help="Input file (e.g. contract.pdf)")
     gen.add_argument(
         "--issuer",
-        help='Issuer name/email (e.g. "alice@acme.com")',
         default="Personal",
+        help='Issuer name/email (e.g. "alice@acme.com")',
     )
     gen.add_argument(
         "--meta",
@@ -101,7 +101,13 @@ def build_parser() -> argparse.ArgumentParser:
     gen.add_argument(
         "--also-json",
         action="store_true",
-        help="Also write sidecar JSON proof (*.meve.json)",
+        help="Also write sidecar JSON (*.meve.json)",
+    )
+    gen.add_argument(
+        "--outdir",
+        "-o",
+        type=Path,
+        help="Output directory for generated files",
     )
     gen.add_argument("-v", "--verbose", action="store_true", help="Verbose output")
     gen.set_defaults(func=_cmd_generate)
