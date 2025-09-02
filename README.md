@@ -128,3 +128,13 @@ Scripts included:
 Resources:  
 - [Examples folder](examples/)  
 - [Examples Guide](docs/examples.md)
+
+## 9. 🔑 Certification Levels
+
+DigitalMeve defines three levels of certification:
+
+- **Personal** → self-certification (existence proof only).  
+- **Pro** → email verified (identity linked to a real professional).  
+- **Official** → DNS verified / institution (official certification).  
+
+⚡ Certification level is always computed automatically by the verifier — impossible to forge.
