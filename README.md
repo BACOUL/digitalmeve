@@ -100,4 +100,19 @@ digitalmeve inspect path/to/file.pdf.meve.json
 - **CLI & Python API** → generate, verify, inspect proofs in seconds.  
 - **CI/CD ready** → tested with GitHub Actions (tests, quality, PyPI publish).
 
-- 
+## 7. 📚 Documentation
+
+- [Overview](docs/overview.md)  
+- [Specification](docs/specification.md)  
+- [Generator Guide](docs/generator-guide.md)  
+- [Verification Guide](docs/verification-guide.md)  
+- [API Usage](docs/API_USAGE.md)  
+- [Security](docs/security.md)  
+- [Examples](docs/examples.md)  
+- [Pro Verification](docs/PRO.md)  
+- [Official Verification](docs/OFFICIAL.md)  
+- [Roadmap](docs/roadmap.md)  
+- [FAQ](docs/faq.md)  
+- [Glossary](docs/glossary.md)  
+
+**Schema Reference:** [`MEVE/1 JSON Schema`](schemas/meve-1.schema.json)  
