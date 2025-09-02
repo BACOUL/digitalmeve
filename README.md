@@ -168,3 +168,26 @@ DigitalMeve defines three levels of certification:
   - Universities → certified diplomas and transcripts.  
   - Governments → official documents, tenders, and policies.  
   - Courts & notaries → legal contracts, rulings, and certified archives.
+
+## 12. 🚀 Roadmap (snapshot)
+
+**Phase 1 — MVP (30 days)**  
+✅ Generator & Verifier (CLI + PyPI)  
+✅ GitHub CI/CD Workflows  
+✅ JSON Schema v1  
+🚧 FAQ + Glossary  
+🚧 Examples + scripts  
+
+**Phase 2 — 6 months**  
+- Pro verification (email magic link)  
+- Official verification (DNS challenge)  
+- Certified PDF export  
+- Public API SaaS  
+
+**Phase 3 — 1–2 years**  
+- International standardization  
+- ERP/CRM integrations  
+- Transparency log (Merkle root)  
+- Broad adoption across industries  
+
+📖 Full details → [docs/roadmap.md](docs/roadmap.md)
