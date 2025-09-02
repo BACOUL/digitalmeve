@@ -44,21 +44,26 @@ digitalmeve verify file.pdf.meve.json --expected-issuer "Alice"
 digitalmeve inspect file.pdf.meve.json
 
 ## 3. 📖 Description / TL;DR
+3. 📖 Description / TL;DR
 
-**DigitalMeve** defines the universal format **`.meve`** (Memory Verified) to **timestamp, hash, and certify** digital documents. 👉 The goal: make `.meve` the **“PDF of digital proof”** worldwide.  
+**DigitalMeve** defines the universal format **.meve** (Memory Verified) to **timestamp, hash, and certify** digital documents.  
+👉 The goal: make **.meve** the **“PDF of digital proof”** worldwide.
 
-**Why `.meve`?**  
+### Why `.meve`?
+
 - **Existence** → prove a file existed at a given date.  
 - **Integrity** → SHA-256 hash, any change = invalid.  
 - **Authenticity** → issuer is always visible (Personal / Pro / Official).  
 - **Metadata** → optional key/values (author, project, contract ID…).  
 - **Portable** → lightweight JSON sidecar (`file.pdf.meve.json`).  
 
-**Quick Usage (CLI & Python)**  
-CLI:  
-`digitalmeve generate mydoc.pdf --issuer "Alice"`  
-`digitalmeve verify mydoc.pdf.meve.json --expected-issuer "Alice"`  
-`digitalmeve inspect mydoc.pdf.meve.json`  
+### Quick Usage (CLI & Python)
+
+**CLI:**
+```bash
+digitalmeve generate mydoc.pdf --issuer "Alice"
+digitalmeve verify mydoc.pdf.meve.json --expected-issuer "Alice"
+digitalmeve inspect mydoc.pdf.meve.json
 
 from digitalmeve.generator import generate_meve
 from digitalmeve.verifier import verify_meve
