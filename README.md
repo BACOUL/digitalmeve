@@ -152,3 +152,19 @@ DigitalMeve defines three levels of certification:
   - Offline verification: `signature` is checked against the file hash + proof manifest using the public key (`key_id`).  
 - **Transparency-ready** → compatible with future transparency logs (Merkle tree roots periodically published).  
 - **Disclosure & contact** → security guidance and reporting process in [SECURITY.md](SECURITY.md).
+
+## 11. 📊 Use Cases
+
+- **🧑 Individuals**  
+  - Proof of authorship (artworks, photos, manuscripts, ideas).  
+  - Timestamped evidence (insurance claims, personal agreements).  
+
+- **👔 Professionals**  
+  - Certified invoices, contracts, and designs.  
+  - Intellectual property pre-proof and audits.  
+  - API integration for automated workflows.  
+
+- **🏛 Institutions**  
+  - Universities → certified diplomas and transcripts.  
+  - Governments → official documents, tenders, and policies.  
+  - Courts & notaries → legal contracts, rulings, and certified archives.
