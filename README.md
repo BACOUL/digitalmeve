@@ -60,7 +60,7 @@ digitalmeve inspect file.pdf.meve.json
 ### Quick Usage (CLI & Python)
 
 **CLI:**
-```bash
+
 digitalmeve generate mydoc.pdf --issuer "Alice"
 digitalmeve verify mydoc.pdf.meve.json --expected-issuer "Alice"
 digitalmeve inspect mydoc.pdf.meve.json
