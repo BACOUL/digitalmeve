@@ -138,3 +138,17 @@ DigitalMeve defines three levels of certification:
 - **Official** → DNS verified / institution (official certification).  
 
 ⚡ Certification level is always computed automatically by the verifier — impossible to forge.
+
+## 10. 🛡 Security (Essentials)
+
+- **Hashing (SHA-256)** → ensures the file’s fingerprint is unique and tamper-proof.  
+- **Immutability** → any change in the original file immediately invalidates the `.meve` proof.  
+- **Schema validation** → every proof is checked against the official [MEVE/1 JSON Schema](schemas/meve-1.schema.json).  
+- **Sidecar JSON** → `.meve.json` proofs are stored separately, scalable for large files and non-intrusive.  
+- **Pro verification (email)** → issuer identity verified via magic-link workflow (no password).  
+- **Official verification (DNS)** → TXT challenge on `_meve.<domain>` binds proofs to a verified domain/institution.  
+- **Verification key (Ed25519-ready)** → proofs are designed to carry `key_id` (public key reference) and `signature` (Ed25519).  
+  - Public key = **verification key** used by verifiers; private key stored securely (HSM/KMS).  
+  - Offline verification: `signature` is checked against the file hash + proof manifest using the public key (`key_id`).  
+- **Transparency-ready** → compatible with future transparency logs (Merkle tree roots periodically published).  
+- **Disclosure & contact** → security guidance and reporting process in [SECURITY.md](SECURITY.md).
