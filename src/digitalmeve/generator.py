@@ -59,7 +59,7 @@ def generate_meve(
     ------------
     - Reads the file, computes a SHA-256 hash and a base64 preview.
     - Builds a dict with keys required by the test suite:
-        * meve_version, issuer, timestamp, metadata
+        * meve_version, issuer, issued_at, metadata
         * subject: { filename, size, hash_sha256 }
         * hash (duplicate of subject.hash_sha256)
         * preview_b64 (base64 preview of first bytes)
@@ -85,7 +85,7 @@ def generate_meve(
     Notes
     -----
     - `hash` and `subject.hash_sha256` always match.
-    - `timestamp` is ISO 8601 in UTC (with "Z").
+    - `issued_at` is ISO 8601 in UTC (with "Z").
     - The preview is informational only, it is not part of verification.
     """
     path = Path(file_path)
@@ -100,7 +100,8 @@ def generate_meve(
     proof: Dict[str, Any] = {
         "meve_version": _MEVE_VERSION,
         "issuer": issuer,
-        "timestamp": ts,
+        "issued_at": ts,           # champ requis par le schéma + tests
+        "timestamp": ts,           # conservé pour compatibilité future
         "metadata": metadata or {},
         "subject": {
             "filename": path.name,
