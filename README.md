@@ -60,7 +60,6 @@ CLI:
 `digitalmeve verify mydoc.pdf.meve.json --expected-issuer "Alice"`  
 `digitalmeve inspect mydoc.pdf.meve.json`  
 
-Python:  
 from digitalmeve.generator import generate_meve
 from digitalmeve.verifier import verify_meve
 
