@@ -13,33 +13,33 @@
 
 ---
 
-## 📖 Description & Vision
+## 2. 🚀 Patches Snapshot (already implemented)
 
-**DigitalMeve** introduces the universal format **`.meve`** (Memory Verified) to **timestamp, hash, and certify** any digital document.  
+DigitalMeve already includes a strong foundation:
 
-Our ambition is simple:  
-👉 Make `.meve` the **“PDF of digital proof”** — a trusted, open, and universal standard.  
+- ✅ **Core library**: `generator.py` + `verifier.py`  
+- ✅ **CLI**: `digitalmeve generate / verify / inspect`  
+- ✅ **Tests**: `pytest` passing on Python 3.10 → 3.12  
+- ✅ **Official Schema**: [`schemas/meve-1.schema.json`](schemas/meve-1.schema.json)  
+- ✅ **CI/CD GitHub Actions**:  
+  - [tests.yml](.github/workflows/tests.yml) (unit tests)  
+  - [quality.yml](.github/workflows/quality.yml) (lint, ruff, black)  
+  - [publish.yml](.github/workflows/publish.yml) (PyPI via OIDC)  
+- ✅ **Quality**: linting, pre-commit hooks, coverage badge  
+- ✅ **Docs**: overview, specification, guides, roadmap, security, API usage  
+- ✅ **Examples**: real sample files + reproducible scripts (`examples/make_examples.sh`)  
+- ✅ **Governance**: [LICENSE](LICENSE), [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md), [CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md)  
 
-### 🔑 What a `.meve` proof contains
-1. **Timestamp** — when the document existed (UTC, ISO-8601).  
-2. **Integrity** — exact SHA-256 hash of the file.  
-3. **Authenticity** — issuer level:  
-   - *Personal*: self-certification (existence proof).  
-   - *Pro*: verified via professional email.  
-   - *Official*: verified via DNS domain / institution.  
+---
 
-### ⚡ Why DigitalMeve?
-- **Universal** → works with any file (PDF, image, contract, diploma…).  
-- **Instant** → create & verify in seconds.  
-- **Transparent** → open-source, schema-defined.  
-- **Tamper-proof** → any file change invalidates the proof.  
-- **Scalable** → sidecar JSON `.meve.json` works for small and huge files alike.  
+### 🔑 Main commands
 
-### 🌍 Vision
-DigitalMeve aims to become the **global backbone for digital trust**:  
-- **Individuals** → protect creations (photos, manuscripts, ideas).  
-- **Professionals** → certify invoices, contracts, IP proofs.  
-- **Institutions** → universities, courts, governments for official certifications.  
+```bash
+# Generate a .meve.json proof
+digitalmeve generate path/to/file.pdf --issuer "Alice"
 
-**Status levels are computed automatically by the verifier.**  
-⚖️ No manual override → impossible to cheat.
+# Verify a proof
+digitalmeve verify file.pdf.meve.json --expected-issuer "Alice"
+
+# Inspect a proof (human-readable summary)
+digitalmeve inspect file.pdf.meve.json
