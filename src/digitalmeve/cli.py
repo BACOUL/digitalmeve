@@ -32,34 +32,34 @@ def cmd_generate(args: argparse.Namespace) -> int:
         issuer=args.issuer,
         metadata=metadata,
     )
-    # Sortie JSON **valide** sur stdout (compacte)
+    # JSON compact valide sur stdout
     print(json.dumps(proof, ensure_ascii=False))
     return 0
 
 
-def cmd_inspect(_: argparse.Namespace) -> int:
+def _read_text_from_optional_file(file_path: str | None) -> str:
+    if file_path:
+        try:
+            return Path(file_path).read_text(encoding="utf-8")
+        except Exception as e:
+            sys.stderr.write(f"Cannot read file: {e}\n")
+            sys.exit(1)
+    return _read_stdin_text()
+
+
+def cmd_inspect(args: argparse.Namespace) -> int:
+    text = _read_text_from_optional_file(args.file)
     try:
-        text = _read_stdin_text()
         obj = json.loads(text)
     except Exception as e:
         sys.stderr.write(f"Invalid input JSON: {e}\n")
         return 1
-
     print(json.dumps(obj, ensure_ascii=False, indent=2))
     return 0
 
 
 def cmd_verify(args: argparse.Namespace) -> int:
-    # Si --file est fourni on lit le fichier, sinon on lit stdin
-    if args.file:
-        try:
-            data = Path(args.file).read_text(encoding="utf-8")
-        except Exception as e:
-            sys.stderr.write(f"Cannot read file: {e}\n")
-            return 1
-    else:
-        data = _read_stdin_text()
-
+    data = _read_text_from_optional_file(args.file)
     try:
         obj = json.loads(data)
     except Exception as e:
@@ -80,25 +80,31 @@ def build_parser() -> argparse.ArgumentParser:
     p_gen.add_argument("file", help="File to generate proof for")
     p_gen.add_argument("--issuer", default="Personal")
     p_gen.add_argument("--outdir", help="Optional output directory")
-    p_gen.add_argument(
-        "--metadata",
-        help="Optional metadata as JSON string",
-    )
+    p_gen.add_argument("--metadata", help="Optional metadata as JSON string")
     p_gen.set_defaults(func=cmd_generate)
 
-    # inspect
+    # inspect (accepte fichier OU stdin)
     p_ins = sub.add_parser(
         "inspect",
-        help="Read proof JSON from stdin and pretty-print",
+        help="Read proof JSON from FILE or stdin and pretty-print",
+    )
+    p_ins.add_argument(
+        "file",
+        nargs="?",
+        help="Proof file (.json). If absent, read from stdin",
     )
     p_ins.set_defaults(func=cmd_inspect)
 
     # verify (facultatif mais utile)
     p_ver = sub.add_parser(
         "verify",
-        help="Verify proof from --file or stdin",
+        help="Verify proof from FILE or stdin",
     )
-    p_ver.add_argument("--file", help="Proof file (.json). If absent, use stdin")
+    p_ver.add_argument(
+        "file",
+        nargs="?",
+        help="Proof file (.json). If absent, read from stdin",
+    )
     p_ver.add_argument("--issuer", help="Expected issuer")
     p_ver.set_defaults(func=cmd_verify)
 
