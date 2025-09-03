@@ -27,6 +27,11 @@ def main(argv: list[str] | None = None) -> int:
     p_ins = sub.add_parser("inspect")
     p_ins.add_argument("proof", type=Path)
 
+    # ✅ Fix: afficher l’aide si aucune commande
+    if argv is None or len(argv) == 0:
+        parser.print_help(sys.stdout)
+        return 0
+
     args = parser.parse_args(argv)
 
     if args.cmd == "generate":
@@ -41,12 +46,14 @@ def main(argv: list[str] | None = None) -> int:
         return 0 if ok else 1
 
     if args.cmd == "inspect":
-        # Lire le fichier, parser et ré-émettre du JSON strict
         try:
             raw = args.proof.read_text(encoding="utf-8")
-            data = json.loads(raw)
+            if not raw.strip():
+                data = {"error": "empty file"}
+            else:
+                data = json.loads(raw)
         except Exception:
-            data = {}
+            data = {"error": "invalid json"}
         sys.stdout.write(json.dumps(data, ensure_ascii=False))
         return 0
 
