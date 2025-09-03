@@ -1,77 +1,51 @@
-# flake8: noqa: E501
 from __future__ import annotations
 
 import argparse
 import sys
+import json  # ✅ ajouté
 from pathlib import Path
-from digitalmeve.verifier import verify_meve
+
+from .generator import generate_proof
+from .verifier import verify_meve
 
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="digitalmeve")
-    sub = parser.add_subparsers(dest="command", required=True)
+    sub = parser.add_subparsers(dest="cmd", required=True)
 
-    # Commande generate
-    p_gen = sub.add_parser("generate", help="Generate a .meve proof file")
-    p_gen.add_argument("input", help="Input file to sign")
-    p_gen.add_argument("--issuer", required=True, help="Issuer name/email")
-    p_gen.add_argument("--outdir", default=".", help="Output directory")
+    # ---- generate ----
+    p_gen = sub.add_parser("generate")
+    p_gen.add_argument("file", type=Path)
 
-    # Commande verify
-    p_ver = sub.add_parser("verify", help="Verify a .meve proof file")
-    p_ver.add_argument("proof", help="Proof file or JSON string")
-    p_ver.add_argument("--issuer", help="Expected issuer")
+    # ---- verify ----
+    p_ver = sub.add_parser("verify")
+    p_ver.add_argument("proof", type=Path)
 
-    # Commande inspect
-    p_ins = sub.add_parser("inspect", help="Inspect a .meve proof file")
-    p_ins.add_argument("proof", help="Proof file")
+    # ---- inspect ----
+    p_ins = sub.add_parser("inspect")
+    p_ins.add_argument("proof", type=Path)
 
     args = parser.parse_args(argv)
 
-    if args.command == "generate":
-        infile = Path(args.input)
-        if not infile.exists():
-            print("Input file not found", file=sys.stderr)
-            return 1
-        # Dummy hash
-        fake_hash = "abc123"
-        proof = {
-            "meve_version": 1,
-            "issuer": args.issuer,
-            "timestamp": "2025-01-01T00:00:00Z",
-            "subject": {
-                "filename": infile.name,
-                "size": infile.stat().st_size,
-                "hash_sha256": fake_hash,
-            },
-            "hash": fake_hash,
-        }
-        outdir = Path(args.outdir)
-        outdir.mkdir(parents=True, exist_ok=True)
-        outfile = outdir / f"{infile.stem}.meve.json"
-        outfile.write_text(str(proof))
-        print(f"Proof written to {outfile}")
+    if args.cmd == "generate":
+        proof = generate_proof(args.file)
+        outfile = args.file.with_suffix(args.file.suffix + ".meve.json")
+        outfile.write_text(json.dumps(proof, indent=2))  # ✅ JSON valide
+        print(outfile)
         return 0
 
-    if args.command == "verify":
-        ok, details = verify_meve(args.proof, expected_issuer=args.issuer)
-        if ok:
-            print("Proof valid")
-            return 0
-        else:
-            print(f"Invalid proof: {details}", file=sys.stderr)
-            return 1
+    if args.cmd == "verify":
+        ok, _ = verify_meve(args.proof)
+        print("OK" if ok else "FAIL")
+        return 0 if ok else 1
 
-    if args.command == "inspect":
-        p = Path(args.proof)
-        if not p.exists():
-            print("Proof not found", file=sys.stderr)
-            return 1
-        print(p.read_text())
+    if args.cmd == "inspect":
+        text = args.proof.read_text(encoding="utf-8")
+        print(text)
         return 0
 
     return 1
 
 
-if __name__ == "__main__":  # pragma: no cover
-    raise SystemExit(main())
+if __name__ == "__main__":
+    sys.exit(main())
