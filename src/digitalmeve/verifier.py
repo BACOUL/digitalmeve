@@ -4,18 +4,25 @@ import json
 from pathlib import Path
 from typing import Any, Dict, Iterable, Optional, Tuple
 
-__all__ = ["verify_identity", "verify_proof", "verify_meve"]
 
-
-def verify_identity(identity: Any) -> bool:
-    """Validation minimale d'identité utilisée par les tests."""
+def verify_identity(identity: str | Path | None) -> bool:
+    """
+    Vérification minimale de l'identité utilisée par les tests.
+    Chaîne vide -> False ; toute chaîne non vide -> True.
+    """
     if identity is None:
         return False
     return str(identity).strip() != ""
 
 
 def _as_dict(proof: Any) -> Optional[Dict[str, Any]]:
-    """Convertit une 'preuve' en dict Python (dict, str JSON, chemin de fichier, bytes)."""
+    """
+    Accepte :
+      - un dict (retourné tel quel)
+      - une chaîne JSON
+      - un chemin de fichier (Path ou str) pointant vers un JSON
+    Retourne un dict ou None si l'entrée n'est pas exploitable.
+    """
     if isinstance(proof, dict):
         return proof
 
@@ -41,45 +48,52 @@ def _as_dict(proof: Any) -> Optional[Dict[str, Any]]:
     return None
 
 
-def _missing_keys(obj: Dict[str, Any], keys: Iterable[str]) -> list[str]:
-    return [k for k in keys if k not in obj]
-
-
-def verify_proof(
+def verify_meve(
     proof: Any,
     *,
     expected_issuer: Optional[str] = None,
 ) -> Tuple[bool, Dict[str, Any]]:
-    """Valide la structure et la cohérence d'une preuve .meve."""
+    """
+    Valide la structure d'une preuve .meve.
+
+    Retourne :
+      - (True, <dict de la preuve>) si valide
+      - (False, {"error": "<raison>"}) sinon
+    """
     obj = _as_dict(proof)
     if not isinstance(obj, dict):
         return False, {"error": "Invalid proof"}
 
-    required_top: Iterable[str] = ("meve_version", "issuer", "timestamp", "subject", "hash")
-    if _missing_keys(obj, required_top):
-        return False, {"error": "Missing required keys"}
+    required: Iterable[str] = (
+        "meve_version",
+        "issuer",
+        "timestamp",
+        "subject",
+        "hash",
+    )
+    missing = [k for k in required if k not in obj]
+    if missing:
+        return False, {"error": "Missing required keys"}  # noqa: E501
 
     subject = obj.get("subject")
     if not isinstance(subject, dict):
-        return False, {"error": "Missing required keys"}
+        return False, {"error": "Missing required keys"}  # noqa: E501
 
-    if _missing_keys(subject, ("filename", "size", "hash_sha256")):
-        return False, {"error": "Missing required keys"}
+    subj_required: Iterable[str] = ("filename", "size", "hash_sha256")
+    if any(k not in subject for k in subj_required):
+        return False, {"error": "Missing required keys"}  # noqa: E501
 
     if expected_issuer is not None and obj.get("issuer") != expected_issuer:
-        return False, {"error": "Issuer mismatch"}
+        return False, {"error": "Issuer mismatch"}  # noqa: E501
 
     if obj.get("hash") != subject.get("hash_sha256"):
-        return False, {"error": "Hash mismatch"}
+        return False, {"error": "Hash mismatch"}  # noqa: E501
 
-    # Placeholder pour une validation de schéma future
     try:
+        # schema_validate(obj)   # <- placeholder futur
         pass
-    except Exception as exc:  # pragma: no cover
-        return False, {"error": f"Schema validation failed: {exc}"}
+    except Exception as e:
+        msg = f"Schema validation failed: {e}"
+        return False, {"error": msg}  # noqa: E501
 
     return True, obj
-
-
-# ✅ Alias demandé par les tests
-verify_meve = verify_proof
