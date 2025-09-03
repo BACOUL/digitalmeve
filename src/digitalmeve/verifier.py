@@ -1,27 +1,24 @@
+# src/digitalmeve/verifier.py
 from __future__ import annotations
 
 import json
 from pathlib import Path
 from typing import Any, Dict, Iterable, Optional, Tuple, Union
 
-
-def verify_identity(identity: Union[str, Path]) -> bool:
-    """
-    Vérification minimale de l'identité utilisée par les tests.
-    Chaîne vide -> False ; toute chaîne non vide -> True.
-    """
-    if identity is None:
-        return False
-    return str(identity).strip() != ""
+__all__ = ["verify_proof"]
 
 
 def _as_dict(proof: Any) -> Optional[Dict[str, Any]]:
     """
+    Convertit une 'preuve' vers un dict Python.
+
     Accepte :
-      - un dict (retourné tel quel)
-      - une chaîne JSON
-      - un chemin de fichier (Path ou str) pointant vers un JSON
-    Retourne un dict ou None si l'entrée n'est pas exploitable.
+      - dict            -> renvoyé tel quel
+      - str/Path        -> si fichier JSON existant, on le lit ;
+                           sinon on tente json.loads sur la chaîne
+      - bytes/bytearray -> décodé en UTF-8 puis json.loads
+
+    Retourne le dict ou None si l'entrée n'est pas exploitable.
     """
     if isinstance(proof, dict):
         return proof
@@ -48,71 +45,71 @@ def _as_dict(proof: Any) -> Optional[Dict[str, Any]]:
     return None
 
 
-def verify_meve(
+def _missing_keys(obj: Dict[str, Any], keys: Iterable[str]) -> list[str]:
+    """Retourne la liste des clés manquantes dans obj."""
+    return [k for k in keys if k not in obj]
+
+
+def verify_proof(
     proof: Any,
     *,
     expected_issuer: Optional[str] = None,
 ) -> Tuple[bool, Dict[str, Any]]:
     """
-    Valide la structure d'une preuve .meve.
+    Valide la structure et la cohérence d'une preuve .meve.
 
-    Retourne :
-      - (True, <dict de la preuve>) si valide
-      - (False, {"error": "<raison>"}) sinon
+    Paramètres
+    ----------
+    proof : Any
+        La preuve (dict, chemin de fichier JSON, chaîne JSON, ou bytes).
+    expected_issuer : Optional[str]
+        Si fourni, la preuve doit avoir le même 'issuer'.
+
+    Retour
+    ------
+    (ok, info) : Tuple[bool, Dict[str, Any]]
+        - ok=True  -> info contient la preuve normalisée (dict)
+        - ok=False -> info={"error": "<raison lisible>"}
     """
     obj = _as_dict(proof)
     if not isinstance(obj, dict):
         return False, {"error": "Invalid proof"}
 
-    required: Iterable[str] = (
+    # Champs de premier niveau requis
+    required_top: Iterable[str] = (
         "meve_version",
         "issuer",
         "timestamp",
         "subject",
         "hash",
     )
-    missing = [k for k in required if k not in obj]
-    if missing:
+    missing_top = _missing_keys(obj, required_top)
+    if missing_top:
         return False, {"error": "Missing required keys"}
 
+    # Sujet attendu : { filename, size, hash_sha256 }
     subject = obj.get("subject")
     if not isinstance(subject, dict):
         return False, {"error": "Missing required keys"}
 
-    subj_required: Iterable[str] = ("filename", "size", "hash_sha256")
-    if any(k not in subject for k in subj_required):
+    required_subject: Iterable[str] = ("filename", "size", "hash_sha256")
+    if _missing_keys(subject, required_subject):
         return False, {"error": "Missing required keys"}
 
+    # Vérification émetteur attendu
     if expected_issuer is not None and obj.get("issuer") != expected_issuer:
         return False, {"error": "Issuer mismatch"}
 
+    # Cohérence des empreintes : hash global == subject.hash_sha256
     if obj.get("hash") != subject.get("hash_sha256"):
         return False, {"error": "Hash mismatch"}
 
-    # Exemple : validation de schéma (si ajoutée plus tard)
+    # Ici on pourrait brancher une vraie validation de schéma JSON.
+    # On garde un try/except pour rester compatible si on l'active plus tard.
     try:
-        # schema_validate(obj)   # <- placeholder futur
+        # schema_validate(obj)  # placeholder futur
         pass
-    except Exception as e:
-        msg = f"Schema validation failed: {e}"
-        return False, {"error": msg}
+    except Exception as exc:  # pragma: no cover
+        return False, {"error": f"Schema validation failed: {exc}"}
 
     return True, obj
-# --- Ajout : adaptateur pour le CLI ---
-
-def verify_proof(
-    proof: Any,
-    *,
-    expected_issuer: Optional[str] = None,
-) -> Dict[str, Any]:
-    """
-    Adaptateur utilisé par le CLI.
-
-    Accepte un chemin de fichier JSON, une chaîne JSON, ou un dict.
-    Délègue à verify_meve et normalise la réponse sous la forme :
-      {"valid": True, "info": <preuve>}  ou  {"valid": False, "error": "..."}
-    """
-    ok, info = verify_meve(proof, expected_issuer=expected_issuer)
-    if ok:
-        return {"valid": True, "info": info}
-    return {"valid": False, "error": info.get("error", "Unknown error")}
