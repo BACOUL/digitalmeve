@@ -4,8 +4,9 @@ from base64 import b64encode
 from datetime import datetime, timezone
 from hashlib import sha256
 from pathlib import Path
-from typing import Dict, Optional, Any, Union
+from typing import Any, Dict, Optional, Union
 
+__all__ = ["generate_meve", "generate_proof"]
 
 _MEVE_VERSION = "1.0"
 _PREVIEW_BYTES = 128  # small readable preview for debug
@@ -25,7 +26,8 @@ def _preview_b64(path: Path, limit: int = _PREVIEW_BYTES) -> str:
             head = f.read(limit)
         return b64encode(head).decode("ascii")
     except Exception:
-        return ""  # preview is optional
+        # preview is optional and must not fail generation
+        return ""
 
 
 def _iso8601_z_now() -> str:
@@ -66,8 +68,8 @@ def generate_meve(
     proof: Dict[str, Any] = {
         "meve_version": _MEVE_VERSION,
         "issuer": issuer,
-        "issued_at": issued_at,   # <-- requis par les tests
-        "timestamp": issued_at,   # compat
+        "issued_at": issued_at,         # required by tests
+        "timestamp": issued_at,         # backward compat
         "metadata": metadata or {},
         "subject": {
             "filename": path.name,
@@ -78,19 +80,43 @@ def generate_meve(
         "preview_b64": preview,
     }
 
-    # Écriture éventuelle d'un sidecar JSON
+    # Optional sidecar JSON writing
     if outdir is not None:
         out = Path(outdir)
         out.mkdir(parents=True, exist_ok=True)
         outfile = out / f"{path.name}.meve.json"
         import json
         with outfile.open("w", encoding="utf-8") as f:
-            json.dump(proof, f, ensure_ascii=False, separators=(",", ":"), indent=None)
+            json.dump(
+                proof, f, ensure_ascii=False, separators=(",", ":"), indent=None
+            )
 
     if also_json and outdir is None:
         outfile = path.with_name(f"{path.name}.meve.json")
         import json
         with outfile.open("w", encoding="utf-8") as f:
-            json.dump(proof, f, ensure_ascii=False, separators=(",", ":"), indent=None)
+            json.dump(
+                proof, f, ensure_ascii=False, separators=(",", ":"), indent=None
+            )
 
     return proof
+
+
+def generate_proof(
+    file_path: Union[str, Path],
+    outdir: Optional[Union[str, Path]] = None,
+    issuer: Optional[str] = None,
+    metadata: Optional[Dict[str, Any]] = None,
+    also_json: bool = False,
+) -> Dict[str, Any]:
+    """
+    Back-compat wrapper expected by tests.
+    Delegates to generate_meve(...).
+    """
+    return generate_meve(
+        file_path=file_path,
+        outdir=outdir,
+        issuer=issuer or "Personal",
+        metadata=metadata,
+        also_json=also_json,
+    )
