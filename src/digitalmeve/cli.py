@@ -5,118 +5,145 @@ import json
 import sys
 from pathlib import Path
 
-from .generator import generate_proof
+from .generator import generate_meve
 from .verifier import verify_meve
 
 
-def _read_stdin_text() -> str:
-    try:
-        return sys.stdin.read()
-    except Exception as e:
-        sys.stderr.write(f"stdin read error: {e}\n")
-        sys.exit(1)
+# -------- utils -----------------------------------------------------------
 
+def _read_text_from_optional_file(path_arg: str | None) -> str:
+    """
+    Si path_arg est None ou '-', lit depuis stdin.
+    Sinon lit le fichier en UTF-8 et retourne le contenu.
+    """
+    if path_arg in (None, "-"):
+        return sys.stdin.read()
+    p = Path(path_arg)
+    return p.read_text(encoding="utf-8")
+
+
+# -------- commandes -------------------------------------------------------
 
 def cmd_generate(args: argparse.Namespace) -> int:
-    metadata = None
-    if args.metadata:
-        try:
-            metadata = json.loads(args.metadata)
-        except Exception:
-            sys.stderr.write("Invalid JSON in --metadata\n")
-            return 1
+    """
+    Génère une preuve MEVE sur stdout.
+    Écrit éventuellement un sidecar JSON si --outdir est fourni.
+    """
+    try:
+        proof = generate_meve(
+            file_path=args.file,
+            outdir=args.outdir,
+            issuer=args.issuer,
+            metadata=None,
+            also_json=args.also_json,
+        )
+    except Exception as e:  # pragma: no cover (messages d'erreur)
+        sys.stderr.write(f"{e}\n")
+        return 1
 
-    proof = generate_proof(
-        args.file,
-        outdir=args.outdir,
-        issuer=args.issuer,
-        metadata=metadata,
-    )
-    # JSON compact valide sur stdout
-    print(json.dumps(proof, ensure_ascii=False))
+    print(json.dumps(proof, ensure_ascii=False, indent=2))
     return 0
 
 
-def _read_text_from_optional_file(file_path: str | None) -> str:
-    if file_path:
-        try:
-            return Path(file_path).read_text(encoding="utf-8")
-        except Exception as e:
-            sys.stderr.write(f"Cannot read file: {e}\n")
-            sys.exit(1)
-    return _read_stdin_text()
-
-
 def cmd_inspect(args: argparse.Namespace) -> int:
+    """
+    Lit un JSON (fichier ou stdin) et l’affiche enrichi avec :
+    - issuer (copié)
+    - hash_prefix (les 12 premiers caractères de 'hash')
+    - level = "file"
+    """
     text = _read_text_from_optional_file(args.file)
     try:
         obj = json.loads(text)
     except Exception as e:
         sys.stderr.write(f"Invalid input JSON: {e}\n")
         return 1
-    print(json.dumps(obj, ensure_ascii=False, indent=2))
+
+    out = dict(obj)
+    h = str(obj.get("hash", ""))
+    out["issuer"] = obj.get("issuer")
+    out["hash_prefix"] = h[:12]
+    out["level"] = "file"
+
+    print(json.dumps(out, ensure_ascii=False, indent=2))
     return 0
 
 
 def cmd_verify(args: argparse.Namespace) -> int:
-    data = _read_text_from_optional_file(args.file)
+    """
+    Vérifie une preuve MEVE. Retourne 0 si OK, 1 sinon.
+    """
+    text = _read_text_from_optional_file(args.file)
     try:
-        obj = json.loads(data)
+        obj = json.loads(text)
     except Exception as e:
         sys.stderr.write(f"Invalid input JSON: {e}\n")
         return 1
 
-    ok, info = verify_meve(obj, expected_issuer=args.issuer)
-    print(json.dumps({"valid": ok, "info": info}, ensure_ascii=False, indent=2))
+    ok, _detail = verify_meve(obj, expected_issuer=args.expected_issuer)
     return 0 if ok else 1
 
 
+# -------- parser / main ---------------------------------------------------
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="digitalmeve")
-    sub = parser.add_subparsers(dest="cmd", required=True)
+    sub = parser.add_subparsers(dest="command", metavar="{generate,inspect,verify}")
+    # compat py3.10: required=True via affectation
+    sub.required = True
 
     # generate
-    p_gen = sub.add_parser("generate", help="Generate a MEVE proof")
-    p_gen.add_argument("file", help="File to generate proof for")
-    p_gen.add_argument("--issuer", default="Personal")
-    p_gen.add_argument("--outdir", help="Optional output directory")
-    p_gen.add_argument("--metadata", help="Optional metadata as JSON string")
+    p_gen = sub.add_parser("generate", help="Create a .meve proof")
+    p_gen.add_argument("file", help="Input file to prove")
+    p_gen.add_argument(
+        "--outdir",
+        default=None,
+        help="Write sidecar JSON in this directory (optional).",
+    )
+    p_gen.add_argument(
+        "--issuer",
+        default="Personal",
+        help="Issuer name/email for the proof (default: Personal).",
+    )
+    p_gen.add_argument(
+        "--also-json",
+        action="store_true",
+        help="Also write <file>.meve.json next to the file when no --outdir.",
+    )
     p_gen.set_defaults(func=cmd_generate)
 
-    # inspect (accepte fichier OU stdin)
-    p_ins = sub.add_parser(
-        "inspect",
-        help="Read proof JSON from FILE or stdin and pretty-print",
-    )
+    # inspect
+    p_ins = sub.add_parser("inspect", help="Inspect a .meve JSON")
     p_ins.add_argument(
         "file",
         nargs="?",
-        help="Proof file (.json). If absent, read from stdin",
+        help="Path to JSON or '-' for stdin (default: stdin).",
     )
     p_ins.set_defaults(func=cmd_inspect)
 
-    # verify (facultatif mais utile)
-    p_ver = sub.add_parser(
-        "verify",
-        help="Verify proof from FILE or stdin",
-    )
+    # verify
+    p_ver = sub.add_parser("verify", help="Verify a .meve proof")
     p_ver.add_argument(
         "file",
         nargs="?",
-        help="Proof file (.json). If absent, read from stdin",
+        help="Path to JSON or '-' for stdin (default: stdin).",
     )
-    p_ver.add_argument("--issuer", help="Expected issuer")
+    p_ver.add_argument(
+        "--issuer",
+        dest="expected_issuer",
+        default=None,
+        help="Expected issuer to match (optional).",
+    )
     p_ver.set_defaults(func=cmd_verify)
 
     return parser
 
 
-def main() -> None:
+def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
-    args = parser.parse_args()
-    rc = args.func(args)
-    sys.exit(rc)
+    args = parser.parse_args(argv)
+    return args.func(args)
 
 
-if __name__ == "__main__":
-    main()
+if __name__ == "__main__":  # pragma: no cover
+    raise SystemExit(main())
