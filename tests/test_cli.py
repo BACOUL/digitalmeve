@@ -15,8 +15,8 @@ SRC_DIR = str(REPO_ROOT / "src")
 def run_cli(*args, cwd: str | None = None) -> subprocess.CompletedProcess:
     """Run `python -m digitalmeve.cli ...` with PYTHONPATH=src."""
     env = os.environ.copy()
-    env["PYTHONPATH"] = (
-        SRC_DIR + (os.pathsep + env["PYTHONPATH"] if "PYTHONPATH" in env else "")
+    env["PYTHONPATH"] = SRC_DIR + (
+        os.pathsep + env["PYTHONPATH"] if "PYTHONPATH" in env else ""
     )
     return subprocess.run(
         [sys.executable, "-m", "digitalmeve.cli", *args],
@@ -52,7 +52,7 @@ def test_generate_then_inspect(tmp_path: pathlib.Path):
     assert isinstance(proof_obj, dict)
     assert "issued_at" in proof_obj
 
-    # 3) écrire la preuve si elle n’a pas été écrite par la lib
+    # 3) écrire la preuve si la lib ne l’a pas créée
     proof_path = tmp_path / "sample.txt.meve.json"
     if not proof_path.exists():
         proof_path.write_text(json.dumps(proof_obj), encoding="utf-8")
