@@ -5,7 +5,7 @@ import json
 import sys
 from pathlib import Path
 
-from .generator import generate_meve
+from .generator import generate_proof  # ✅ bonne fonction
 from .verifier import verify_meve
 from .utils import format_identity
 
@@ -29,22 +29,21 @@ def main(argv: list[str] | None = None) -> int:
     # digitalmeve generate <path> [identity] --issuer --outdir
     p_gen = sub.add_parser("generate", help="Generate a .meve proof (JSON)")
     p_gen.add_argument("path", type=Path)
-    # identité positionnelle optionnelle (compat)
     p_gen.add_argument("identity", nargs="?", default=None)
     p_gen.add_argument(
         "--issuer",
-        help="issuer email/name (override identity)",
+        help="issuer (override identity)",
         default=None,
     )
     p_gen.add_argument(
         "--outdir",
         type=Path,
-        help="output directory for the generated proof",
+        help="output directory",
         default=None,
     )
 
     # digitalmeve verify <path>
-    p_ver = sub.add_parser("verify", help="Verify a .meve proof (JSON file)")
+    p_ver = sub.add_parser("verify", help="Verify a .meve proof")
     p_ver.add_argument("path", type=Path)
 
     # digitalmeve inspect <proof.json>
@@ -54,11 +53,11 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     if args.cmd == "generate":
-        # identité : --issuer > identity positionnelle
         raw_identity = args.issuer if args.issuer else args.identity
         identity = format_identity(raw_identity)
 
-        proof = generate_meve(args.path, identity)
+        # ✅ appel correct : renvoie un dict JSON sérialisable
+        proof = generate_proof(args.path, identity)
 
         outdir = args.outdir if args.outdir else args.path.parent
         outdir.mkdir(parents=True, exist_ok=True)
@@ -67,7 +66,6 @@ def main(argv: list[str] | None = None) -> int:
         out_path = outdir / out_name
 
         _dump_json(out_path, proof)
-        # Imprime le chemin pour que les tests puissent le récupérer
         sys.stdout.write(str(out_path))
         return 0
 
