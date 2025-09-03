@@ -1,81 +1,41 @@
+# src/digitalmeve/cli.py
 import argparse
-import sys
 from pathlib import Path
-import json
 
 from digitalmeve.generator import generate_meve
-from digitalmeve.verifier import verify_meve   # ✅ correction ici
+from digitalmeve.verifier import verify_proof
 from digitalmeve.utils import pretty_print
 
 
-def _cmd_generate(args: argparse.Namespace) -> int:
-    src = Path(args.input)
-    if not src.exists():
-        print(f"error: input file {src} not found", file=sys.stderr)
-        return 1
-
-    proof = generate_meve(src)
-
-    if args.output:
-        with open(args.output, "w", encoding="utf-8") as f:
-            json.dump(proof, f, indent=2)
-    else:
-        pretty_print(proof)
-
-    return 0
-
-
-def _cmd_verify(args: argparse.Namespace) -> int:
-    proof_file = Path(args.input)
-    if not proof_file.exists():
-        print(f"error: proof file {proof_file} not found", file=sys.stderr)
-        return 1
-
-    with open(proof_file, "r", encoding="utf-8") as f:
-        proof = json.load(f)
-
-    ok = verify_meve(proof)   # ✅ correction ici
-    if not ok:
-        print("❌ Verification failed", file=sys.stderr)
-        return 1
-
-    print("✅ Verification succeeded")
-    return 0
-
-
-def _cmd_inspect(args: argparse.Namespace) -> int:
-    proof_file = Path(args.input)
-    if not proof_file.exists():
-        print(f"error: proof file {proof_file} not found", file=sys.stderr)
-        return 1
-
-    with open(proof_file, "r", encoding="utf-8") as f:
-        proof = json.load(f)
-
-    pretty_print(proof)
-    return 0
-
-
-def main(argv=None) -> int:
+def main():
     parser = argparse.ArgumentParser(prog="digitalmeve")
     sub = parser.add_subparsers(dest="command", required=True)
 
-    p_gen = sub.add_parser("generate", help="Generate proof from input")
-    p_gen.add_argument("input", help="Input file")
-    p_gen.add_argument("-o", "--output", help="Output file (JSON proof)")
-    p_gen.set_defaults(func=_cmd_generate)
+    # ---- generate ----
+    p_gen = sub.add_parser("generate", help="Génère une preuve MEVE")
+    p_gen.add_argument("--issuer", required=True, help="Identité de l'émetteur")
+    p_gen.add_argument("--outdir", type=Path, required=True, help="Répertoire de sortie")
 
-    p_ver = sub.add_parser("verify", help="Verify a proof file")
-    p_ver.add_argument("input", help="Proof file (JSON)")
-    p_ver.set_defaults(func=_cmd_verify)
+    # ---- verify ----
+    p_ver = sub.add_parser("verify", help="Vérifie une preuve MEVE")
+    p_ver.add_argument("path", type=Path, help="Fichier de preuve à vérifier")
 
-    p_ins = sub.add_parser("inspect", help="Inspect a proof file")
-    p_ins.add_argument("input", help="Proof file (JSON)")
-    p_ins.set_defaults(func=_cmd_inspect)
+    # ---- inspect ----
+    p_ins = sub.add_parser("inspect", help="Affiche une preuve lisible")
+    p_ins.add_argument("path", type=Path, help="Fichier de preuve à inspecter")
 
-    args = parser.parse_args(argv)
-    return args.func(args)
+    args = parser.parse_args()
+
+    if args.command == "generate":
+        proof = generate_meve(issuer=args.issuer, outdir=args.outdir)
+        pretty_print(proof)
+    elif args.command == "verify":
+        result = verify_proof(args.path)
+        pretty_print(result)
+    elif args.command == "inspect":
+        data = args.path.read_text(encoding="utf-8")
+        print(data)
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    main()
