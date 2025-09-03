@@ -52,7 +52,7 @@ def test_generate_then_inspect(tmp_path: pathlib.Path):
     assert isinstance(proof_obj, dict)
     assert "issued_at" in proof_obj
 
-    # 3) écrire la preuve (si generate n'a pas écrit le fichier côté lib)
+    # 3) écrire la preuve si elle n’a pas été écrite par la lib
     proof_path = tmp_path / "sample.txt.meve.json"
     if not proof_path.exists():
         proof_path.write_text(json.dumps(proof_obj), encoding="utf-8")
