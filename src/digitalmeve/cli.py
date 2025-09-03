@@ -5,7 +5,8 @@ import json
 import sys
 from pathlib import Path
 
-from .generator import generate_proof
+# 👉 le bon import
+from .generator import generate_meve
 from .verifier import verify_meve
 
 
@@ -55,7 +56,7 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.cmd == "generate":
         # génère l’objet preuve (dict JSON-sérialisable)
-        proof = generate_proof(args.file, issuer=args.issuer)
+        proof = generate_meve(args.file, issuer=args.issuer)
 
         # écrit un vrai JSON formaté là où les tests l’attendent
         outfile = _resolve_outfile(args.file, args.outdir)
@@ -69,13 +70,11 @@ def main(argv: list[str] | None = None) -> int:
         return 0 if ok else 1
 
     if args.cmd == "inspect":
-        # lecture + pretty-print pour être robuste
         text = args.proof.read_text(encoding="utf-8")
         try:
             obj = json.loads(text)
             print(json.dumps(obj, ensure_ascii=False, indent=2))
         except Exception:
-            # si déjà pretty, on ré-imprime tel quel
             print(text)
         return 0
 
