@@ -1,3 +1,4 @@
+
 from __future__ import annotations
 
 import argparse
@@ -15,33 +16,32 @@ def main(argv: list[str] | None = None) -> int:
     sub = parser.add_subparsers(dest="cmd", required=True)
 
     # digitalmeve generate <path> <identity>
-    p_gen = sub.add_parser("generate")
+    p_gen = sub.add_parser("generate", help="Generate a .meve proof")
     p_gen.add_argument("path", type=Path)
     p_gen.add_argument("identity")
 
     # digitalmeve verify <path>
-    p_ver = sub.add_parser("verify")
+    p_ver = sub.add_parser("verify", help="Verify a .meve proof")
     p_ver.add_argument("path", type=Path)
 
     # digitalmeve inspect <proof.json>
-    p_ins = sub.add_parser("inspect")
+    p_ins = sub.add_parser("inspect", help="Inspect a .meve proof file")
     p_ins.add_argument("proof", type=Path)
 
-    # ✅ Fix: afficher l’aide si aucune commande
-    if argv is None or len(argv) == 0:
-        parser.print_help(sys.stdout)
-        return 0
-
+    # ⚠️ Ne pas court-circuiter `--help`, laisser argparse le gérer
     args = parser.parse_args(argv)
 
     if args.cmd == "generate":
         identity = format_identity(args.identity)
         proof = generate_meve(args.path, identity)
-        sys.stdout.write(json.dumps(proof, ensure_ascii=False))
+        # 🔥 On écrit le JSON dans le fichier <path>.meve
+        out_path = args.path.with_suffix(".meve")
+        out_path.write_text(json.dumps(proof, ensure_ascii=False), encoding="utf-8")
+        sys.stdout.write(str(out_path))
         return 0
 
     if args.cmd == "verify":
-        ok = verify_meve(args.path)
+        ok, _ = verify_meve(args.path)
         sys.stdout.write("VALID\n" if ok else "INVALID\n")
         return 0 if ok else 1
 
