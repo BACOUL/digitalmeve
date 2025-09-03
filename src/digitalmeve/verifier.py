@@ -98,3 +98,21 @@ def verify_meve(
         return False, {"error": msg}
 
     return True, obj
+# --- Ajout : adaptateur pour le CLI ---
+
+def verify_proof(
+    proof: Any,
+    *,
+    expected_issuer: Optional[str] = None,
+) -> Dict[str, Any]:
+    """
+    Adaptateur utilisé par le CLI.
+
+    Accepte un chemin de fichier JSON, une chaîne JSON, ou un dict.
+    Délègue à verify_meve et normalise la réponse sous la forme :
+      {"valid": True, "info": <preuve>}  ou  {"valid": False, "error": "..."}
+    """
+    ok, info = verify_meve(proof, expected_issuer=expected_issuer)
+    if ok:
+        return {"valid": True, "info": info}
+    return {"valid": False, "error": info.get("error", "Unknown error")}
