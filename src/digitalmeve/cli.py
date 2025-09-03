@@ -11,7 +11,11 @@ from .utils import format_identity
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(prog="digitalmeve")
+    parser = argparse.ArgumentParser(
+        prog="digitalmeve",
+        description="DigitalMeve proof tool",
+        add_help=True,
+    )
     sub = parser.add_subparsers(dest="cmd", required=True)
 
     # digitalmeve generate <path> <identity>
@@ -27,15 +31,15 @@ def main(argv: list[str] | None = None) -> int:
     p_ins = sub.add_parser("inspect", help="Inspect a .meve proof file")
     p_ins.add_argument("proof", type=Path)
 
-    # ⚠️ Ne pas court-circuiter `--help`, laisser argparse le gérer
     args = parser.parse_args(argv)
 
     if args.cmd == "generate":
         identity = format_identity(args.identity)
         proof = generate_meve(args.path, identity)
-        # 🔥 On écrit le JSON dans le fichier <path>.meve
         out_path = args.path.with_suffix(".meve")
-        out_path.write_text(json.dumps(proof, ensure_ascii=False), encoding="utf-8")
+        out_path.write_text(
+            json.dumps(proof, ensure_ascii=False, indent=2), encoding="utf-8"
+        )
         sys.stdout.write(str(out_path))
         return 0
 
@@ -47,13 +51,14 @@ def main(argv: list[str] | None = None) -> int:
     if args.cmd == "inspect":
         try:
             raw = args.proof.read_text(encoding="utf-8")
-            if not raw.strip():
-                data = {"error": "empty file"}
-            else:
-                data = json.loads(raw)
+            data = json.loads(raw) if raw.strip() else {"error": "empty file"}
         except Exception:
             data = {"error": "invalid json"}
-        sys.stdout.write(json.dumps(data, ensure_ascii=False))
+        sys.stdout.write(json.dumps(data, ensure_ascii=False, indent=2))
         return 0
 
     return 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())
