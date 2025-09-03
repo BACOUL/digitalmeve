@@ -10,6 +10,14 @@ from .verifier import verify_meve
 from .utils import format_identity
 
 
+def _dump_json(path: Path, data: dict) -> None:
+    """Écrit un JSON lisible et valide en UTF-8."""
+    path.write_text(
+        json.dumps(data, ensure_ascii=False, indent=2),
+        encoding="utf-8",
+    )
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         prog="digitalmeve",
@@ -18,13 +26,25 @@ def main(argv: list[str] | None = None) -> int:
     )
     sub = parser.add_subparsers(dest="cmd", required=True)
 
-    # digitalmeve generate <path> <identity>
-    p_gen = sub.add_parser("generate", help="Generate a .meve proof")
+    # digitalmeve generate <path> [identity] --issuer --outdir
+    p_gen = sub.add_parser("generate", help="Generate a .meve proof (JSON)")
     p_gen.add_argument("path", type=Path)
-    p_gen.add_argument("identity")
+    # identité positionnelle optionnelle (compat)
+    p_gen.add_argument("identity", nargs="?", default=None)
+    p_gen.add_argument(
+        "--issuer",
+        help="issuer email/name (override identity)",
+        default=None,
+    )
+    p_gen.add_argument(
+        "--outdir",
+        type=Path,
+        help="output directory for the generated proof",
+        default=None,
+    )
 
     # digitalmeve verify <path>
-    p_ver = sub.add_parser("verify", help="Verify a .meve proof")
+    p_ver = sub.add_parser("verify", help="Verify a .meve proof (JSON file)")
     p_ver.add_argument("path", type=Path)
 
     # digitalmeve inspect <proof.json>
@@ -34,12 +54,20 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     if args.cmd == "generate":
-        identity = format_identity(args.identity)
+        # identité : --issuer > identity positionnelle
+        raw_identity = args.issuer if args.issuer else args.identity
+        identity = format_identity(raw_identity)
+
         proof = generate_meve(args.path, identity)
-        out_path = args.path.with_suffix(".meve")
-        out_path.write_text(
-            json.dumps(proof, ensure_ascii=False, indent=2), encoding="utf-8"
-        )
+
+        outdir = args.outdir if args.outdir else args.path.parent
+        outdir.mkdir(parents=True, exist_ok=True)
+
+        out_name = f"{args.path.name}.meve.json"
+        out_path = outdir / out_name
+
+        _dump_json(out_path, proof)
+        # Imprime le chemin pour que les tests puissent le récupérer
         sys.stdout.write(str(out_path))
         return 0
 
