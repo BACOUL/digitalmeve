@@ -1,10 +1,37 @@
+# .pre-commit-config.yaml
+ci:
+  autofix_prs: false
+  skip: []
+
 repos:
+  # Hooks génériques utiles
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: check-added-large-files
+      - id: detect-private-key
+      - id: check-json
+      - id: check-yaml
+      - id: check-toml
+
+  # Ruff (lint rapide + fix auto)
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.6.9
+    hooks:
+      - id: ruff
+        args: ["--fix"]
+      - id: ruff-format
+
+  # Black (formatage PEP8)
   - repo: https://github.com/psf/black
-    rev: 23.12.1
+    rev: 24.8.0
     hooks:
       - id: black
         language_version: python3
 
+  # Flake8 (optionnel, peut être remplacé par Ruff à terme)
   - repo: https://github.com/pycqa/flake8
     rev: 6.1.0
     hooks:
