@@ -14,18 +14,6 @@
 
 ---
 
-## 1. Overview
-
-DigitalMeve provides a **fast and universal** way to verify the authenticity of any `.meve` proof.
-
-**Verification ensures:**
-
-- **Integrity** → the document has not been tampered with (SHA-256 validation).
-- **Timestamp** → the proof contains a valid UTC timestamp.
-- **Issuer** → the identity level (Personal, Pro, Official) matches expectations.
-
----
-
 ## 2. 🚀 Patches Snapshot (already implemented)
 
 DigitalMeve already includes a strong foundation:
@@ -41,26 +29,48 @@ DigitalMeve already includes a strong foundation:
 - ✅ **Quality**: linting, pre-commit hooks, coverage badge  
 - ✅ **Docs**: overview, specification, guides, roadmap, security, API usage  
 - ✅ **Examples**: real sample files + reproducible scripts (`examples/make_examples.sh`)  
-- ✅ **Governance**: [LICENSE](LICENSE), [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md), [CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md)
+- ✅ **Governance**: [LICENSE](LICENSE), [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md), [CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md)  
 
 ---
 
-## 3. 📖 Description / TL;DR
-
-DigitalMeve defines the universal format **`.meve` (Memory Verified)** to timestamp, hash, and certify digital documents.  
-👉 The goal: make `.meve` the “PDF of digital proof” worldwide.
-
-**Why `.meve`?**
-
-- **Existence** → prove a file existed at a given date.  
-- **Integrity** → SHA-256 hash, any change = invalid.  
-- **Authenticity** → issuer is always visible (Personal / Pro / Official).  
-- **Metadata** → optional key/values (author, project, contract ID…).  
-- **Portable** → lightweight JSON sidecar (`file.pdf.meve.json`).  
-
-### 🔧 Quick Usage (CLI & Python)
+### 🔑 Main commands
 
 ```bash
+# Generate a .meve.json proof
+digitalmeve generate path/to/file.pdf --issuer "Alice"
+
+# Verify a proof
+digitalmeve verify file.pdf.meve.json --expected-issuer "Alice"
+
+# Inspect a proof (human-readable summary)
+digitalmeve inspect file.pdf.meve.json
+
+
+---
+
+3. 📖 Description / TL;DR
+
+DigitalMeve defines the universal format .meve (Memory Verified) to timestamp, hash, and certify digital documents.
+👉 The goal: make .meve the “PDF of digital proof” worldwide.
+
+Why .meve?
+
+Existence → prove a file existed at a given date.
+
+Integrity → SHA-256 hash, any change = invalid.
+
+Authenticity → issuer is always visible (Personal / Pro / Official).
+
+Metadata → optional key/values (author, project, contract ID…).
+
+Portable → lightweight JSON sidecar (file.pdf.meve.json).
+
+
+
+---
+
+🔧 Quick Usage (CLI & Python)
+
 # CLI usage
 digitalmeve generate mydoc.pdf --issuer "Alice"
 digitalmeve verify mydoc.pdf.meve.json --expected-issuer "Alice"
@@ -95,10 +105,10 @@ After installing, you can immediately generate and verify .meve proofs using the
 # Generate a proof
 digitalmeve generate path/to/file.pdf --issuer "Alice"
 
-# Verify a proof
+# Verify the proof
 digitalmeve verify path/to/file.pdf.meve.json --expected-issuer "Alice"
 
-# Inspect a proof (human-readable summary)
+# Inspect the proof
 digitalmeve inspect path/to/file.pdf.meve.json
 
 
@@ -119,7 +129,7 @@ Pro: email verified.
 Official: DNS/institution verified.
 
 
-JSON Schema validation → machine-verifiable against schemas/meve-1.schema.json.
+JSON Schema validation → all proofs are machine-verifiable against schemas/meve-1.schema.json.
 
 Metadata embedding → free-form key/values (author, project, notes…).
 
@@ -171,10 +181,8 @@ DigitalMeve provides reproducible examples to demonstrate .meve proofs in action
 
 Scripts included:
 
-./examples/make_examples.sh → generate sample proofs (invoice, photo, diploma).
-
-./examples/verify_examples.sh → verify all generated proofs.
-
+./examples/make_examples.sh   # generate sample proofs (invoice, photo, diploma)
+./examples/verify_examples.sh # verify all generated proofs
 
 Resources:
 
@@ -216,7 +224,7 @@ Pro verification (email) → issuer identity verified via magic-link workflow (n
 
 Official verification (DNS) → TXT challenge on _meve.<domain> binds proofs to a verified domain/institution.
 
-Verification key (Ed25519-ready) → proofs can carry key_id (public key reference) and signature (Ed25519).
+Verification key (Ed25519-ready) → proofs are designed to carry key_id (public key reference) and signature (Ed25519).
 
 Public key = verification key used by verifiers; private key stored securely (HSM/KMS).
 
@@ -256,6 +264,7 @@ Universities → certified diplomas and transcripts.
 Governments → official documents, tenders, and policies.
 
 Courts & notaries → legal contracts, rulings, and certified archives.
+
 
 
 
@@ -330,6 +339,22 @@ Full changelog available in CHANGELOG.md
 
 This project is licensed under the MIT License.
 See the full text in LICENSE.
+
+
+---
+
+🔒 Security Issues
+
+If you discover a vulnerability, please follow our Security Policy.
+Contact: security@digitalmeve.com (first response ≤72h).
+
+
+---
+
+🛠 Contribution Help
+
+See Contributing Guide for coding standards, branching, and PR rules.
+PRs are welcome once the CI is green ✅.
 
 ---
 
