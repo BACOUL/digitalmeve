@@ -17,14 +17,14 @@ A sidecar JSON that contains the proof of existence and integrity of a document:
 
 ## 🗂 Does DigitalMeve store my documents?
 
-No. Neither the CLI nor the MVP API store your files.  
+No. Neither the CLI nor the MVP API store your files.
 Only the hash and minimal metadata are processed in memory to generate the proof.
 
 ---
 
 ## ✅ How do I verify a proof?
 
-- **CLI:**  
+- **CLI:**
 
 ```bash
 digitalmeve verify path/to/file.meve.json

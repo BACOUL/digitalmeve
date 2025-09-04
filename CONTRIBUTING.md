@@ -1,14 +1,14 @@
 # 🤝 Contributing to DigitalMeve
 
-Thank you for your interest in contributing!  
+Thank you for your interest in contributing!
 Please read this guide before opening an issue or pull request.
 
 ---
 
 ## 🛠️ Setup
 
-- Python **3.10+** recommended.  
-- Clone the repository:  
+- Python **3.10+** recommended.
+- Clone the repository:
 
 ```bash
 git clone https://github.com/BACOUL/digitalmeve.git
@@ -132,24 +132,24 @@ We welcome new ideas, bug reports, documentation improvements, and code changes!
 ---
 
 👉 Ce que j’ai corrigé :
-- Ajouté titres Markdown (`#`, `##`) pour meilleure hiérarchie.  
-- Encadré les commandes shell avec des blocs ````bash``` pour éviter que tout soit vu comme un seul bloc.  
-- Supprimé les espaces inutiles et ajouté un **unique saut de ligne final**.  
-- Harmonisé les listes (bullet points `-`).  
+- Ajouté titres Markdown (`#`, `##`) pour meilleure hiérarchie.
+- Encadré les commandes shell avec des blocs ````bash``` pour éviter que tout soit vu comme un seul bloc.
+- Supprimé les espaces inutiles et ajouté un **unique saut de ligne final**.
+- Harmonisé les listes (bullet points `-`).
 
 Veux-tu que je prépare le **patch complet pour `CONTRIBUTING.md`**, comme je l’ai fait pour `CODE_OF_CONDUCT.md`, afin que tu puisses le commit directement ?
 
 # Contributing to DigitalMeve
 
-Thank you for your interest in contributing!  
+Thank you for your interest in contributing!
 Please read this guide before opening an issue or pull request.
 
 ---
 
 ## 🛠️ Setup
 
-- Python **3.10+** recommended.  
-- Clone the repository:  
+- Python **3.10+** recommended.
+- Clone the repository:
   ```bash
   git clone https://github.com/BACOUL/digitalmeve.git
   cd digitalmeve

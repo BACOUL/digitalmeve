@@ -6,9 +6,9 @@
 
 `.meve` provides a **portable, human-readable proof** for any digital file:
 
-- **Existence** at time T (UTC timestamp)  
-- **Integrity** of the exact bytes (SHA-256)  
-- **Issuer linkage** (Personal / Pro / Official), computed automatically by the verifier  
+- **Existence** at time T (UTC timestamp)
+- **Integrity** of the exact bytes (SHA-256)
+- **Issuer linkage** (Personal / Pro / Official), computed automatically by the verifier
 
 ---
 

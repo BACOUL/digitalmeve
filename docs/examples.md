@@ -6,7 +6,7 @@ This page shows how `.meve.json` proofs are generated, structured, and verified,
 
 ## 📝 Example 1 — Basic File Proof
 
-**Input file:** `contract.pdf`  
+**Input file:** `contract.pdf`
 **Command:**
 
 ```bash

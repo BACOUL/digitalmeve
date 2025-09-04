@@ -8,9 +8,9 @@ Welcome to **DigitalMeve**, the `.MEVE` (Memory Verified) standard for timestamp
 
 DigitalMeve introduces a lightweight, universal format `.meve` that proves in less than 2 seconds:
 
-- The existence of a file at a given time  
-- The integrity of its content (via **SHA-256**)  
-- The authenticity of the issuer (*Personal*, *Pro*, *Official*)  
+- The existence of a file at a given time
+- The integrity of its content (via **SHA-256**)
+- The authenticity of the issuer (*Personal*, *Pro*, *Official*)
 
 ---
 

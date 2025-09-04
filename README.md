@@ -13,31 +13,31 @@
 ---
 
 ## 1. Overview
-DigitalMeve defines the universal format **`.meve`** (Memory Verified) to **timestamp, hash, and certify** digital documents.  
+DigitalMeve defines the universal format **`.meve`** (Memory Verified) to **timestamp, hash, and certify** digital documents.
 **Goal:** make `.meve` the *“PDF of digital proof”*.
 
 **Verification ensures**
-- **Integrity** → SHA-256 validation (any change = invalid)  
-- **Timestamp** → UTC ISO-8601 (`issued_at`)  
+- **Integrity** → SHA-256 validation (any change = invalid)
+- **Timestamp** → UTC ISO-8601 (`issued_at`)
 - **Issuer** → Personal / Pro / Official (computed by the verifier)
 
 ---
 
 ## 2. 🚀 Patches Snapshot (already implemented)
-- ✅ Core library: `generator.py` + `verifier.py`  
-- ✅ CLI: `digitalmeve generate / verify / inspect`  
-- ✅ Tests: `pytest` on Python 3.10 → 3.12  
-- ✅ Official Schema: [`schemas/meve-1.schema.json`](schemas/meve-1.schema.json)  
-- ✅ CI/CD: [tests](.github/workflows/tests.yml) · [quality](.github/workflows/quality.yml) · [publish](.github/workflows/publish.yml)  
-- ✅ Quality: linting, pre-commit hooks, coverage badge  
-- ✅ Docs: overview, specification, guides, roadmap, security, API usage  
-- ✅ Examples: real samples + scripts (`examples/make_examples.sh`)  
+- ✅ Core library: `generator.py` + `verifier.py`
+- ✅ CLI: `digitalmeve generate / verify / inspect`
+- ✅ Tests: `pytest` on Python 3.10 → 3.12
+- ✅ Official Schema: [`schemas/meve-1.schema.json`](schemas/meve-1.schema.json)
+- ✅ CI/CD: [tests](.github/workflows/tests.yml) · [quality](.github/workflows/quality.yml) · [publish](.github/workflows/publish.yml)
+- ✅ Quality: linting, pre-commit hooks, coverage badge
+- ✅ Docs: overview, specification, guides, roadmap, security, API usage
+- ✅ Examples: real samples + scripts (`examples/make_examples.sh`)
 - ✅ Governance: [LICENSE](LICENSE) · [CODE_OF_CONDUCT](CODE_OF_CONDUCT.md) · [CONTRIBUTING](CONTRIBUTING.md) · [SECURITY](SECURITY.md)
 
 ---
 
 ## 3. 📖 TL;DR
-**Why `.meve`?**  
+**Why `.meve`?**
 Existence (prove a file existed), Integrity (SHA-256), Authenticity (visible issuer), Metadata (optional), Portable (sidecar `file.ext.meve.json`).
 
 ---

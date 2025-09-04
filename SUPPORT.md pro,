@@ -1,58 +1,58 @@
 # 💡 Support — DigitalMeve
 
-Thanks for using **DigitalMeve**!  
+Thanks for using **DigitalMeve**!
 This document explains how to get help depending on your profile (individual, professional, institution).
 
 ---
 
 ## 📚 Documentation
 
-- [Overview](docs/overview.md) — introduction to `.meve`  
-- [Generator Guide](docs/generator-guide.md) — how to create proofs  
-- [Verification Guide](docs/verification-guide.md) — how to validate proofs  
-- [Specification](docs/specification.md) — formal rules of the format  
-- [Security](docs/security.md) — guarantees and threat model  
-- [Roadmap](docs/roadmap.md) — upcoming features  
+- [Overview](docs/overview.md) — introduction to `.meve`
+- [Generator Guide](docs/generator-guide.md) — how to create proofs
+- [Verification Guide](docs/verification-guide.md) — how to validate proofs
+- [Specification](docs/specification.md) — formal rules of the format
+- [Security](docs/security.md) — guarantees and threat model
+- [Roadmap](docs/roadmap.md) — upcoming features
 
 ---
 
 ## 🙋 Asking Questions
 
-- First check the [Docs](docs/index.md) and [Examples](docs/examples.md).  
-- Search [GitHub Issues](https://github.com/BACOUL/digitalmeve/issues).  
-- If you don’t find an answer, open a new **Question** issue using the template.  
+- First check the [Docs](docs/index.md) and [Examples](docs/examples.md).
+- Search [GitHub Issues](https://github.com/BACOUL/digitalmeve/issues).
+- If you don’t find an answer, open a new **Question** issue using the template.
 
 ---
 
 ## 🐛 Reporting Bugs
 
-- Use the [Bug Report template](.github/ISSUE_TEMPLATE/bug_report.md).  
-- Include:  
-  - Your Python version (`python --version`)  
-  - Your DigitalMeve version (`pip show digitalmeve`)  
-  - Steps to reproduce  
-  - Error messages and logs  
+- Use the [Bug Report template](.github/ISSUE_TEMPLATE/bug_report.md).
+- Include:
+  - Your Python version (`python --version`)
+  - Your DigitalMeve version (`pip show digitalmeve`)
+  - Steps to reproduce
+  - Error messages and logs
 
 ---
 
 ## 💼 Professional & Institutional Support
 
-- **Pro accounts** (companies/freelancers): open a **Feature Request** or contact us at `pro@digitalmeve.com`.  
-- **Institutions** (universities, courts, administrations): contact us at `official@digitalmeve.com` for onboarding.  
+- **Pro accounts** (companies/freelancers): open a **Feature Request** or contact us at `pro@digitalmeve.com`.
+- **Institutions** (universities, courts, administrations): contact us at `official@digitalmeve.com` for onboarding.
 
 ---
 
 ## 🔐 Security Issues
 
-If you discover a vulnerability, please follow our [Security Policy](SECURITY.md).  
-📧 Contact: **security@digitalmeve.com** (first response ≤72h).  
+If you discover a vulnerability, please follow our [Security Policy](SECURITY.md).
+📧 Contact: **security@digitalmeve.com** (first response ≤72h).
 
 ---
 
 ## 🛠 Contribution Help
 
-See [Contributing Guide](CONTRIBUTING.md) for coding standards, branching, and PR rules.  
-PRs are welcome once the CI is green ✅.  
+See [Contributing Guide](CONTRIBUTING.md) for coding standards, branching, and PR rules.
+PRs are welcome once the CI is green ✅.
 
 ---
 

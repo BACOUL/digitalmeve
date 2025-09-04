@@ -4,12 +4,12 @@
 
 ## 1. Overview
 
-DigitalMeve provides a **fast and universal** way to verify the authenticity of any `.meve` proof.  
+DigitalMeve provides a **fast and universal** way to verify the authenticity of any `.meve` proof.
 Verification ensures:
 
-- **Integrity** → the document has not been tampered with (SHA-256 validation).  
-- **Timestamp** → the proof contains a valid UTC timestamp.  
-- **Issuer** → the identity level (Personal, Pro, Official) matches expectations.  
+- **Integrity** → the document has not been tampered with (SHA-256 validation).
+- **Timestamp** → the proof contains a valid UTC timestamp.
+- **Issuer** → the identity level (Personal, Pro, Official) matches expectations.
 
 ---
 
