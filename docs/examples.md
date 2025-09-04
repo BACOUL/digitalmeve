@@ -1,7 +1,6 @@
-
 # 📂 Examples of MEVE Usage
 
-This page shows how `.meve.json` proofs are generated, structured, and verified, in line with the public schema `schemas/meve-1.schema.json`.
+This page shows how `.meve.json` proofs are generated, structured, and verified, in line with the public schema [`schemas/meve-1.schema.json`](../schemas/meve-1.schema.json).
 
 ---
 
@@ -9,6 +8,7 @@ This page shows how `.meve.json` proofs are generated, structured, and verified,
 
 **Input file:** `contract.pdf`  
 **Command:**
+
 ```bash
 digitalmeve generate examples/contract.pdf --outdir examples --issuer "Personal"
 
@@ -34,7 +34,9 @@ Verification (CLI):
 
 digitalmeve verify examples/contract.pdf.meve.json
 
-Expected output: {"ok": true, ...}
+Expected output:
+
+{"ok": true, ...}
 
 > Note: timestamp is kept for backward compatibility. The schema uses issued_at as the canonical field.
 
@@ -79,10 +81,8 @@ Metadata is optional and can include arbitrary key/value pairs under the meta ob
 
 For Pro issuers (email confirmed), the verifier will compute:
 
-"status": "Pro"
-
+"status": "Pro",
 "certified": "email"
-
 
 Example snippet (illustrative):
 
@@ -94,7 +94,8 @@ Example snippet (illustrative):
   "hash_sha256": "9a9a...1111"
 }
 
-> In the current MVP, Pro/Official elevation is mocked in docs. Production flow will add email/DNS checks and optional signature fields (key_id, signature, verified_domain).
+> In the current MVP, Pro/Official elevation is mocked in docs.
+Production flow will add email/DNS checks and optional signature fields (key_id, signature, verified_domain).
 
 
 
@@ -110,6 +111,4 @@ cd examples
 
 This calls the CLI for each supported file and writes <file>.meve.json sidecars next to sources.
 
-
 ---
-
