@@ -1,37 +1,38 @@
-# .pre-commit-config.yaml
-ci:
-  autofix_prs: false
-  skip: []
-
-repos:
-  # Hygiène de base du dépôt
-  - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
-    hooks:
-      - id: end-of-file-fixer
-        # Les fichiers Markdown gardent souvent une fin de fichier spécifique
-        # et des tableaux où l'EOL auto peut gêner.
-        exclude: '\.(md|MD)$'
-      - id: trailing-whitespace
-        # On exclut le Markdown pour préserver les deux espaces (sauts de ligne)
-        exclude: '\.(md|MD)$'
-      - id: check-added-large-files
-      - id: detect-private-key
-      - id: check-json
-      - id: check-yaml
-      - id: check-toml
-
-  # Ruff (lint Python rapide + autofix)
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.7.0
-    hooks:
-      - id: ruff
-        args: ["--fix", "--exit-non-zero-on-fix"]
-      - id: ruff-format
-
-  # Black (formatage Python cohérent)
-  - repo: https://github.com/psf/black
-    rev: 24.8.0
-    hooks:
-      - id: black
-        language_version: python3
+--- a/.pre-commit-config.yaml
++++ b/.pre-commit-config.yaml
+@@
+ ci:
+   autofix_prs: false
+   skip: []
+ 
+ repos:
+   # Hooks génériques (hygiène de repo)
+   - repo: https://github.com/pre-commit/pre-commit-hooks
+     rev: v4.6.0
+     hooks:
+-      - id: end-of-file-fixer
+-      - id: trailing-whitespace
++      - id: end-of-file-fixer
++        exclude: '\.md$'
++      - id: trailing-whitespace
++        exclude: '\.md$'
+       - id: check-added-large-files
+       - id: detect-private-key
+       - id: check-json
+       - id: check-yaml
+       - id: check-toml
+ 
+   # Ruff (lint rapide + fix auto)
+   - repo: https://github.com/astral-sh/ruff-pre-commit
+     rev: v0.7.0
+     hooks:
+       - id: ruff
+         args: ["--fix", "--exit-non-zero-on-fix"]  # corrige & échoue si fix
+       - id: ruff-format
+ 
+   # Black (formatage PEP8 cohérent)
+   - repo: https://github.com/psf/black
+     rev: 24.8.0
+     hooks:
+       - id: black
+         language_version: python3
