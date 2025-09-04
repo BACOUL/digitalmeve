@@ -80,3 +80,11 @@ pip install digitalmeve
 digitalmeve generate path/to/file.pdf --issuer "Alice"
 digitalmeve verify path/to/file.pdf.meve.json --issuer "Alice"
 digitalmeve inspect path/to/file.pdf.meve.json
+
+# --- Python API ------------------------------------------
+from digitalmeve.generator import generate_meve
+from digitalmeve.verifier import verify_meve
+
+proof = generate_meve("mydoc.pdf", issuer="Alice")
+ok, info = verify_meve(proof, expected_issuer="Alice")
+print(ok, info["subject"]["hash_sha256"])
