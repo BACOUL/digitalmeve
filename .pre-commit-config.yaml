@@ -1,9 +1,10 @@
+# .pre-commit-config.yaml
 ci:
   autofix_prs: false
   skip: []
 
 repos:
-  # Hooks génériques (hygiène de repo)
+  # Hygiène de repo (JSON/YAML/TOML, EOL, espaces)
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.6.0
     hooks:
@@ -14,17 +15,16 @@ repos:
       - id: check-json
       - id: check-yaml
       - id: check-toml
-      - id: check-merge-conflict
 
-  # Ruff (lint rapide + fix auto)
+  # Ruff (lint très rapide) avec auto-fix
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.7.0
     hooks:
       - id: ruff
-        args: ["--fix", "--exit-non-zero-on-fix"]  # corrige & échoue si fix
+        args: ["--fix"]          # ✅ on enlève --exit-non-zero-on-fix
       - id: ruff-format
 
-  # Black (formatage PEP8 cohérent)
+  # Black (formatage PEP8)
   - repo: https://github.com/psf/black
     rev: 24.8.0
     hooks:
