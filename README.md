@@ -72,7 +72,7 @@ Why `.meve`? **Existence** (file existed), **Integrity** (SHA-256), **Authentici
 
 ## 4. 🔧 Unified Quickstart (Install + CLI + Python)
 
-```bash
+
 # Install
 pip install digitalmeve
 
