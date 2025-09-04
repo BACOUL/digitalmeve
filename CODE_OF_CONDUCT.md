@@ -1,22 +1,24 @@
-# Code of Conduct — DigitalMeve
+# 📜 Code of Conduct — DigitalMeve
 
-We are committed to providing a **welcoming, respectful, and inclusive community** for everyone.  
+We are committed to providing a welcoming, respectful, and inclusive community for everyone.
 
 ---
 
 ## 💡 Our Standards
 
 Examples of positive behavior:
-- Being respectful and inclusive
-- Giving and gracefully accepting constructive feedback
-- Focusing on what is best for the community
-- Showing empathy and kindness
+
+- Being respectful and inclusive  
+- Giving and gracefully accepting constructive feedback  
+- Focusing on what is best for the community  
+- Showing empathy and kindness  
 
 Unacceptable behavior includes:
-- Harassment, discrimination, or personal attacks
-- Trolling, insults, or derogatory comments
-- Publishing others’ private information
-- Any conduct which could reasonably be considered inappropriate
+
+- Harassment, discrimination, or personal attacks  
+- Trolling, insults, or derogatory comments  
+- Publishing others’ private information  
+- Any conduct which could reasonably be considered inappropriate  
 
 ---
 
@@ -41,6 +43,7 @@ Reports will be handled confidentially and reviewed promptly.
 ## ⚖️ Enforcement
 
 Maintainers may take any action they deem appropriate, including:
+
 - Warning the offender  
 - Temporary or permanent ban  
 - Removal of contributions that violate this Code  
@@ -50,6 +53,7 @@ Maintainers may take any action they deem appropriate, including:
 ## 🌍 Scope
 
 This Code of Conduct applies:
+
 - In all project spaces (issues, PRs, discussions, docs)  
 - In external spaces when representing the project (social media, events)  
 
@@ -57,4 +61,4 @@ This Code of Conduct applies:
 
 ## 🙌 Attribution
 
-This Code of Conduct is adapted from the [Contributor Covenant v2.1](https://www.contributor-covenant.org/).
+This Code of Conduct is adapted from the [Contributor Covenant v2.1](https://www.contributor-covenant.org/version/2/1/code_of_conduct/).
