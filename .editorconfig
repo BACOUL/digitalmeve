@@ -2,8 +2,10 @@
 # coding styles between different editors and IDEs
 # https://editorconfig.org
 
+# root = true : ce fichier est prioritaire
 root = true
 
+# Règles globales
 [*]
 charset = utf-8
 end_of_line = lf
@@ -12,5 +14,24 @@ indent_style = space
 indent_size = 4
 trim_trailing_whitespace = true
 
+# Markdown : on garde les espaces de fin de ligne (retours manuels possibles)
 [*.md]
 trim_trailing_whitespace = false
+insert_final_newline = true
+
+# YAML (GitHub Actions, pre-commit config, etc.)
+[*.{yml,yaml}]
+indent_size = 2
+
+# JSON / TOML : 2 espaces (standards)
+[*.{json,toml}]
+indent_size = 2
+
+# Setup.cfg, INI files
+[*.ini]
+indent_size = 4
+
+# ReST docs (si jamais tu en ajoutes pour PyPI)
+[*.rst]
+trim_trailing_whitespace = false
+insert_final_newline = true
