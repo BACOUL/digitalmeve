@@ -21,7 +21,7 @@ repos:
     rev: v0.7.0
     hooks:
       - id: ruff
-        args: ["--fix"]          # ✅ on enlève --exit-non-zero-on-fix
+        args: ["--fix"]          # ✅ on laisse corriger sans faire échouer
       - id: ruff-format
 
   # Black (formatage PEP8)
