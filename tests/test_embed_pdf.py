@@ -5,6 +5,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 import pikepdf
+from pikepdf import Page
 
 from digitalmeve.embedding_pdf import embed_proof_pdf, extract_proof_pdf
 
@@ -22,7 +23,7 @@ def test_pdf_embed_and_extract(tmp_path: Path):
     # 1) créer un petit PDF de test
     src_pdf = tmp_path / "sample.pdf"
     with pikepdf.Pdf.new() as pdf:
-        pdf.pages.append(pikepdf.Page(width=200, height=200))
+        pdf.pages.append(Page.blank(width=200, height=200))
         pdf.save(str(src_pdf))
 
     assert src_pdf.exists()
@@ -55,7 +56,6 @@ def test_pdf_embed_and_extract(tmp_path: Path):
     assert extracted["meve_version"] == "1.0"
 
     # 5) robustesse : si on enlève la métadonnée, extract -> None
-    # (on simule en sauvegardant un PDF sans /MeveProof)
     no_meta = tmp_path / "no_meta.pdf"
     with pikepdf.Pdf.open(str(out_pdf)) as pdf2:
         info = pdf2.docinfo
