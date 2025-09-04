@@ -1,0 +1,61 @@
+diff --git a/.pre-commit-config.yaml b/.pre-commit-config.yaml
+index 0000000..1111111 100644
+--- a/.pre-commit-config.yaml
++++ b/.pre-commit-config.yaml
+@@
+-# (ancienne version présentant soit plusieurs documents YAML, soit une config incomplète)
++repos:
++  - repo: https://github.com/pre-commit/pre-commit-hooks
++    rev: v4.6.0
++    hooks:
++      - id: check-added-large-files
++      - id: detect-private-key
++      - id: end-of-file-fixer
++      - id: trailing-whitespace
++        # Autorise les sauts de ligne Markdown à 2 espaces dans TOUS les .md
++        # (sinon le hook modifie les fichiers et le CI échoue)
++        args:
++          - --markdown-linebreak-ext=md
++          - --markdown-linebreak-ext=MD
++
++  - repo: https://github.com/astral-sh/ruff-pre-commit
++    rev: v0.6.9
++    hooks:
++      - id: ruff
++        args: ["--exit-non-zero-on-fix"]
++      - id: ruff-format
++
++  - repo: https://github.com/psf/black
++    rev: 24.8.0
++    hooks:
++      - id: black
++
++  - repo: https://github.com/pre-commit/pre-commit-hooks
++    rev: v4.6.0
++    hooks:
++      - id: check-yaml
++      - id: check-json
++      - id: check-toml
++
++ci:
++  autofix_prs: false
++  autoupdate_schedule: quarterly
++
+diff --git a/.editorconfig b/.editorconfig
+index 2222222..3333333 100644
+--- a/.editorconfig
++++ b/.editorconfig
+@@
+ root = true
+ 
+ [*]
+ charset = utf-8
+ end_of_line = lf
+ insert_final_newline = true
+ indent_style = space
+ indent_size = 4
+ trim_trailing_whitespace = true
+ 
+ [*.md]
+-# (assure-toi que cette section existe et désactive le trimming en Markdown)
+ trim_trailing_whitespace = false
