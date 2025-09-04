@@ -88,3 +88,87 @@ from digitalmeve.verifier import verify_meve
 proof = generate_meve("mydoc.pdf", issuer="Alice")
 ok, info = verify_meve(proof, expected_issuer="Alice")
 print(ok, info["subject"]["hash_sha256"])
+
+--- 
+ ✅ With `.meve`, you can prove existence, integrity, and authenticity in seconds.
+ 
+ ---
+-
+-## 5. ✨ Features (Highlights)
+-
+-- SHA-256 hashing → guarantees file integrity  
+-- Timestamp (UTC ISO-8601) → proof of existence at a given time  
+-- Issuer levels → Personal / Pro / Official  
+-- JSON Schema validation → machine-verifiable against `schemas/meve-1.schema.json`  
+-- Metadata embedding → free-form key/values (author, project, notes…)  
+-- Sidecar `.meve.json` → scalable for any file type or size  
+-- CLI & Python API → generate, verify, inspect in seconds  
+-- CI/CD ready → GitHub Actions (tests, quality, publish)
+-
+----
+-
+-## 6. 📚 Documentation
+-
+-Overview (`docs/overview.md`) · Specification (`docs/specification.md`) · Generator Guide (`docs/generator-guide.md`) · Verification Guide (`docs/verification-guide.md`) · API Usage (`docs/API_USAGE.md`) · Security (`docs/security.md`) · Examples (`docs/examples.md`) · Pro (`docs/PRO.md`) · Official (`docs/OFFICIAL.md`) · Roadmap (`docs/roadmap.md`) · FAQ (`docs/faq.md`) · Glossary (`docs/glossary.md`)
+-
+----
+-
+-## 7. 🧪 Examples (runnable)
+-
+-Scripts: `examples/make_examples.sh` (generate) and `examples/verify_examples.sh` (verify).  
+-Resources: `examples/` folder and `docs/examples.md`.
+-
+----
+-
+-## 8. 🔑 Certification Levels
+-
+-- **Personal** → self-certification (existence proof only)  
+-- **Pro** → email verified (identity linked to a real professional)  
+-- **Official** → DNS/institution verified  
+-The level is computed by the verifier — not self-declared.
+-
+----
+-
+-## 9. 🛡 Security (Essentials)
+-
+-- Hashing (SHA-256) and immutability: any change invalidates the proof  
+-- Schema validation (`MEVE/1`)  
+-- Pro verification (email magic-link)  
+-- Official verification (DNS TXT `_meve.<domain>`)  
+-- Ed25519-ready (`key_id`, `signature`)  
+-- Transparency-ready (future transparency logs)  
+-- See `SECURITY.md` for disclosure & contact
+-
+----
+-
+-## 10. 📊 Use Cases
+-
+-Individuals (authorship, evidence) · Professionals (invoices, contracts, automation) · Institutions (diplomas, tenders, archives).
+-
+----
+-
+-## 11. 🚀 Roadmap (snapshot)
+-
+-Phase 1 (MVP): generator + verifier, CI, schema v1  
+-Phase 2 (≤6 months): Pro/Official onboarding, PDF export, public API  
+-Phase 3 (1–2 years): standardization, integrations, transparency log
+-
+----
+-
+-## 12. 🌐 Web Integration (planned)
+-
+-Future endpoints: `POST /api/generate` (returns `.meve.json`), `POST /api/verify` (returns `{ ok, info }`).
+-
+----
+-
+-## 13. 📦 Releases
+-
+-Current version: `1.7.1-dev` · Published automatically to PyPI.  
+-Workflow: version bump → tag → Actions → PyPI. See `CHANGELOG.md`.
+-
+----
+-
+-## 14. ⚖ License
+-
+-MIT — see `LICENSE`.
+-
