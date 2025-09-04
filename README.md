@@ -1,3 +1,4 @@
+
 # 🌍 DigitalMeve — The .MEVE Standard
 
 👉 *The first global platform to certify and verify the authenticity of your documents.*
@@ -10,6 +11,18 @@
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/digitalmeve.svg?logo=python&label=Python)](https://pypi.org/project/digitalmeve/)
 [![Downloads](https://pepy.tech/badge/digitalmeve)](https://pepy.tech/project/digitalmeve)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+
+---
+
+## 1. Overview
+
+DigitalMeve provides a **fast and universal** way to verify the authenticity of any `.meve` proof.
+
+**Verification ensures:**
+
+- **Integrity** → the document has not been tampered with (SHA-256 validation).
+- **Timestamp** → the proof contains a valid UTC timestamp.
+- **Issuer** → the identity level (Personal, Pro, Official) matches expectations.
 
 ---
 
@@ -28,36 +41,26 @@ DigitalMeve already includes a strong foundation:
 - ✅ **Quality**: linting, pre-commit hooks, coverage badge  
 - ✅ **Docs**: overview, specification, guides, roadmap, security, API usage  
 - ✅ **Examples**: real sample files + reproducible scripts (`examples/make_examples.sh`)  
-- ✅ **Governance**: [LICENSE](LICENSE), [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md), [CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md)  
+- ✅ **Governance**: [LICENSE](LICENSE), [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md), [CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md)
 
 ---
 
-### 🔑 Main commands
+## 3. 📖 Description / TL;DR
 
-# Generate a .meve.json proof
-digitalmeve generate path/to/file.pdf --issuer "Alice"
-
-# Verify a proof
-digitalmeve verify file.pdf.meve.json --expected-issuer "Alice"
-
-# Inspect a proof (human-readable summary)
-digitalmeve inspect file.pdf.meve.json
-
-3. 📖 Description / TL;DR
-
-DigitalMeve defines the universal format `.meve` (Memory Verified) to timestamp, hash, and certify digital documents.  
+DigitalMeve defines the universal format **`.meve` (Memory Verified)** to timestamp, hash, and certify digital documents.  
 👉 The goal: make `.meve` the “PDF of digital proof” worldwide.
 
-Why `.meve`?
+**Why `.meve`?**
 
 - **Existence** → prove a file existed at a given date.  
 - **Integrity** → SHA-256 hash, any change = invalid.  
 - **Authenticity** → issuer is always visible (Personal / Pro / Official).  
 - **Metadata** → optional key/values (author, project, contract ID…).  
-- **Portable** → lightweight JSON sidecar (file.pdf.meve.json).  
+- **Portable** → lightweight JSON sidecar (`file.pdf.meve.json`).  
 
-🔧 Quick Usage (CLI & Python)
+### 🔧 Quick Usage (CLI & Python)
 
+```bash
 # CLI usage
 digitalmeve generate mydoc.pdf --issuer "Alice"
 digitalmeve verify mydoc.pdf.meve.json --expected-issuer "Alice"
@@ -73,148 +76,260 @@ print(ok, info)
 
 ✅ With .meve, you can prove existence, integrity, and authenticity of any digital file in seconds.
 
-## 4. 📦 Installation
 
-DigitalMeve is available on [PyPI](https://pypi.org/project/digitalmeve/) and requires **Python 3.10+**.  
-Install it with:
+---
+
+4. 📦 Installation
+
+DigitalMeve is available on PyPI and requires Python 3.10+.
+
 pip install digitalmeve
 
-## 5. ⚡ Quickstart (CLI)
 
-After installing, you can immediately generate and verify `.meve` proofs using the CLI.
+---
 
-Generate a proof:
+5. ⚡ Quickstart (CLI)
+
+After installing, you can immediately generate and verify .meve proofs using the CLI.
+
+# Generate a proof
 digitalmeve generate path/to/file.pdf --issuer "Alice"
 
+# Verify a proof
 digitalmeve verify path/to/file.pdf.meve.json --expected-issuer "Alice"
 
+# Inspect a proof (human-readable summary)
 digitalmeve inspect path/to/file.pdf.meve.json
 
 
-## 6. ✨ Features (Highlights)
+---
 
-- **SHA-256 hashing** → guarantees file integrity.  
-- **Timestamp (UTC ISO-8601)** → proof of existence at a given time.  
-- **Issuer levels** →  
-  - *Personal*: self-certification.  
-  - *Pro*: email verified.  
-  - *Official*: DNS/institution verified.  
-- **JSON Schema validation** → all proofs are machine-verifiable against [`schemas/meve-1.schema.json`](schemas/meve-1.schema.json).  
-- **Metadata embedding** → free-form key/values (author, project, notes…).  
-- **Sidecar `.meve.json` files** → scalable for any file type or size.  
-- **CLI & Python API** → generate, verify, inspect proofs in seconds.  
-- **CI/CD ready** → tested with GitHub Actions (tests, quality, PyPI publish).
+6. ✨ Features (Highlights)
 
-## 7. 📚 Documentation
+SHA-256 hashing → guarantees file integrity.
 
-- [Overview](docs/overview.md)  
-- [Specification](docs/specification.md)  
-- [Generator Guide](docs/generator-guide.md)  
-- [Verification Guide](docs/verification-guide.md)  
-- [API Usage](docs/API_USAGE.md)  
-- [Security](docs/security.md)  
-- [Examples](docs/examples.md)  
-- [Pro Verification](docs/PRO.md)  
-- [Official Verification](docs/OFFICIAL.md)  
-- [Roadmap](docs/roadmap.md)  
-- [FAQ](docs/faq.md)  
-- [Glossary](docs/glossary.md)  
+Timestamp (UTC ISO-8601) → proof of existence at a given time.
 
-**Schema Reference:** [`MEVE/1 JSON Schema`](schemas/meve-1.schema.json)  
+Issuer levels →
 
-## 8. 🧪 Examples (runnable)
+Personal: self-certification.
 
-DigitalMeve provides reproducible examples to demonstrate `.meve` proofs in action.  
+Pro: email verified.
 
-Scripts included:  
-- `./examples/make_examples.sh` → generate sample proofs (invoice, photo, diploma).  
-- `./examples/verify_examples.sh` → verify all generated proofs.  
+Official: DNS/institution verified.
 
-Resources:  
-- [Examples folder](examples/)  
-- [Examples Guide](docs/examples.md)
 
-## 9. 🔑 Certification Levels
+JSON Schema validation → machine-verifiable against schemas/meve-1.schema.json.
+
+Metadata embedding → free-form key/values (author, project, notes…).
+
+Sidecar .meve.json files → scalable for any file type or size.
+
+CLI & Python API → generate, verify, inspect proofs in seconds.
+
+CI/CD ready → tested with GitHub Actions (tests, quality, PyPI publish).
+
+
+
+---
+
+7. 📚 Documentation
+
+Overview
+
+Specification
+
+Generator Guide
+
+Verification Guide
+
+API Usage
+
+Security
+
+Examples
+
+Pro Verification
+
+Official Verification
+
+Roadmap
+
+FAQ
+
+Glossary
+
+
+Schema Reference: MEVE/1 JSON Schema
+
+
+---
+
+8. 🧪 Examples (runnable)
+
+DigitalMeve provides reproducible examples to demonstrate .meve proofs in action.
+
+Scripts included:
+
+./examples/make_examples.sh → generate sample proofs (invoice, photo, diploma).
+
+./examples/verify_examples.sh → verify all generated proofs.
+
+
+Resources:
+
+Examples folder
+
+Examples Guide
+
+
+
+---
+
+9. 🔑 Certification Levels
 
 DigitalMeve defines three levels of certification:
 
-- **Personal** → self-certification (existence proof only).  
-- **Pro** → email verified (identity linked to a real professional).  
-- **Official** → DNS verified / institution (official certification).  
+Personal → self-certification (existence proof only).
+
+Pro → email verified (identity linked to a real professional).
+
+Official → DNS verified / institution (official certification).
+
 
 ⚡ Certification level is always computed automatically by the verifier — impossible to forge.
 
-## 10. 🛡 Security (Essentials)
 
-- **Hashing (SHA-256)** → ensures the file’s fingerprint is unique and tamper-proof.  
-- **Immutability** → any change in the original file immediately invalidates the `.meve` proof.  
-- **Schema validation** → every proof is checked against the official [MEVE/1 JSON Schema](schemas/meve-1.schema.json).  
-- **Sidecar JSON** → `.meve.json` proofs are stored separately, scalable for large files and non-intrusive.  
-- **Pro verification (email)** → issuer identity verified via magic-link workflow (no password).  
-- **Official verification (DNS)** → TXT challenge on `_meve.<domain>` binds proofs to a verified domain/institution.  
-- **Verification key (Ed25519-ready)** → proofs are designed to carry `key_id` (public key reference) and `signature` (Ed25519).  
-  - Public key = **verification key** used by verifiers; private key stored securely (HSM/KMS).  
-  - Offline verification: `signature` is checked against the file hash + proof manifest using the public key (`key_id`).  
-- **Transparency-ready** → compatible with future transparency logs (Merkle tree roots periodically published).  
-- **Disclosure & contact** → security guidance and reporting process in [SECURITY.md](SECURITY.md).
+---
 
-## 11. 📊 Use Cases
+10. 🛡 Security (Essentials)
 
-- **🧑 Individuals**  
-  - Proof of authorship (artworks, photos, manuscripts, ideas).  
-  - Timestamped evidence (insurance claims, personal agreements).  
+Hashing (SHA-256) → ensures the file’s fingerprint is unique and tamper-proof.
 
-- **👔 Professionals**  
-  - Certified invoices, contracts, and designs.  
-  - Intellectual property pre-proof and audits.  
-  - API integration for automated workflows.  
+Immutability → any change in the original file immediately invalidates the .meve proof.
 
-- **🏛 Institutions**  
-  - Universities → certified diplomas and transcripts.  
-  - Governments → official documents, tenders, and policies.  
-  - Courts & notaries → legal contracts, rulings, and certified archives.
+Schema validation → every proof is checked against the official MEVE/1 JSON Schema.
 
-## 12. 🚀 Roadmap (snapshot)
+Sidecar JSON → .meve.json proofs are stored separately, scalable for large files and non-intrusive.
 
-**Phase 1 — MVP (30 days)**  
-✅ Generator & Verifier (CLI + PyPI)  
-✅ GitHub CI/CD Workflows  
-✅ JSON Schema v1  
-🚧 FAQ + Glossary  
-🚧 Examples + scripts  
+Pro verification (email) → issuer identity verified via magic-link workflow (no password).
 
-**Phase 2 — 6 months**  
-- Pro verification (email magic link)  
-- Official verification (DNS challenge)  
-- Certified PDF export  
-- Public API SaaS  
+Official verification (DNS) → TXT challenge on _meve.<domain> binds proofs to a verified domain/institution.
 
-**Phase 3 — 1–2 years**  
-- International standardization  
-- ERP/CRM integrations  
-- Transparency log (Merkle root)  
-- Broad adoption across industries  
+Verification key (Ed25519-ready) → proofs can carry key_id (public key reference) and signature (Ed25519).
 
-📖 Full details → [docs/roadmap.md](docs/roadmap.md)
+Public key = verification key used by verifiers; private key stored securely (HSM/KMS).
 
-## 13. 🌐 Web Integration (planned)
+Offline verification: signature is checked against the file hash + proof manifest using the public key (key_id).
+
+
+Transparency-ready → compatible with future transparency logs (Merkle tree roots periodically published).
+
+Disclosure & contact → security guidance and reporting process in SECURITY.md.
+
+
+
+---
+
+11. 📊 Use Cases
+
+🧑 Individuals
+
+Proof of authorship (artworks, photos, manuscripts, ideas).
+
+Timestamped evidence (insurance claims, personal agreements).
+
+
+👔 Professionals
+
+Certified invoices, contracts, and designs.
+
+Intellectual property pre-proof and audits.
+
+API integration for automated workflows.
+
+
+🏛 Institutions
+
+Universities → certified diplomas and transcripts.
+
+Governments → official documents, tenders, and policies.
+
+Courts & notaries → legal contracts, rulings, and certified archives.
+
+
+
+---
+
+12. 🚀 Roadmap (snapshot)
+
+Phase 1 — MVP (30 days)
+✅ Generator & Verifier (CLI + PyPI)
+✅ GitHub CI/CD Workflows
+✅ JSON Schema v1
+🚧 FAQ + Glossary
+🚧 Examples + scripts
+
+Phase 2 — 6 months
+
+Pro verification (email magic link)
+
+Official verification (DNS challenge)
+
+Certified PDF export
+
+Public API SaaS
+
+
+Phase 3 — 1–2 years
+
+International standardization
+
+ERP/CRM integrations
+
+Transparency log (Merkle root)
+
+Broad adoption across industries
+
+
+📖 Full details → docs/roadmap.md
+
+
+---
+
+13. 🌐 Web Integration (planned)
 
 Future API endpoints (for Framer integration and external apps):
 
-- **POST /api/generate** → upload file + issuer → returns `.meve.json` (not stored).  
-- **POST /api/verify** → submit proof JSON → returns `{ ok, info }`.  
+POST /api/generate → upload file + issuer → returns .meve.json (not stored).
 
-🔗 Schema reference → [schemas/meve-1.schema.json](schemas/meve-1.schema.json)  
-📦 PyPI package → [DigitalMeve on PyPI](https://pypi.org/project/digitalmeve/)
+POST /api/verify → submit proof JSON → returns { ok, info }.
 
-## 14. 📦 Releases
 
-- Current version: **1.7.1-dev**  
-- Published automatically to [PyPI](https://pypi.org/project/digitalmeve/)  
-- Workflow: version bump → tag → GitHub Actions → PyPI publish  
-- Full changelog available in [CHANGELOG.md](CHANGELOG.md)
+🔗 Schema reference → schemas/meve-1.schema.json
+📦 PyPI package → DigitalMeve on PyPI
 
-## 15. ⚖ License
 
-This project is licensed under the **MIT License**.  
-See the full text in [LICENSE](LICENSE).
+---
+
+14. 📦 Releases
+
+Current version: 1.7.1-dev
+
+Published automatically to PyPI
+
+Workflow: version bump → tag → GitHub Actions → PyPI publish
+
+Full changelog available in CHANGELOG.md
+
+
+
+---
+
+15. ⚖ License
+
+This project is licensed under the MIT License.
+See the full text in LICENSE.
+
+---
+
