@@ -1,24 +1,19 @@
-# 💬 Support — DigitalMeve
+# Support
 
-Thanks for using DigitalMeve! Here’s how to get help:
+Thanks for using **DigitalMeve**!
 
-## 📚 Documentation
-- Quickstart & guides: `docs/` in this repository
-- Spec & security: `docs/specification.md`, `docs/security.md`
+## Channels
 
-## 🐛 Bugs
-- Open a GitHub Issue with a minimal reproduction.
-- Use the **Bug report** template and include:
-  - OS / Python version
-  - `digitalmeve` version
-  - Steps to reproduce and sample files (no sensitive data)
+- Issues: use [GitHub Issues](../../issues) for bugs and feature requests.
+- Security: see [SECURITY.md](SECURITY.md) and email `security@digitalmeve.com`.
+- Questions: open a “Question” issue or start a discussion.
 
-## 💡 Feature requests
-- Open a **Feature request** issue or start a Discussion.
+## Before opening an issue
 
-## 🔒 Security
-- **Do not** open public issues for vulnerabilities.
-- Follow our [Security Policy](SECURITY.md) and email **security@digitalmeve.com**.
+- Check existing issues and docs.
+- Provide minimal reproduction steps (commands, files, versions).
+- Include your OS, Python version, and DigitalMeve version.
 
-## ⏱ SLA (community)
-- First response aim: **≤ 72h** (business days)
+## SLA
+
+Best effort for community issues. Security reports receive first response ≤72h.
