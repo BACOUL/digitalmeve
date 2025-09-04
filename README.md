@@ -15,20 +15,20 @@
 
 ## Table of Contents
 
-1. [Overview](#1-overview)  
-2. [Patches Snapshot](#2--patches-snapshot-already-implemented)  
-3. [TL;DR](#3--tldr)  
-4. [Quickstart (Install + CLI + Python)](#4--quickstart-install--cli--python)  
-5. [Features](#5--features-highlights)  
-6. [Documentation](#6--documentation)  
-7. [Examples](#7--examples-runnable)  
-8. [Certification Levels](#8--certification-levels)  
-9. [Security](#9--security-essentials)  
-10. [Use Cases](#10--use-cases)  
-11. [Roadmap](#11--roadmap-snapshot)  
-12. [Web Integration (planned)](#12--web-integration-planned)  
-13. [Development](#13--development-contribute)  
-14. [Releases](#14--releases)  
+1. [Overview](#1-overview)
+2. [Patches Snapshot](#2--patches-snapshot-already-implemented)
+3. [TL;DR](#3--tldr)
+4. [Quickstart (Install + CLI + Python)](#4--quickstart-install--cli--python)
+5. [Features](#5--features-highlights)
+6. [Documentation](#6--documentation)
+7. [Examples](#7--examples-runnable)
+8. [Certification Levels](#8--certification-levels)
+9. [Security](#9--security-essentials)
+10. [Use Cases](#10--use-cases)
+11. [Roadmap](#11--roadmap-snapshot)
+12. [Web Integration (planned)](#12--web-integration-planned)
+13. [Development](#13--development-contribute)
+14. [Releases](#14--releases)
 15. [License](#15--license)
 
 ---
@@ -38,25 +38,25 @@
 DigitalMeve provides a **fast and universal** way to certify & verify digital files using `.meve` proofs.
 
 Verification ensures:
-- **Integrity** → the document has not been tampered with (SHA-256).  
-- **Timestamp** → the proof contains a valid UTC ISO-8601 timestamp.  
+- **Integrity** → the document has not been tampered with (SHA-256).
+- **Timestamp** → the proof contains a valid UTC ISO-8601 timestamp.
 - **Issuer** → identity level (Personal / Pro / Official) is explicit and checkable.
 
 ---
 
 ## 2. 🚀 Patches Snapshot (already implemented)
 
-- ✅ **Core library**: `generator.py` + `verifier.py`  
-- ✅ **CLI**: `digitalmeve generate / verify / inspect`  
-- ✅ **Tests**: `pytest` passing on Python 3.10 → 3.12  
-- ✅ **Official Schema**: [`schemas/meve-1.schema.json`](schemas/meve-1.schema.json)  
-- ✅ **CI/CD GitHub Actions**:  
-  - [tests.yml](.github/workflows/tests.yml) (unit tests)  
-  - [quality.yml](.github/workflows/quality.yml) (ruff, black)  
-  - [publish.yml](.github/workflows/publish.yml) (PyPI via OIDC)  
-- ✅ **Quality**: linting, pre-commit hooks, coverage badge  
-- ✅ **Docs**: overview, specification, guides, roadmap, security, API usage  
-- ✅ **Examples**: reproducible scripts (`examples/make_examples.sh`)  
+- ✅ **Core library**: `generator.py` + `verifier.py`
+- ✅ **CLI**: `digitalmeve generate / verify / inspect`
+- ✅ **Tests**: `pytest` passing on Python 3.10 → 3.12
+- ✅ **Official Schema**: [`schemas/meve-1.schema.json`](schemas/meve-1.schema.json)
+- ✅ **CI/CD GitHub Actions**:
+  - [tests.yml](.github/workflows/tests.yml) (unit tests)
+  - [quality.yml](.github/workflows/quality.yml) (ruff, black)
+  - [publish.yml](.github/workflows/publish.yml) (PyPI via OIDC)
+- ✅ **Quality**: linting, pre-commit hooks, coverage badge
+- ✅ **Docs**: overview, specification, guides, roadmap, security, API usage
+- ✅ **Examples**: reproducible scripts (`examples/make_examples.sh`)
 - ✅ **Governance**: [LICENSE](LICENSE), [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md), [CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md)
 
 **Main CLI commands**
@@ -279,6 +279,5 @@ MIT — see LICENSE.
 
 
 
-Tu peux maintenant coller ça dans `README.md`.  
+Tu peux maintenant coller ça dans `README.md`.
 Si tu veux, je peux ensuite te proposer une petite variante avec **Table des matières cliquable** générée automatiquement (compatible GitHub/PyPI) ou ajouter un **badge de couverture automatique**.
-
