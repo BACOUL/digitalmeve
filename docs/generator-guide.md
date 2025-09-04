@@ -1,6 +1,6 @@
 # ⚙️ MEVE — Generator Guide (Developer)
 
-This guide explains how to generate `.meve.json` proof files with **DigitalMeve**.
+This guide explains how to generate `.meve.json` proof files with DigitalMeve.
 
 ---
 
@@ -100,3 +100,5 @@ Never modify a .meve.json manually — any change invalidates the proof.
 
 📚 Next: Verification Guide
 📖 Full Spec: Specification
+
+---
