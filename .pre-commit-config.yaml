@@ -3,25 +3,28 @@ ci:
   skip: []
 
 repos:
+  # Hooks génériques (hygiène de repo)
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.6.0
     hooks:
       - id: end-of-file-fixer
       - id: trailing-whitespace
-        files: '^(?!.*\.md$).*'  # ignore .md pour ne pas casser la mise en page
       - id: check-added-large-files
       - id: detect-private-key
       - id: check-json
       - id: check-yaml
       - id: check-toml
+      - id: check-merge-conflict
 
+  # Ruff (lint rapide + fix auto)
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.7.0
     hooks:
       - id: ruff
-        args: ["--fix", "--exit-non-zero-on-fix"]
+        args: ["--fix", "--exit-non-zero-on-fix"]  # corrige & échoue si fix
       - id: ruff-format
 
+  # Black (formatage PEP8 cohérent)
   - repo: https://github.com/psf/black
     rev: 24.8.0
     hooks:
