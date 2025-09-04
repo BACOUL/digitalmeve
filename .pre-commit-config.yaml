@@ -1,98 +1,29 @@
-diff --git a/.pre-commit-config.yaml b/.pre-commit-config.yaml
-index 6c6c6c6..7a7a7a7 100644
---- a/.pre-commit-config.yaml
-+++ b/.pre-commit-config.yaml
-@@ -1,29 +1,49 @@
--ci:
--  autofix_prs: false
--  skip: []
-+ci:
-+  autofix_prs: false
-+  skip: []
- 
- repos:
-   # Hooks génériques (hygiène de repo)
-   - repo: https://github.com/pre-commit/pre-commit-hooks
--    rev: v4.6.0
-+    rev: v4.6.0
-     hooks:
-       - id: end-of-file-fixer
--      - id: trailing-whitespace
-+      - id: trailing-whitespace
-+        # Ne pas casser la mise en page Markdown (listes, tableaux…)
-+        files: '^(?!.*\.md$).*'
-       - id: check-added-large-files
-       - id: detect-private-key
-       - id: check-json
-       - id: check-yaml
-       - id: check-toml
- 
-   # Ruff (lint rapide + fix auto)
-   - repo: https://github.com/astral-sh/ruff-pre-commit
--    rev: v0.7.0
-+    rev: v0.7.0
-     hooks:
-       - id: ruff
--        args: ["--fix", "--exit-non-zero-on-fix"]  # corrige & échoue si fix
-+        args: ["--fix", "--exit-non-zero-on-fix"]
-       - id: ruff-format
- 
-   # Black (formatage PEP8 cohérent)
-   - repo: https://github.com/psf/black
--    rev: 24.8.0
-+    rev: 24.8.0
-     hooks:
-       - id: black
-         language_version: python3
-+
-+  # (Optionnel) Markdownlint si tu veux une qualité stricte MD plus tard
-+  # - repo: https://github.com/igorshubovych/markdownlint-cli
-+  #   rev: v0.41.0
-+  #   hooks:
-+  #     - id: markdownlint
-+  #       additional_dependencies: ["markdownlint"]
-+  #       args: ["--disable", "MD013"]  # pas de limite de longueur de ligne
-diff --git a/.editorconfig b/.editorconfig
-new file mode 100644
-index 0000000..1111111
---- /dev/null
-+++ b/.editorconfig
-@@ -0,0 +1,22 @@
-+# EditorConfig helps developers define and maintain consistent styles
-+# https://editorconfig.org
-+
-+root = true
-+
-+[*]
-+end_of_line = lf
-+charset = utf-8
-+insert_final_newline = true
-+indent_style = space
-+indent_size = 4
-+trim_trailing_whitespace = true
-+
-+[*.md]
-+# Ne JAMAIS supprimer les espaces en fin de ligne dans le Markdown
-+trim_trailing_whitespace = false
-+indent_size = 2
-+
-+[*.yml]
-+indent_size = 2
-+
-+[Makefile]
-+indent_style = tab
-diff --git a/.gitattributes b/.gitattributes
-new file mode 100644
-index 0000000..2222222
---- /dev/null
-+++ b/.gitattributes
-@@ -0,0 +1,9 @@
-+# Normalise les fins de ligne sous Git
-+* text=auto eol=lf
-+
-+# Les binaires ne doivent pas être transformés
-+*.png binary
-+*.jpg binary
-+*.jpeg binary
-+*.pdf binary
-+*.gif binary
+ci:
+  autofix_prs: false
+  skip: []
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+        files: '^(?!.*\.md$).*'  # ignore .md pour ne pas casser la mise en page
+      - id: check-added-large-files
+      - id: detect-private-key
+      - id: check-json
+      - id: check-yaml
+      - id: check-toml
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.7.0
+    hooks:
+      - id: ruff
+        args: ["--fix", "--exit-non-zero-on-fix"]
+      - id: ruff-format
+
+  - repo: https://github.com/psf/black
+    rev: 24.8.0
+    hooks:
+      - id: black
+        language_version: python3
