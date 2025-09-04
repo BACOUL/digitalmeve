@@ -5,7 +5,7 @@ This document explains how to get help depending on your profile (individual, pr
 
 ---
 
-## 📚 1. Documentation
+## 📚 Documentation
 
 - [Overview](docs/overview.md) — introduction to `.meve`  
 - [Generator Guide](docs/generator-guide.md) — how to create proofs  
@@ -16,18 +16,18 @@ This document explains how to get help depending on your profile (individual, pr
 
 ---
 
-## 🙋 2. Asking Questions
+## 🙋 Asking Questions
 
 - First check the [Docs](docs/index.md) and [Examples](docs/examples.md).  
 - Search [GitHub Issues](https://github.com/BACOUL/digitalmeve/issues).  
-- If you don’t find an answer, open a new **Question** issue using the template.
+- If you don’t find an answer, open a new **Question** issue using the template.  
 
 ---
 
-## 🐛 3. Reporting Bugs
+## 🐛 Reporting Bugs
 
 - Use the [Bug Report template](.github/ISSUE_TEMPLATE/bug_report.md).  
-- Include:
+- Include:  
   - Your Python version (`python --version`)  
   - Your DigitalMeve version (`pip show digitalmeve`)  
   - Steps to reproduce  
@@ -35,25 +35,25 @@ This document explains how to get help depending on your profile (individual, pr
 
 ---
 
-## 💼 4. Professional & Institutional Support
+## 💼 Professional & Institutional Support
 
 - **Pro accounts** (companies/freelancers): open a **Feature Request** or contact us at `pro@digitalmeve.com`.  
-- **Institutions** (universities, courts, administrations): contact us at `official@digitalmeve.com` for onboarding.
+- **Institutions** (universities, courts, administrations): contact us at `official@digitalmeve.com` for onboarding.  
 
 ---
 
-## 🔐 5. Security Issues
+## 🔐 Security Issues
 
 If you discover a vulnerability, please follow our [Security Policy](SECURITY.md).  
-Contact: `security@digitalmeve.com` (first response ≤72h).
+📧 Contact: **security@digitalmeve.com** (first response ≤72h).  
 
 ---
 
-## 🛠 6. Contribution Help
+## 🛠 Contribution Help
 
 See [Contributing Guide](CONTRIBUTING.md) for coding standards, branching, and PR rules.  
-PRs are welcome once the CI is green ✅.
+PRs are welcome once the CI is green ✅.  
 
 ---
 
-✍️ Maintained by the DigitalMeve Team.
+✍️ Maintained by the **DigitalMeve Team**.
