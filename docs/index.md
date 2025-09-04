@@ -1,6 +1,6 @@
 # 🌍 DigitalMeve — Documentation Index
 
-Welcome to **DigitalMeve**, the `.MEVE` (Memory Verified) standard for **timestamping, hashing, and certifying** digital content.
+Welcome to **DigitalMeve**, the `.MEVE` (Memory Verified) standard for timestamping, hashing, and certifying digital content.
 
 ---
 
@@ -8,9 +8,9 @@ Welcome to **DigitalMeve**, the `.MEVE` (Memory Verified) standard for **timesta
 
 DigitalMeve introduces a lightweight, universal format `.meve` that proves in less than 2 seconds:
 
-1. The **existence** of a file at a given time.  
-2. The **integrity** of its content (via SHA-256).  
-3. The **authenticity** of the issuer (Personal, Pro, Official).  
+- The existence of a file at a given time  
+- The integrity of its content (via **SHA-256**)  
+- The authenticity of the issuer (*Personal*, *Pro*, *Official*)  
 
 ---
 
@@ -70,11 +70,11 @@ Official → verified institutions (DNS/org key)
 
 🛡 Security
 
-Tamper-proof (hash mismatch invalidates).
+Tamper-proof (hash mismatch invalidates)
 
-Works offline (local verify).
+Works offline (local verify)
 
-Transparency logs planned for rotation/revocation.
+Transparency logs planned for rotation/revocation
 
 
 
@@ -82,11 +82,11 @@ Transparency logs planned for rotation/revocation.
 
 🚀 Roadmap
 
-Phase 1 (MVP): generator + verifier
+Phase 1 (MVP) → generator + verifier
 
-Phase 2: Pro/Official onboarding, PDF export, API
+Phase 2 → Pro/Official onboarding, PDF export, API
 
-Phase 3: International standardization + SaaS integrations
+Phase 3 → International standardization + SaaS integrations
 
 
 
@@ -94,7 +94,7 @@ Phase 3: International standardization + SaaS integrations
 
 📢 Final Goal
 
-Make .MEVE the universal format of digital certification.
+Make .MEVE the universal format of digital certification:
 
 Free for individuals
 
@@ -104,3 +104,5 @@ Institutional license for official issuers
 
 
 👉 DigitalMeve — Trust in every file.
+
+---
