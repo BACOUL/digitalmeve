@@ -4,13 +4,14 @@ import argparse
 import json
 import sys
 from pathlib import Path
-from typing import Optional, List
+from typing import Optional
 
 from .generator import generate_meve
 from .verifier import verify_meve
 
 
 # -------- utils -----------------------------------------------------------
+
 
 def _read_text_from_optional_file(path_arg: Optional[str]) -> str:
     """
@@ -24,6 +25,7 @@ def _read_text_from_optional_file(path_arg: Optional[str]) -> str:
 
 
 # -------- commandes -------------------------------------------------------
+
 
 def cmd_generate(args: argparse.Namespace) -> int:
     """
@@ -87,6 +89,7 @@ def cmd_verify(args: argparse.Namespace) -> int:
 
 # -------- parser / main ---------------------------------------------------
 
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="digitalmeve")
     sub = parser.add_subparsers(dest="command", metavar="{generate,inspect,verify}")
@@ -139,7 +142,7 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def main(argv: Optional[List[str]] = None) -> int:
+def main(argv: Optional[list[str]] = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
     return args.func(args)
