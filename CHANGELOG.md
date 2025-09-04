@@ -1,55 +1,54 @@
- 📜 Changelog
-
-All notable changes to this project will be documented here.
-
-# Changelog — DigitalMeve
-
-All notable changes to this project will be documented in this file.  
-Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and
-versions follow [Semantic Versioning](https://semver.org/).
+# 📜 Changelog — DigitalMeve
+All notable changes to this project are documented here.  
+Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versions follow [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 ### Added
-- Documentation: expanded guides under `docs/` (API usage, generator guide, verification guide, overview, specification, security, roadmap, Pro/Official drafts, examples).
+- Documentation: expanded guides in `docs/` (API usage, generator guide, verification guide, overview, specification, security, roadmap, Pro/Official drafts, examples).
 - Project hygiene: `SECURITY.md`, improved issue/PR templates.
-- CI: stabilized quality/tests/publish workflows matrices.
 
 ### Changed
-- README: professional structure with badges, quickstart, spec links.
-- Internal wording and consistency across docs (EN-first).
+- README: badges, quickstart, and links to docs.
+- Wording consistency across docs (EN-first).
 
 ### Fixed
 - Minor typos and broken links in docs.
 
 ---
 
+## [1.7.1-dev] — 2025-09-xx
+### Changed
+- Work-in-progress development snapshot.
+
+---
+
 ## [1.7.0] — 2025-08-30
 ### Added
-- `generate_meve(...)` now returns a richer dict including:
-  - `meve_version`, `issuer`, `timestamp`, `metadata`
-  - `subject` `{ filename, size, hash_sha256 }`
-  - top-level `hash` (duplicate of `subject.hash_sha256`)
-  - `preview_b64` (short base64 preview for quick checks)
-- Sidecar writing support: `outdir` parameter writes `<file>.meve.json`.
+- `generate_meve(...)` returns richer dict:
+  - `meve_version`, `issuer`, `issued_at` (UTC ISO-8601), `metadata`.
+  - `subject` `{ filename, size, hash_sha256 }`.
+  - top-level `hash` (duplicate of `subject.hash_sha256`).
+  - `preview_b64` (short base64 preview).
+- Sidecar writing via `outdir` (`<file>.meve.json`).
 
 ### Changed
-- Verifier accepts dicts, JSON strings, bytes, or `*.meve.json` paths.
-- Error messages normalized: `"Missing required keys"`, `"Issuer mismatch"`, `"Hash mismatch"`, `"Invalid proof"`.
+- Verifier accepts dicts, JSON strings/bytes, or `*.meve.json` paths.
+- Normalized error messages: “Missing required keys”, “Issuer mismatch”, “Hash mismatch”, “Invalid proof”.
 
 ### Fixed
-- Test suite alignment across Python 3.10/3.11/3.12.
-- CI workflow stability for parallel matrix runs.
+- Test suite alignment on Python 3.10–3.12.
+- CI workflow stability for matrix runs.
 
 ---
 
 ## [1.6.1] — 2025-08-30
 ### Fixed
-- Core: small robustness improvements in verifier input parsing.
-- Docs: initial README cleanup.
+- Verifier input parsing robustness.
+- Initial README cleanup.
 
 ---
 
-## [1.6.0] — 2025-08-30
+## [1.6.0] — 2025-08-28
 ### Added
 - Initial public release on PyPI.
 - Basic generator & verifier functions.
@@ -69,141 +68,5 @@ versions follow [Semantic Versioning](https://semver.org/).
 
 ---
 
-[Unreleased]: ../../compare/v1.7.0...HEAD
-[1.7.0]: ../../releases/tag/v1.7.0
-[1.6.1]: ../../releases/tag/v1.6.1
-[1.6.0]: ../../releases/tag/v1.6.0
-[1.5.0]: ../../releases/tag/v1.5.0
-[1.0.0]: ../../releases/tag/v1.0.0
-## [1.7.0] - 2025-08-30
-### Added
-- Polished generator & verifier (consistent keys, clearer error messages)
-- Docs: specification, security, examples, roadmap
-- CI stabilized (flake8 line length, tests 3.10/3.11/3.12)
-
-### Changed
-- Version alignment across code & tests
-
-### Fixed
-- Pre-commit/flake8 issues in `verifier.py`
-
-## [1.6.1] - 2025-08-29
-- Maintenance release, docs & tests updates.
-
-## [1.6.0] - 2025-08-28
-- Public stabilization of the 1.x line.
-## [1.6.1] - 2025-08-30
-### Added
-- Initial implementation of `.meve` proof generator (`generate_meve`)  
-- Basic verifier (`verify_meve`) with issuer & hash validation  
-- Support for metadata embedding and sidecar `.meve.json`  
-- Unit test coverage for generator, verifier, and utils  
-- Documentation: README overhaul, `generator-guide.md`, `verification-guide.md`  
-
-### Fixed
-- Alignment between `__version__` and `pyproject.toml`  
-- Test suite stability (`pytest -v`)  
-
-### Security
-- Verification detects missing keys, issuer mismatch, or tampered hash  
-- Proofs are tamper-evident by design (SHA-256 + UTC timestamp)  
-
----
-
-## [Unreleased]
-- Web drag & drop verifier  
-- REST API for verification  
-- Pro/Official certification levels
-All notable changes to this project will be documented in this file.
-Format: Keep a Changelog. Versioning: Semantic Versioning.
-
-## [Unreleased]
-
-### Added
-- Documentation scaffolding: specification, security, examples, roadmap.
-- Issue templates (bug & feature), SECURITY, CONTRIBUTING, Code of Conduct.
-- Dependabot & CODEOWNERS.
-
-### Changed
-- CI quality fixed (flake8 line length), consistent error messages.
-
-### Fixed
-- `generator.py`: adds `hash`, `preview_b64`, `timestamp`, `metadata`, `subject{}`.
-- `verifier.py`: stable `(ok, info)` API; exact error wording (“Missing required keys”).
-- `utils.py`: `format_identity()` handles `{"identity": ...}`.
-- Tests aligned and passing on 3.10/3.11/3.12.
-
-## [1.6.0] - 2025-08-30
-Initial internal stabilization (no public release). All tests green, quality green.
-## [1.6.0] - 2025-08-29
-### Added
-- Stabilisation publique de la branche **1.x** (passage en 1.6.0).
-- Documentation initiale (overview/specification/examples).
-- Module `core.py` (implémentation de base) + tests.
-
-### Changed
-- Alignement versionning (`__init__`, `pyproject.toml`, tests).
-- Nettoyage et robustesse `pyproject.toml`.
-
-### CI/CD
-- Tests (Python 3.10–3.12) ✅
-- Publication PyPI via **Trusted Publisher (OIDC)** prête.# Changelog — DigitalMeve
-
-Ce projet suit [SemVer](https://semver.org/lang/fr/) et le format recommandé par [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/).
-
-## [Unreleased]
-### Ajouté
-- Pages de documentation initiales (`docs/overview.md`, `docs/specification.md`, `docs/examples.md`).
-- Politique de sécurité complète (`SECURITY.md`).
-- Guide de contribution (`CONTRIBUTING.md`).
-
-### Modifié
-- README : badges (tests, publish, PyPI, Python, downloads, licence) et liens vers la doc.
-
----
-
-## [0.1.5] — 2025-08-28
-### Ajouté
-- Version initiale du format **.MEVE** (preuve d’existence & d’intégrité).
-- Workflows GitHub Actions : `tests.yml` (CI) et `publish.yml` (PyPI Trusted Publisher).
-- Configuration `pyproject.toml` et métadonnées Python (3.10–3.12).
-- Première release publique (PyPI).
-
-### Sécurité
-- Hash **SHA-256** obligatoire.
-- Base de signature **Ed25519** prévue (v1.1).
-# Changelog
-Toutes les modifications notables de ce projet seront documentées dans ce fichier.
-Ce format suit [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/) et le versionnage [SemVer](https://semver.org/lang/fr/).
-
-## [0.1.5] - 2025-08-29
-
-### Added
-- Nouveau module `digitalmeve.core` avec l’implémentation de référence du format **.MEVE** :
-  - `generate_meve(data, issuer)` – génère un objet MEVE (horodatage + hash + signature simple).
-  - `verify_meve(meve, expected_issuer)` – vérifie l’authenticité d’un MEVE.
-- Export public mis à jour dans `digitalmeve/__init__.py` (import direct des fonctions cœur).
-
-### Changed
-- Métadonnées projet corrigées dans `pyproject.toml` (syntaxe TOML, découverte de packages, classifiers).
-
-### Tests
-- Nouveau `tests/test_core.py` couvrant génération & vérification (cas nominal).
-
-### CI
-- Workflow GitHub Actions **tests** au vert (Python 3.10–3.12).
-
-### Notes
-- Pas de breaking change ; les CLI existants continuent de fonctionner.
-
----
-
-## [0.1.4] - 2025-08-XX
-*(section antérieure si applicable — laissez telle quelle si elle existe déjà)*
----
-
-## Historique antérieur
-- Prototypes et POC internes avant 0.1.5 (non publiés).
-
-[Unreleased]: ../../compare/v0.1.5...HEAD
-[0.1.5]: ../../releases/tag/v0.1.5
+## Historical (pre-1.0)
+- Internal prototypes and POCs.
