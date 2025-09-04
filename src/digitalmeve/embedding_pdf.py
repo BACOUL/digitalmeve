@@ -1,67 +1,44 @@
-# src/digitalmeve/embedding_pdf.py
-from __future__ import annotations
-
-import json
-from pathlib import Path
-from typing import Any, Dict, Optional, Union
-
-import pikepdf
-
-
-# Clé utilisée dans les métadonnées Document Info du PDF
-_DOCINFO_KEY = "/MeveProof"
-
-
-def _minified_json(d: Dict[str, Any]) -> str:
-    """JSON compact (UTF-8) pour stockage en métadonnées."""
-    return json.dumps(d, ensure_ascii=False, separators=(",", ":"))
-
-
-def embed_proof_pdf(
-    in_path: Union[str, Path],
-    proof: Dict[str, Any],
-    out_path: Optional[Union[str, Path]] = None,
-) -> Path:
-    """
-    Intègre la preuve .meve (dict) dans les métadonnées PDF (Document Info).
-    - Écrit la clé /MeveProof avec un JSON minifié.
-    - Si out_path n'est pas fourni, crée <name>.meve.pdf à côté du fichier source.
-    Retourne le chemin du PDF certifié.
-    """
-    src = Path(in_path)
-    if not src.exists():
-        raise FileNotFoundError(src)
-
-    # Nom de sortie par défaut : document.meve.pdf
-    if out_path is None:
-        out_path = src.with_name(f"{src.stem}.meve.pdf")
-    out = Path(out_path)
-
-    # Ouverture + écriture Document Info
-    with pikepdf.Pdf.open(str(src)) as pdf:
-        info = pdf.docinfo or pikepdf.Dictionary()
-        info[_DOCINFO_KEY] = _minified_json(proof)
-        pdf.docinfo = info
-        pdf.save(str(out))
-
-    return out
-
-
-def extract_proof_pdf(in_path: Union[str, Path]) -> Optional[Dict[str, Any]]:
-    """
-    Extrait et retourne la preuve (.meve) depuis les métadonnées PDF.
-    Si absente ou invalide → retourne None.
-    """
-    src = Path(in_path)
-    if not src.exists():
-        raise FileNotFoundError(src)
-
-    with pikepdf.Pdf.open(str(src)) as pdf:
-        info = pdf.docinfo or {}
-        raw = info.get(_DOCINFO_KEY)
-        if not raw:
-            return None
-        try:
-            return json.loads(str(raw))
-        except Exception:
-            return None
+diff --git a/src/digitalmeve/embedding_pdf.py b/src/digitalmeve/embedding_pdf.py
+--- a/src/digitalmeve/embedding_pdf.py
++++ b/src/digitalmeve/embedding_pdf.py
+@@
+-# (ancien code)
++from __future__ import annotations
++
++import json
++from pathlib import Path
++
++import pikepdf
++from pikepdf import Name, Pdf, String
++
++
++MEVE_INFO_KEY = Name("/MEVE")  # clé standardisée pour stocker la preuve
++
++
++def embed_proof_pdf(src_pdf: str | Path, proof: dict, out_pdf: str | Path) -> None:
++    """
++    Emballe la preuve JSON dans les métadonnées Info du PDF sous la clé /MEVE.
++    Note: avec pikepdf, on modifie pdf.docinfo *en place* (pas d'affectation d'un dict).
++    """
++    src_pdf = str(src_pdf)
++    out_pdf = str(out_pdf)
++    with Pdf.open(src_pdf) as pdf:
++        info = pdf.docinfo
++        info[MEVE_INFO_KEY] = String(json.dumps(proof, ensure_ascii=False))
++        pdf.save(out_pdf)
++
++
++def extract_proof_pdf(pdf_path: str | Path) -> dict | None:
++    """
++    Récupère et désérialise la preuve stockée sous /MEVE.
++    Renvoie None si absente ou invalide.
++    """
++    pdf_path = str(pdf_path)
++    with Pdf.open(pdf_path) as pdf:
++        raw = pdf.docinfo.get(MEVE_INFO_KEY)
++        if raw is None:
++            return None
++        try:
++            return json.loads(str(raw))
++        except Exception:
++            return None
