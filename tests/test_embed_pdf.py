@@ -1,4 +1,3 @@
-
 from __future__ import annotations
 
 from datetime import datetime, timezone
@@ -20,7 +19,9 @@ def test_pdf_embed_and_extract(tmp_path: Path):
     # 2) preuve minimale à embarquer
     proof = {
         "meve_version": "1.0",
-        "issued_at": datetime(2025, 1, 1, tzinfo=timezone.utc).isoformat().replace("+00:00", "Z"),
+        "issued_at": datetime(2025, 1, 1, tzinfo=timezone.utc)
+        .isoformat()
+        .replace("+00:00", "Z"),
         "issuer": "Personal",
         "status": "Personal",
         "certified": "self",
