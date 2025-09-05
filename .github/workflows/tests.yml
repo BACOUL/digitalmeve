@@ -2,16 +2,17 @@ name: tests
 
 on:
   push:
-    branches:
-      - main
+    branches: [ "main", "master" ]
   pull_request:
 
 permissions:
   contents: read
+  id-token: write   # nécessaire pour Codecov v4 sans token
 
 jobs:
   test:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
 
@@ -31,6 +32,6 @@ jobs:
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
           files: ./coverage.xml
-          fail_ci_if_error: true
+          fail_ci_if_error: false   # ne casse pas le job si Codecov a un pépin
+          slug: BACOUL/digitalmeve   # explicite le repo (sécurité)
