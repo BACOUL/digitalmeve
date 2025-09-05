@@ -1,23 +1,50 @@
 version: 2
+
 updates:
+  # ===== Pip (projet Python) =====
   - package-ecosystem: "pip"
-    directory: "/"
+    directory: "/"                # pyproject.toml à la racine
     schedule:
       interval: "weekly"
+      day: "monday"
+      time: "07:00"
+      timezone: "Europe/Paris"
+    open-pull-requests-limit: 10
+    # MAJ autorisées : dépendances directes (lib publiées)
     allow:
       - dependency-type: "direct"
-    open-pull-requests-limit: 10
+    # Labels + message de commit propres
     labels:
       - "dependencies"
       - "security"
     commit-message:
       prefix: "deps(pip)"
       include: "scope"
+    # Groupes pour réduire le nombre de PRs
+    groups:
+      qa-tools:
+        patterns:
+          - "ruff*"
+          - "black*"
+          - "pre-commit*"
+      testing:
+        patterns:
+          - "pytest*"
+          - "pytest-*"
+          - "coverage*"
+      imaging:
+        patterns:
+          - "pillow*"
+          - "pikepdf*"
 
+  # ===== GitHub Actions (CI) =====
   - package-ecosystem: "github-actions"
-    directory: "/"
+    directory: "/"                # .github/workflows/*
     schedule:
       interval: "weekly"
+      day: "monday"
+      time: "07:10"
+      timezone: "Europe/Paris"
     open-pull-requests-limit: 10
     labels:
       - "ci"
@@ -25,3 +52,14 @@ updates:
     commit-message:
       prefix: "deps(actions)"
       include: "scope"
+    # Grouper les actions courantes de setup et cache
+    groups:
+      runners-and-setup:
+        patterns:
+          - "actions/checkout"
+          - "actions/setup-python"
+          - "actions/cache"
+      coverage-and-security:
+        patterns:
+          - "codecov/*"
+          - "github/codeql-action*"
