@@ -1,152 +1,199 @@
+# src/digitalmeve/cli.py
 from __future__ import annotations
 
-import argparse
 import json
-import sys
 from pathlib import Path
-from typing import Optional
+from typing import Any, Dict, Optional, Tuple
+
+import click
 
 from .generator import generate_meve
 from .verifier import verify_meve
+from .embedding_pdf import embed_proof_pdf, extract_proof_pdf
+from .embedding_png import embed_proof_png, extract_proof_png
 
 
-# -------- utils -----------------------------------------------------------
+# ----------------------------
+# Helpers
+# ----------------------------
+def _infer_out_path_meve(input_path: Path) -> Path:
+    """Return <stem>.meve.<suffix> (e.g. invoice.pdf -> invoice.meve.pdf)."""
+    return input_path.with_name(f"{input_path.stem}.meve{input_path.suffix}")
 
 
-def _read_text_from_optional_file(path_arg: Optional[str]) -> str:
+def _write_json_sidecar(for_path: Path, proof: Dict[str, Any]) -> Path:
+    """Write <filename>.meve.json next to the file."""
+    sidecar = for_path.with_name(f"{for_path.name}.meve.json")
+    sidecar.write_text(json.dumps(proof, indent=2, ensure_ascii=False), encoding="utf-8")
+    return sidecar
+
+
+def _load_and_maybe_extract(path: Path) -> Dict[str, Any]:
     """
-    Si path_arg est None ou '-', lit depuis stdin.
-    Sinon lit le fichier en UTF-8 et retourne le contenu.
+    Load a proof:
+      - If *.meve.json -> load JSON
+      - If *.pdf/*.png (with embedded proof) -> extract
+      - Else -> try to read text -> json
     """
-    if path_arg in (None, "-"):
-        return sys.stdin.read()
-    p = Path(path_arg)
-    return p.read_text(encoding="utf-8")
+    suffix = path.suffix.lower()
+    if suffix == ".json":
+        return json.loads(path.read_text(encoding="utf-8"))
 
+    if suffix == ".pdf":
+        proof = extract_proof_pdf(path)
+        if proof is None:
+            raise click.ClickException("No embedded proof found in PDF.")
+        return proof
 
-# -------- commandes -------------------------------------------------------
+    if suffix == ".png":
+        proof = extract_proof_png(path)
+        if proof is None:
+            raise click.ClickException("No embedded proof found in PNG.")
+        return proof
 
-
-def cmd_generate(args: argparse.Namespace) -> int:
-    """
-    Génère une preuve MEVE sur stdout.
-    Écrit éventuellement un sidecar JSON si --outdir est fourni.
-    """
+    # Fallback: try JSON from file
     try:
-        proof = generate_meve(
-            file_path=args.file,
-            outdir=args.outdir,
-            issuer=args.issuer,
-            metadata=None,
-            also_json=args.also_json,
+        return json.loads(path.read_text(encoding="utf-8"))
+    except Exception as exc:  # noqa: BLE001
+        raise click.ClickException(f"Unsupported input for verify/inspect: {path}") from exc
+
+
+# ----------------------------
+# CLI
+# ----------------------------
+@click.group(context_settings={"help_option_names": ["-h", "--help"]})
+def cli() -> None:
+    """DigitalMeve — .MEVE generator & verifier (CLI)."""
+    pass
+
+
+@cli.command("generate")
+@click.argument("input_file", type=click.Path(path_type=Path, exists=True, dir_okay=False))
+@click.option("--issuer", required=True, help='Issuer label (e.g. "Personal" or "Alice").')
+@click.option(
+    "--also-json",
+    is_flag=True,
+    default=False,
+    help="Also write a sidecar <output>.meve.json next to the generated file.",
+)
+@click.option(
+    "--outdir",
+    type=click.Path(path_type=Path, file_okay=False),
+    default=None,
+    help="Optional output directory. Defaults to input folder.",
+)
+def cmd_generate(input_file: Path, issuer: str, also_json: bool, outdir: Optional[Path]) -> None:
+    """
+    Generate a .meve proof for INPUT_FILE and embed it when possible.
+
+    Output:
+      - For PDF  -> <name>.meve.pdf
+      - For PNG  -> <name>.meve.png
+      - For others -> only JSON sidecar if --also-json is provided
+    """
+    input_file = input_file.resolve()
+    target_dir = (outdir or input_file.parent).resolve()
+
+    # 1) Build the proof dict in memory
+    proof = generate_meve(str(input_file), issuer=issuer)
+
+    # 2) Embed depending on file type
+    suffix = input_file.suffix.lower()
+    if suffix == ".pdf":
+        out_path = target_dir / _infer_out_path_meve(input_file).name
+        out_path = embed_proof_pdf(input_file, proof, out_path)
+        click.echo(f"Embedded MEVE → {out_path}")
+        if also_json:
+            sidecar = _write_json_sidecar(out_path, proof)
+            click.echo(f"Wrote sidecar → {sidecar}")
+        return
+
+    if suffix == ".png":
+        out_path = target_dir / _infer_out_path_meve(input_file).name
+        out_path = embed_proof_png(input_file, proof, out_path)
+        click.echo(f"Embedded MEVE → {out_path}")
+        if also_json:
+            sidecar = _write_json_sidecar(out_path, proof)
+            click.echo(f"Wrote sidecar → {sidecar}")
+        return
+
+    # 3) Other formats: only JSON sidecar (when requested)
+    if also_json:
+        # Sidecar named from original file (not *.meve.ext because no embedding)
+        sidecar = input_file.with_name(f"{input_file.name}.meve.json")
+        if outdir:
+            sidecar = (Path(outdir).resolve() / sidecar.name)
+        sidecar.write_text(json.dumps(proof, indent=2, ensure_ascii=False), encoding="utf-8")
+        click.echo(f"Wrote sidecar → {sidecar}")
+    else:
+        raise click.ClickException(
+            "Embedding supported only for PDF/PNG. Use --also-json to write a sidecar for other formats."
         )
-    except Exception as e:  # pragma: no cover
-        sys.stderr.write(f"{e}\n")
-        return 1
-
-    print(json.dumps(proof, ensure_ascii=False, indent=2))
-    return 0
 
 
-def cmd_inspect(args: argparse.Namespace) -> int:
+@cli.command("verify")
+@click.argument("proof_path", type=click.Path(path_type=Path, exists=True, dir_okay=False))
+@click.option(
+    "--expected-issuer",
+    default=None,
+    help='Optional expected issuer to enforce (e.g. "Alice").',
+)
+def cmd_verify(proof_path: Path, expected_issuer: Optional[str]) -> None:
     """
-    Lit un JSON (fichier ou stdin) et l’affiche enrichi avec :
-    - issuer (copié)
-    - hash_prefix (les 12 premiers caractères de 'hash')
-    - level = "file"
+    Verify a proof from:
+      - *.meve.json (sidecar)
+      - *.pdf/*.png with embedded proof
+      - or a JSON file containing the proof
     """
-    text = _read_text_from_optional_file(args.file)
-    try:
-        obj = json.loads(text)
-    except Exception as e:
-        sys.stderr.write(f"Invalid input JSON: {e}\n")
-        return 1
+    proof_path = proof_path.resolve()
+    proof = _load_and_maybe_extract(proof_path)
 
-    out = dict(obj)
-    h = str(obj.get("hash", ""))
-    out["issuer"] = obj.get("issuer")
-    out["hash_prefix"] = h[:12]
-    out["level"] = "file"
+    ok, info = verify_meve(proof, expected_issuer=expected_issuer)
+    if not ok:
+        click.echo(json.dumps({"ok": False, **info}, ensure_ascii=False))
+        raise SystemExit(1)
 
-    print(json.dumps(out, ensure_ascii=False, indent=2))
-    return 0
+    click.echo(json.dumps({"ok": True, "proof": info}, ensure_ascii=False))
 
 
-def cmd_verify(args: argparse.Namespace) -> int:
+@cli.command("inspect")
+@click.argument("proof_path", type=click.Path(path_type=Path, exists=True, dir_okay=False))
+def cmd_inspect(proof_path: Path) -> None:
     """
-    Vérifie une preuve MEVE. Retourne 0 si OK, 1 sinon.
+    Human-friendly summary of a proof (works with *.meve.json or embedded PDF/PNG).
     """
-    text = _read_text_from_optional_file(args.file)
-    try:
-        obj = json.loads(text)
-    except Exception as e:
-        sys.stderr.write(f"Invalid input JSON: {e}\n")
-        return 1
+    proof_path = proof_path.resolve()
+    proof = _load_and_maybe_extract(proof_path)
 
-    ok, _detail = verify_meve(obj, expected_issuer=args.expected_issuer)
-    return 0 if ok else 1
+    issuer = proof.get("issuer")
+    status = proof.get("status")
+    certified = proof.get("certified")
+    issued_at = proof.get("issued_at") or proof.get("timestamp")
+    subject = proof.get("subject") or {}
+    filename = subject.get("filename")
+    size = subject.get("size")
+    hash_sha256 = subject.get("hash_sha256")
 
-
-# -------- parser / main ---------------------------------------------------
-
-
-def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(prog="digitalmeve")
-    sub = parser.add_subparsers(dest="command", metavar="{generate,inspect,verify}")
-    sub.required = True
-
-    # generate
-    p_gen = sub.add_parser("generate", help="Create a .meve proof")
-    p_gen.add_argument("file", help="Input file to prove")
-    p_gen.add_argument(
-        "--outdir",
-        default=None,
-        help="Write sidecar JSON in this directory (optional).",
-    )
-    p_gen.add_argument(
-        "--issuer",
-        default="Personal",
-        help="Issuer name/email for the proof (default: Personal).",
-    )
-    p_gen.add_argument(
-        "--also-json",
-        action="store_true",
-        help="Also write <file>.meve.json next to the file when no --outdir.",
-    )
-    p_gen.set_defaults(func=cmd_generate)
-
-    # inspect
-    p_ins = sub.add_parser("inspect", help="Inspect a .meve JSON")
-    p_ins.add_argument(
-        "file",
-        nargs="?",
-        help="Path to JSON or '-' for stdin (default: stdin).",
-    )
-    p_ins.set_defaults(func=cmd_inspect)
-
-    # verify
-    p_ver = sub.add_parser("verify", help="Verify a .meve proof")
-    p_ver.add_argument(
-        "file",
-        nargs="?",
-        help="Path to JSON or '-' for stdin (default: stdin).",
-    )
-    p_ver.add_argument(
-        "--issuer",
-        dest="expected_issuer",
-        default=None,
-        help="Expected issuer to match (optional).",
-    )
-    p_ver.set_defaults(func=cmd_verify)
-
-    return parser
+    summary = {
+        "issuer": issuer,
+        "status": status,
+        "certified": certified,
+        "issued_at": issued_at,
+        "subject": {
+            "filename": filename,
+            "size": size,
+            "hash_sha256": hash_sha256,
+        },
+    }
+    click.echo(json.dumps(summary, indent=2, ensure_ascii=False))
 
 
-def main(argv: Optional[list[str]] = None) -> int:
-    parser = build_parser()
-    args = parser.parse_args(argv)
-    return args.func(args)
+# ----------------------------
+# Entry point
+# ----------------------------
+def main() -> None:  # pragma: no cover
+    cli()
 
 
 if __name__ == "__main__":  # pragma: no cover
-    raise SystemExit(main())
+    main()
