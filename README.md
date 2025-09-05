@@ -31,3 +31,15 @@
 13. [💻 Development & Contribution](#13--development--contribution)
 14. [📦 Releases](#14--releases)
 15. [⚖ License](#15--license)
+
+## 1. 🌍 Overview  
+
+*DigitalMeve is the universal standard to certify, timestamp, and verify digital documents.*  
+
+When you verify a `.meve` proof, you ensure:  
+
+- **🔒 Integrity** → *the document has not been altered* (validated with SHA-256).  
+- **⏱ Timestamp** → *a certified UTC timestamp proves existence at a given moment*.  
+- **👤 Issuer** → *the certification level (Personal / Pro / Official) is explicit and verifiable*.  
+
+[⬆ Back to Table of Contents](#-table-of-contents)
