@@ -10,7 +10,9 @@ import pikepdf
 MEVE_DOCINFO_KEY = "meve_proof"  # clé légère dans Info (XMP possible plus tard)
 
 
-def embed_proof_pdf(in_path: Path | str, proof: Dict[str, Any], out_path: Path | str | None = None) -> Path:
+def embed_proof_pdf(
+    in_path: Path | str, proof: Dict[str, Any], out_path: Path | str | None = None
+) -> Path:
     """
     Embarque la preuve JSON (minifiée) dans les métadonnées PDF (Info).
     - in_path: PDF source
