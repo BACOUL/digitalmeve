@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Any, Dict, Optional, Tuple
+from typing import Any, Dict, Optional
 
 import click
 
@@ -24,7 +24,9 @@ def _infer_out_path_meve(input_path: Path) -> Path:
 def _write_json_sidecar(for_path: Path, proof: Dict[str, Any]) -> Path:
     """Write <filename>.meve.json next to the file."""
     sidecar = for_path.with_name(f"{for_path.name}.meve.json")
-    sidecar.write_text(json.dumps(proof, indent=2, ensure_ascii=False), encoding="utf-8")
+    sidecar.write_text(
+        json.dumps(proof, indent=2, ensure_ascii=False), encoding="utf-8"
+    )
     return sidecar
 
 
@@ -55,7 +57,9 @@ def _load_and_maybe_extract(path: Path) -> Dict[str, Any]:
     try:
         return json.loads(path.read_text(encoding="utf-8"))
     except Exception as exc:  # noqa: BLE001
-        raise click.ClickException(f"Unsupported input for verify/inspect: {path}") from exc
+        raise click.ClickException(
+            f"Unsupported input for verify/inspect: {path}"
+        ) from exc
 
 
 # ----------------------------
@@ -68,8 +72,12 @@ def cli() -> None:
 
 
 @cli.command("generate")
-@click.argument("input_file", type=click.Path(path_type=Path, exists=True, dir_okay=False))
-@click.option("--issuer", required=True, help='Issuer label (e.g. "Personal" or "Alice").')
+@click.argument(
+    "input_file", type=click.Path(path_type=Path, exists=True, dir_okay=False)
+)
+@click.option(
+    "--issuer", required=True, help='Issuer label (e.g. "Personal" or "Alice").'
+)
 @click.option(
     "--also-json",
     is_flag=True,
@@ -82,7 +90,9 @@ def cli() -> None:
     default=None,
     help="Optional output directory. Defaults to input folder.",
 )
-def cmd_generate(input_file: Path, issuer: str, also_json: bool, outdir: Optional[Path]) -> None:
+def cmd_generate(
+    input_file: Path, issuer: str, also_json: bool, outdir: Optional[Path]
+) -> None:
     """
     Generate a .meve proof for INPUT_FILE and embed it when possible.
 
@@ -122,8 +132,10 @@ def cmd_generate(input_file: Path, issuer: str, also_json: bool, outdir: Optiona
         # Sidecar named from original file (not *.meve.ext because no embedding)
         sidecar = input_file.with_name(f"{input_file.name}.meve.json")
         if outdir:
-            sidecar = (Path(outdir).resolve() / sidecar.name)
-        sidecar.write_text(json.dumps(proof, indent=2, ensure_ascii=False), encoding="utf-8")
+            sidecar = Path(outdir).resolve() / sidecar.name
+        sidecar.write_text(
+            json.dumps(proof, indent=2, ensure_ascii=False), encoding="utf-8"
+        )
         click.echo(f"Wrote sidecar → {sidecar}")
     else:
         raise click.ClickException(
@@ -132,7 +144,9 @@ def cmd_generate(input_file: Path, issuer: str, also_json: bool, outdir: Optiona
 
 
 @cli.command("verify")
-@click.argument("proof_path", type=click.Path(path_type=Path, exists=True, dir_okay=False))
+@click.argument(
+    "proof_path", type=click.Path(path_type=Path, exists=True, dir_okay=False)
+)
 @click.option(
     "--expected-issuer",
     default=None,
@@ -157,7 +171,9 @@ def cmd_verify(proof_path: Path, expected_issuer: Optional[str]) -> None:
 
 
 @cli.command("inspect")
-@click.argument("proof_path", type=click.Path(path_type=Path, exists=True, dir_okay=False))
+@click.argument(
+    "proof_path", type=click.Path(path_type=Path, exists=True, dir_okay=False)
+)
 def cmd_inspect(proof_path: Path) -> None:
     """
     Human-friendly summary of a proof (works with *.meve.json or embedded PDF/PNG).
