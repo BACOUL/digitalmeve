@@ -15,7 +15,7 @@ authors = [
 keywords = ["proof", "verification", "hash", "timestamp", "json", "digitalmeve", "meve"]
 
 # ✅ AJOUTS : URLs et classifiers
-urls = { 
+urls = {
   Homepage = "https://github.com/BACOUL/digitalmeve",
   Repository = "https://github.com/BACOUL/digitalmeve",
   Issues = "https://github.com/BACOUL/digitalmeve/issues",
