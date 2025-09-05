@@ -12,7 +12,9 @@ from pydantic import BaseModel, Field
 from digitalmeve.generator import generate_meve
 from digitalmeve.verifier import verify_meve
 
-app = FastAPI(title="DigitalMeve API", version="1.0.0", docs_url="/docs", redoc_url="/redoc")
+app = FastAPI(
+    title="DigitalMeve API", version="1.0.0", docs_url="/docs", redoc_url="/redoc"
+)
 
 # CORS (dev: ouvert ; prod: restreindre aux domaines nécessaires)
 app.add_middleware(
@@ -110,7 +112,9 @@ async def verify_endpoint(
 
         if body and body.proof:
             if not isinstance(body.proof, dict):
-                raise HTTPException(status_code=400, detail="proof must be a JSON object")
+                raise HTTPException(
+                    status_code=400, detail="proof must be a JSON object"
+                )
             meve_obj = body.proof
             expected_issuer = body.expected_issuer
         elif proof_file is not None:
