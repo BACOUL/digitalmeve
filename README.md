@@ -14,30 +14,63 @@
 
 ## 📑 Table of Contents
 
-1. [Overview](#1-overview)
-2. [🚀 Patches Snapshot](#2--patches-snapshot-already-implemented)
-3. [📖 TL;DR](#3--tldr)
-4. [🔧 Quickstart](#4--unified-quickstart-install--cli--python)
-5. [✨ Features](#5--features-highlights)
-6. [📚 Documentation](#6--documentation)
-7. [🧪 Examples](#7--examples-runnable)
-8. [🔑 Certification Levels](#8--certification-levels)
-9. [🛡 Security](#9--security)
-10. [📊 Use Cases](#10--use-cases)
-11. [🚀 Roadmap](#11--roadmap-snapshot)
-12. [🌐 Web Integration](#12--web-integration-planned)
-13. [💻 Development & Contribution](#13--development--contribution)
-14. [📦 Releases](#14--releases)
-15. [⚖ License](#15--license)
+1. [Overview](#overview)
+2. [🚀 Patches Snapshot](#patches)
+3. [📖 TL;DR](#tldr)
+4. [🔧 Quickstart](#quickstart)
+5. [✨ Features](#features)
+6. [📚 Documentation](#documentation)
+7. [🧪 Examples](#examples)
+8. [🔑 Certification Levels](#certification-levels)
+9. [🛡 Security](#security)
+10. [📊 Use Cases](#use-cases)
+11. [🚀 Roadmap](#roadmap)
+12. [🌐 Web Integration](#web-integration)
+13. [💻 Development & Contribution](#development)
+14. [📦 Releases](#releases)
+15. [⚖ License](#license)
 
-## 1. 🌍 Overview
+---
 
-*DigitalMeve is the universal standard to certify, timestamp, and verify digital documents.*
+<a id="overview"></a>
+## 1. Overview
 
-When you verify a `.meve` proof, you ensure:
+**DigitalMeve** provides a **fast and universal** way to verify the authenticity of any `.meve` proof.  
 
-- **🔒 Integrity** → *the document has not been altered* (validated with SHA-256).
-- **⏱ Timestamp** → *a certified UTC timestamp proves existence at a given moment*.
-- **👤 Issuer** → *the certification level (Personal / Pro / Official) is explicit and verifiable*.
+Verification ensures:
+- **Integrity** → the document has not been tampered with (SHA-256 validation).  
+- **Timestamp** → the proof contains a valid UTC timestamp.  
+- **Issuer** → the identity level (Personal, Pro, Official) matches expectations.  
 
-[⬆ Back to Table of Contents](#-table-of-contents)
+---
+
+<a id="patches"></a>
+## 2. 🚀 Patches Snapshot (already implemented)
+
+- ✅ **Core library**: `generator.py` + `verifier.py`  
+- ✅ **CLI**: `digitalmeve generate / verify / inspect`  
+- ✅ **Tests**: `pytest` passing on Python 3.10 → 3.12  
+- ✅ **Official Schema**: [`schemas/meve-1.schema.json`](schemas/meve-1.schema.json)  
+- ✅ **CI/CD GitHub Actions**:  
+  - [tests.yml](.github/workflows/tests.yml)  
+  - [quality.yml](.github/workflows/quality.yml)  
+  - [publish.yml](.github/workflows/publish.yml)  
+- ✅ **Docs**: overview, specification, guides, roadmap, security, API usage  
+- ✅ **Examples**: reproducible scripts (`examples/make_examples.sh`)  
+- ✅ **Governance**: [LICENSE](LICENSE), [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md), [CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md)  
+
+---
+
+<a id="tldr"></a>
+## 3. 📖 TL;DR
+
+**DigitalMeve** defines the universal format `.meve` (Memory Verified) to timestamp, hash, and certify digital documents.  
+
+👉 Goal: make `.meve` the **“PDF of digital proof”**.  
+
+Why `.meve`?  
+- **Existence** → the file existed at a given time.  
+- **Integrity** → SHA-256 hash guarantees no tampering.  
+- **Authenticity** → issuer is visible.  
+- **Metadata** → optional custom key/values.  
+- **Portable** → sidecar `.meve.json` works with any file type.
