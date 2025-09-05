@@ -1,15 +1,15 @@
-name: tests
+name: pytest
 
 on:
   push:
+    branches: [ main ]
   pull_request:
+    branches: [ main ]
 
 jobs:
   tests:
-    name: pytest (${{ matrix.python-version }})
     runs-on: ubuntu-latest
     strategy:
-      fail-fast: false
       matrix:
         python-version: ["3.10", "3.11", "3.12"]
 
@@ -23,19 +23,20 @@ jobs:
           python-version: ${{ matrix.python-version }}
           cache: "pip"
 
-      - name: Install project (with dev deps)
+      - name: Install deps
         run: |
-          python -m pip install -U pip
-          # Installe les deps du projet + pytest/pytest-cov si non présents
-          pip install -e . "pytest>=7.0" "pytest-cov>=4.0"
+          python -m pip install --upgrade pip
+          pip install -e .
+          pip install pytest pytest-cov
 
       - name: Run tests with coverage
         run: |
           pytest -q --cov=digitalmeve --cov-report=term-missing --cov-report=xml
 
-      - name: Upload coverage.xml artifact
-        if: always()
-        uses: actions/upload-artifact@v4
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
         with:
-          name: coverage-${{ matrix.python-version }}
-          path: coverage.xml
+          token: ${{ secrets.CODECOV_TOKEN }}   # requis si dépôt privé
+          files: coverage.xml
+          flags: unittests
+          fail_ci_if_error: true
