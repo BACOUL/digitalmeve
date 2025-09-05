@@ -15,7 +15,9 @@ def _to_str_path(p: str | Path) -> str:
     return str(p if isinstance(p, Path) else Path(p))
 
 
-def embed_proof_pdf(in_path: str | Path, proof: Dict[str, Any], out_path: str | Path) -> Path:
+def embed_proof_pdf(
+    in_path: str | Path, proof: Dict[str, Any], out_path: str | Path
+) -> Path:
     """
     Écrit la preuve JSON minifiée dans les metadata (docinfo) du PDF sous la clé MEVE_KEY.
     Retourne Path(out_path).
