@@ -8,8 +8,8 @@ import click
 
 from .generator import generate_meve
 from .verifier import verify_meve
-from .embedding_pdf import embed_proof_pdf
-from .embedding_png import embed_proof_png
+from .embedding_pdf import embed_proof_pdf, extract_proof_pdf
+from .embedding_png import embed_proof_png, extract_proof_png
 
 
 # ------------------------------
@@ -25,14 +25,32 @@ def _infer_out_path_meve(input_file: Path) -> Path:
 
 def _write_json_sidecar(target_for_naming: Path, proof: Dict[str, Any]) -> Path:
     """
-    Écrit un sidecar JSON à côté du `target_for_naming` (fichier source ou fichier embarqué),
+    Écrit un sidecar JSON à côté du `target_for_naming` (fichier source ou embarqué),
     sous la forme `<nom>.meve.json`.
     """
     sidecar = target_for_naming.with_name(f"{target_for_naming.name}.meve.json")
     sidecar.write_text(
-        json.dumps(proof, indent=2, ensure_ascii=False), encoding="utf-8"
+        json.dumps(proof, indent=2, ensure_ascii=False),
+        encoding="utf-8",
     )
     return sidecar
+
+
+def _maybe_extract_embedded(path: Path) -> Optional[Dict[str, Any]]:
+    """
+    Si `path` est un PDF/PNG, tente d'extraire une preuve embarquée.
+    Retourne le dict si trouvé, sinon None.
+    """
+    suffix = path.suffix.lower()
+    try:
+        if suffix == ".pdf":
+            return extract_proof_pdf(path)
+        if suffix == ".png":
+            return extract_proof_png(path)
+    except Exception:
+        # Pas de preuve embarquée ou format invalide
+        return None
+    return None
 
 
 # ------------------------------
@@ -46,10 +64,13 @@ def cli() -> None:
 
 @cli.command("generate")
 @click.argument(
-    "input_file", type=click.Path(path_type=Path, exists=True, dir_okay=False)
+    "input_file",
+    type=click.Path(path_type=Path, exists=True, dir_okay=False),
 )
 @click.option(
-    "--issuer", required=True, help='Issuer label (e.g. "Personal" or "Alice").'
+    "--issuer",
+    required=True,
+    help='Issuer label (e.g. "Personal" or "Alice").',
 )
 @click.option(
     "--also-json",
@@ -64,7 +85,10 @@ def cli() -> None:
     help="Optional output directory. Defaults to input folder.",
 )
 def cmd_generate(
-    input_file: Path, issuer: str, also_json: bool, outdir: Optional[Path]
+    input_file: Path,
+    issuer: str,
+    also_json: bool,
+    outdir: Optional[Path],
 ) -> None:
     """
     Generate a .meve proof for INPUT_FILE and embed it when possible.
@@ -104,37 +128,54 @@ def cmd_generate(
     # 3) Other formats: ALWAYS write a JSON sidecar (default behavior)
     sidecar = input_file.with_name(f"{input_file.name}.meve.json")
     if outdir:
-        sidecar = Path(outdir).resolve() / sidecar.name
+        sidecar = (Path(outdir).resolve() / sidecar.name)
     sidecar.write_text(
-        json.dumps(proof, indent=2, ensure_ascii=False), encoding="utf-8"
+        json.dumps(proof, indent=2, ensure_ascii=False),
+        encoding="utf-8",
     )
     click.echo(f"Wrote sidecar → {sidecar}")
 
 
 @cli.command("verify")
 @click.argument(
-    "proof_path", type=click.Path(path_type=Path, exists=True, dir_okay=False)
+    "proof_path",
+    type=click.Path(path_type=Path, exists=True, dir_okay=False),
 )
 @click.option(
-    "--issuer", "expected_issuer", default=None, help="Expected issuer to match."
+    "--issuer",
+    "expected_issuer",
+    default=None,
+    help="Expected issuer to match.",
 )
 def cmd_verify(proof_path: Path, expected_issuer: Optional[str]) -> None:
     """
-    Verify a .meve proof (JSON file path).
+    Verify a .meve proof.
+
+    Accepte :
+      - un fichier embarqué (.meve.pdf / .meve.png)
+      - un sidecar JSON (.meve.json)
+      - un JSON arbitraire contenant une preuve valide
     """
-    try:
-        text = proof_path.read_text(encoding="utf-8")
-        obj: Any = json.loads(text)
-    except Exception as e:
-        raise click.ClickException(f"Cannot read/parse proof: {e}") from e
+    proof_path = proof_path.resolve()
+
+    # 1) Essayer extraction embarquée si PDF/PNG
+    obj: Optional[Dict[str, Any]] = _maybe_extract_embedded(proof_path)
+
+    # 2) Sinon, tenter JSON (sidecar ou fichier donné)
+    if obj is None:
+        try:
+            text = proof_path.read_text(encoding="utf-8")
+            obj = json.loads(text)
+        except Exception as e:
+            raise click.ClickException(f"Cannot read/parse proof: {e}") from e
 
     ok, info = verify_meve(obj, expected_issuer=expected_issuer)
     if not ok:
         raise click.ClickException(
-            f"Invalid proof: {info.get('error','unknown error')}"
+            f"Invalid proof: {info.get('error', 'unknown error')}"
         )
+
     click.echo("OK: proof is valid.")
-    # Petite sortie utile
     subj = info.get("subject") or {}
     click.echo(f"subject.filename={subj.get('filename')}")
     click.echo(f"issuer={info.get('issuer')}")
@@ -142,17 +183,25 @@ def cmd_verify(proof_path: Path, expected_issuer: Optional[str]) -> None:
 
 @cli.command("inspect")
 @click.argument(
-    "proof_path", type=click.Path(path_type=Path, exists=True, dir_okay=False)
+    "proof_path",
+    type=click.Path(path_type=Path, exists=True, dir_okay=False),
 )
 def cmd_inspect(proof_path: Path) -> None:
     """
-    Pretty-print the given .meve proof (JSON).
+    Pretty-print the given .meve proof (JSON or embedded).
     """
-    try:
-        text = proof_path.read_text(encoding="utf-8")
-        obj: Any = json.loads(text)
-    except Exception as e:
-        raise click.ClickException(f"Cannot read/parse proof: {e}") from e
+    proof_path = proof_path.resolve()
+
+    # 1) Essayer extraction embarquée si PDF/PNG
+    obj: Optional[Dict[str, Any]] = _maybe_extract_embedded(proof_path)
+
+    # 2) Sinon, lire JSON
+    if obj is None:
+        try:
+            text = proof_path.read_text(encoding="utf-8")
+            obj = json.loads(text)
+        except Exception as e:
+            raise click.ClickException(f"Cannot read/parse proof: {e}") from e
 
     click.echo(json.dumps(obj, indent=2, ensure_ascii=False))
 
