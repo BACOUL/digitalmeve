@@ -1,0 +1,9 @@
+# 💸 Funding configuration for DigitalMeve
+# GitHub uses this file to display sponsor links in the repo sidebar.
+# Documentation: https://docs.github.com/en/github/administering-a-repository/displaying-a-sponsor-button-in-your-repository
+
+github: [BACoul]          # GitHub Sponsors username (change if needed)
+open_collective: digitalmeve  # OpenCollective slug (optional, change/remove)
+patreon: ""               # Patreon username (optional)
+ko_fi: ""                 # Ko-fi username (optional)
+custom: ["https://digitalmeve.com/donate"]  # Custom donation URL
