@@ -197,7 +197,7 @@ Planned integration with web services and APIs:
 We welcome contributions from the community 🤝
 
 ### 🛠 Setup (local dev)
-```bash
+
 # Clone the repository
 git clone https://github.com/BACOUL/digitalmeve.git
 cd digitalmeve
@@ -228,3 +228,43 @@ All new code should include tests.
 
 
 ✅ Contributions = issues, documentation, code, and feedback are all welcome!
+
+## 14. 📦 Releases <a id="releases"></a>
+
+DigitalMeve uses **semantic versioning** (MAJOR.MINOR.PATCH).  
+
+### 🔄 Release process
+1. Bump version in `pyproject.toml`  
+2. Update [CHANGELOG.md](CHANGELOG.md)  
+3. Commit & tag:  
+   
+   git commit -am "chore(release): v1.x.x"
+   git tag v1.x.x
+   git push --tags
+
+   4. GitHub Actions (publish.yml) will automatically publish to PyPI.
+
+
+
+📦 Current version
+
+Development: 1.7.1-dev
+
+Stable: see PyPI DigitalMeve
+
+
+📝 Changelog
+
+See CHANGELOG.md for a history of added / changed / fixed features.
+
+✅ Guarantee: the latest GitHub tag = latest PyPI release.
+
+## 15. ⚖ License <a id="license"></a>
+
+DigitalMeve is released under the **MIT License**.  
+
+- You are free to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the software.  
+- Attribution is required: include the original copyright and license notice in any copy.  
+- The software is provided **“as is”**, without warranty of any kind.  
+
+📄 See the full license text here → [LICENSE](LICENSE)
