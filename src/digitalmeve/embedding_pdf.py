@@ -6,7 +6,8 @@ from typing import Any, Dict, Optional
 
 import pikepdf
 
-MEVE_DOCINFO_KEY = "meve_proof"  # clé légère dans Info (XMP possible plus tard)
+# La clé **doit** être un PdfName ET commencer par "/"
+MEVE_DOCINFO_KEY = pikepdf.Name("/MeveProof")
 
 
 def embed_proof_pdf(
@@ -15,25 +16,20 @@ def embed_proof_pdf(
     out_path: Path | str | None = None,
 ) -> Path:
     """
-    Embarque la preuve JSON (minifiée) dans les métadonnées PDF (Info).
-
-    Args:
-        in_path: PDF source.
-        proof: dict JSON sérialisable.
-        out_path: destination; si None, écrit à côté sous <name>.meve.pdf.
-
-    Returns:
-        Chemin du PDF enrichi.
+    Écrit la preuve JSON minifiée dans le DocInfo du PDF sous /MeveProof,
+    puis sauvegarde le PDF (par défaut en <in>.meve.pdf).
     """
     in_path = Path(in_path)
     if out_path is None:
         out_path = in_path.with_suffix(".meve.pdf")
     out_path = Path(out_path)
+    out_path.parent.mkdir(parents=True, exist_ok=True)
 
     payload = json.dumps(proof, separators=(",", ":"), ensure_ascii=False)
 
     with pikepdf.Pdf.open(in_path) as pdf:
-        info = pdf.docinfo or pikepdf.Dictionary()
+        info = pdf.docinfo if pdf.docinfo is not None else pikepdf.Dictionary()
+        # ⚠️ clé correcte + valeur typée
         info[MEVE_DOCINFO_KEY] = pikepdf.String(payload)
         pdf.docinfo = info
         pdf.save(str(out_path))
@@ -41,39 +37,22 @@ def embed_proof_pdf(
     return out_path
 
 
-def extract_proof_pdf(path: Path | str) -> Optional[Dict[str, Any]]:
+def extract_proof_pdf(in_path: Path | str) -> Optional[Dict[str, Any]]:
     """
-    Extrait la preuve depuis les métadonnées PDF (Info[MEVE_DOCINFO_KEY]).
-
-    Returns:
-        dict si trouvé/valide, sinon None.
+    Lit /MeveProof depuis le DocInfo du PDF et renvoie un dict ou None.
     """
-    path = Path(path)
+    in_path = Path(in_path)
     try:
-        with pikepdf.Pdf.open(path) as pdf:
+        with pikepdf.Pdf.open(in_path) as pdf:
             info = pdf.docinfo or {}
             raw = info.get(MEVE_DOCINFO_KEY)
             if not raw:
+                # fallback défensif si une autre clé existe par erreur
+                raw = info.get(pikepdf.Name("/MeveProof"))
+            if not raw:
                 return None
-            if isinstance(raw, pikepdf.String):
-                raw = str(raw)
-            return json.loads(raw)
+            if isinstance(raw, bytes):
+                raw = raw.decode("utf-8", "ignore")
+            return json.loads(str(raw))
     except Exception:
         return None
-
-
-def is_meve_pdf(path: Path | str) -> bool:
-    """
-    Heuristique rapide : existe et suffix .meve.pdf OU présence de la clé Info.
-    """
-    p = Path(path)
-    if not p.exists():
-        return False
-    if p.name.endswith(".meve.pdf"):
-        return True
-    try:
-        with pikepdf.Pdf.open(p) as pdf:
-            info = pdf.docinfo or {}
-            return MEVE_DOCINFO_KEY in info
-    except Exception:
-        return False
