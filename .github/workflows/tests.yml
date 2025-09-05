@@ -1,52 +1,36 @@
-diff --git a/.github/workflows/tests.yml b/.github/workflows/tests.yml
-index 1111111..2222222 100644
---- a/.github/workflows/tests.yml
-+++ b/.github/workflows/tests.yml
-@@ -1,10 +1,38 @@
--name: tests
--
--on: push:
--    branches: [ "main", "master" ]
--  pull_request:
--
--permissions:
--  contents: read
--
--jobs:
--  build:
--    runs-on: ubuntu-latest
--    steps:
--      - uses: actions/checkout@v4
-+name: tests
-+
-+on:
-+  push:
-+    branches: [ "main", "master" ]
-+  pull_request:
-+
-+permissions:
-+  contents: read
-+
-+jobs:
-+  build:
-+    runs-on: ubuntu-latest
-+    steps:
-+      - uses: actions/checkout@v4
-+
-+      - uses: actions/setup-python@v5
-+        with:
-+          python-version: "3.11"
-+          cache: "pip"
-+
-+      - name: Install dependencies
-+        run: |
-+          python -m pip install -U pip
-+          pip install -e .[dev]
-+
-+      - name: Run tests
-+        run: pytest -q --cov=digitalmeve --cov-report=term-missing --cov-report=xml
-+
-+      - name: Upload coverage to Codecov
-+        uses: codecov/codecov-action@v4
-+        with:
-+          token: ${{ secrets.CODECOV_TOKEN }}
+name: tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .[dev]
+
+      - name: Run tests with coverage
+        run: pytest -q --cov=digitalmeve --cov-report=xml --cov-report=term-missing
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage.xml
+          fail_ci_if_error: true
