@@ -1,9 +1,9 @@
 # api/app.py
 from __future__ import annotations
 
+import json
 from typing import Any, Dict, Optional
 
-import json
 from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
@@ -12,10 +12,7 @@ from pydantic import BaseModel, Field
 from digitalmeve.generator import generate_meve
 from digitalmeve.verifier import verify_meve
 
-
-app = FastAPI(
-    title="DigitalMeve API", version="1.0.0", docs_url="/docs", redoc_url="/redoc"
-)
+app = FastAPI(title="DigitalMeve API", version="1.0.0", docs_url="/docs", redoc_url="/redoc")
 
 # CORS (dev: ouvert ; prod: restreindre aux domaines nécessaires)
 app.add_middleware(
@@ -37,7 +34,6 @@ class GenerateResponse(BaseModel):
 
 
 class VerifyRequest(BaseModel):
-    # on autorise soit un proof JSON (dict), soit un chemin/texte JSON
     proof: Optional[Dict[str, Any]] = None
     expected_issuer: Optional[str] = None
 
@@ -57,7 +53,8 @@ async def generate_endpoint(
     file: UploadFile = File(..., description="Fichier à certifier"),
     issuer: str = Form("Personal"),
     metadata: Optional[str] = Form(
-        None, description='JSON optionnel: ex. {"author":"Alice","project":"X"}'
+        None,
+        description='JSON optionnel: ex. {"author":"Alice","project":"X"}',
     ),
 ) -> GenerateResponse:
     """
@@ -66,9 +63,6 @@ async def generate_endpoint(
     - metadata: JSON facultatif (clé/valeur)
     """
     try:
-        # Sauvegarde temporaire en mémoire (UploadFile expose .file / .read())
-        # On a besoin d’un chemin ? Notre generator accepte un path ou un buffer ?
-        # Ici on écrit un fichier temporaire local car generate_meve attend un chemin.
         import tempfile
         from pathlib import Path
 
@@ -100,10 +94,9 @@ async def generate_endpoint(
 
 @app.post("/verify", response_model=VerifyResponse)
 async def verify_endpoint(
-    # soit un JSON direct, soit un fichier .meve.json (via /generate + sauvegarde côté client)
     body: Optional[VerifyRequest] = None,
     proof_file: Optional[UploadFile] = File(
-        default=None, description="Optionnel: côté client, upload d’un .meve.json"
+        default=None, description="Optionnel: upload d’un .meve.json"
     ),
 ) -> VerifyResponse:
     """
@@ -117,9 +110,7 @@ async def verify_endpoint(
 
         if body and body.proof:
             if not isinstance(body.proof, dict):
-                raise HTTPException(
-                    status_code=400, detail="proof must be a JSON object"
-                )
+                raise HTTPException(status_code=400, detail="proof must be a JSON object")
             meve_obj = body.proof
             expected_issuer = body.expected_issuer
         elif proof_file is not None:
@@ -132,7 +123,8 @@ async def verify_endpoint(
                 ) from e
         else:
             raise HTTPException(
-                status_code=400, detail="Missing proof (JSON body or uploaded file)"
+                status_code=400,
+                detail="Missing proof (JSON body or uploaded file)",
             )
 
         ok, info = verify_meve(meve_obj, expected_issuer=expected_issuer)
