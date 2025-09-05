@@ -49,7 +49,9 @@ def embed_proof_png(
             # Pillow attend des str pour iTXt; on ignore les objets non sérialisables
             if isinstance(v, (str, bytes)):
                 try:
-                    pnginfo.add_text(k, v if isinstance(v, str) else v.decode("utf-8", "ignore"))
+                    pnginfo.add_text(
+                        k, v if isinstance(v, str) else v.decode("utf-8", "ignore")
+                    )
                 except Exception:
                     pass
 
