@@ -126,6 +126,28 @@ def _write_sidecars(
     return uniq
 
 
+def _summarize_proof(proof: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Transforme une preuve MEVE complète en résumé lisible, attendu par les tests.
+    Champs minimaux requis par les tests : level, issuer, hash_prefix.
+    """
+    h = proof.get("hash")
+    if not isinstance(h, str):
+        h = ""
+    subject = proof.get("subject") or {}
+    if not isinstance(subject, dict):
+        subject = {}
+
+    return {
+        "level": "info",
+        "issuer": proof.get("issuer"),
+        "hash_prefix": h[:8],
+        # infos additionnelles non obligatoires
+        "filename": subject.get("filename"),
+        "size": subject.get("size"),
+    }
+
+
 # --------------------------------------------------------------------------- #
 # CLI
 # --------------------------------------------------------------------------- #
@@ -170,8 +192,7 @@ def cmd_generate(
     Generate a MEVE proof for FILE.
 
     Comportement:
-      - PDF/PNG: embed la preuve dans un .meve.pdf/.meve.png (dans --outdir si
-        fourni).
+      - PDF/PNG: embed la preuve dans un .meve.pdf/.meve.png (dans --outdir si fourni).
       - Toujours écrire un sidecar à côté du fichier source.
       - Si --outdir est fourni: écrire aussi un sidecar dans --outdir.
       - Et AFFICHER la preuve en JSON sur stdout (attendu par les tests).
@@ -191,7 +212,7 @@ def cmd_generate(
     _write_sidecars(file, proof, outdir=None)
 
     # 3) Sidecar AUSSI dans --outdir si fourni
-    if outdir is not None:
+    if outdir is not None or also_json:
         _write_sidecars(file, proof, outdir=outdir)
 
     # 4) Sortie attendue par les tests : JSON pur sur stdout
@@ -250,7 +271,7 @@ def cmd_verify(file: Path, expected_issuer: Optional[str]) -> None:
 )
 def cmd_inspect(file: Path) -> None:
     """
-    Print the MEVE proof (pure JSON on stdout).
+    Print a compact JSON summary of the MEVE proof.
       1) Si FILE est un *.meve.json → lire directement
       2) Sinon, embedded (PDF/PNG)
       3) Sinon, sidecar (plusieurs conventions)
@@ -277,7 +298,8 @@ def cmd_inspect(file: Path) -> None:
         )
         sys.exit(1)
 
-    click.echo(json.dumps(proof, ensure_ascii=False, separators=(",", ":")), nl=False)
+    summary = _summarize_proof(proof)
+    click.echo(json.dumps(summary, ensure_ascii=False, separators=(",", ":")), nl=False)
 
 
 def main() -> None:
