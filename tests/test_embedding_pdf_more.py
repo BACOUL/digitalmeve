@@ -7,15 +7,17 @@ from digitalmeve.embedding_pdf import embed_proof_pdf, extract_proof_pdf
 
 
 def _proof_for(name: str) -> dict:
-    issued = datetime(2025, 1, 1, tzinfo=timezone.utc).isoformat().replace("+00:00", "Z")
+    issued = (
+        datetime(2025, 1, 1, tzinfo=timezone.utc).isoformat().replace("+00:00", "Z")
+    )
     return {
         "meve_version": "1.0",
         "issuer": "Personal",
         "issued_at": issued,
         "timestamp": issued,
         "metadata": {},
-        "subject": {"filename": name, "size": 0, "hash_sha256": "00"*32},
-        "hash": "00"*32,
+        "subject": {"filename": name, "size": 0, "hash_sha256": "00" * 32},
+        "hash": "00" * 32,
         "preview_b64": "",
     }
 
