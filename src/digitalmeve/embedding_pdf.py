@@ -1,52 +1,69 @@
-# src/digitalmeve/embedding_pdf.py
+# src/digitalmeve/embedding_png.py
 from __future__ import annotations
 
 import json
 from pathlib import Path
 from typing import Any, Dict, Optional
 
-import pikepdf
+from PIL import Image, PngImagePlugin
 
-# Clé simple dans le PDF Info (lisible par pikepdf et conservée par la plupart des outils)
-MEVE_KEY = "/MeveProof"
-
-
-def _to_str_path(p: str | Path) -> str:
-    return str(p if isinstance(p, Path) else Path(p))
+# Clé texte dans les métadonnées PNG (chunk tEXt / iTXt)
+MEVE_PNG_KEY = "meve_proof"
 
 
-def embed_proof_pdf(
-    in_path: str | Path, proof: Dict[str, Any], out_path: str | Path
-) -> Path:
+def _as_path(p: str | Path) -> Path:
+    return p if isinstance(p, Path) else Path(p)
+
+
+def embed_proof_png(in_path: str | Path, proof: Dict[str, Any], out_path: str | Path) -> Path:
     """
-    Écrit la preuve JSON minifiée dans les metadata (docinfo) du PDF sous la clé MEVE_KEY.
+    Écrit la preuve JSON minifiée dans un chunk texte du PNG sous la clé MEVE_PNG_KEY.
     Retourne Path(out_path).
     """
-    src = _to_str_path(in_path)
-    dst = Path(_to_str_path(out_path))
+    src = _as_path(in_path)
+    dst = _as_path(out_path)
 
     payload = json.dumps(proof, separators=(",", ":"))
 
-    # Ouvre le PDF source, insère/écrase la clé, sauvegarde vers le fichier de sortie
-    with pikepdf.open(src) as pdf:
-        info = pdf.docinfo or pikepdf.Dictionary()
-        info[MEVE_KEY] = pikepdf.String(payload)
-        pdf.docinfo = info
-        pdf.save(_to_str_path(dst))
+    img = Image.open(src)
+    img.load()  # s'assure que l'image est chargée avant ré-écriture
 
+    # Conserver les métadonnées existantes + ajouter notre clé
+    meta = PngImagePlugin.PngInfo()
+    for k, v in (img.info or {}).items():
+        if k == MEVE_PNG_KEY:
+            continue
+        if isinstance(v, bytes):
+            try:
+                v = v.decode("utf-8", "ignore")
+            except Exception:
+                v = str(v)
+        meta.add_text(k, str(v))
+    meta.add_text(MEVE_PNG_KEY, payload)
+
+    img.save(dst, "PNG", pnginfo=meta)
     return dst
 
 
-def extract_proof_pdf(path: str | Path) -> Optional[Dict[str, Any]]:
+def extract_proof_png(path: str | Path) -> Optional[Dict[str, Any]]:
     """
-    Lit la clé MEVE_KEY depuis les metadata du PDF et retourne le dict, ou None si absent/illisible.
+    Lit la clé MEVE_PNG_KEY depuis les métadonnées PNG et retourne le dict, ou None si absent/illisible.
     """
-    with pikepdf.open(_to_str_path(path)) as pdf:
+    img = Image.open(_as_path(path))
+    info = img.info or {}
+
+    raw = (
+        info.get(MEVE_PNG_KEY)
+        or info.get("MeveProof")
+        or info.get("MEVE_PROOF")
+        or info.get("meve_proof")
+    )
+    if raw is None:
+        return None
+
+    if isinstance(raw, bytes):
         try:
-            info = pdf.docinfo
-            if not info or MEVE_KEY not in info:
-                return None
-            raw = str(info[MEVE_KEY])
+            raw = raw.decode("utf-8")
         except Exception:
             return None
 
