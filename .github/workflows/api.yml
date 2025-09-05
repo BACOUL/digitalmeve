@@ -33,17 +33,13 @@ jobs:
           if [ -f requirements-api.txt ]; then
             pip install -r requirements-api.txt
           else
-            # fallback minimal si le fichier n'existe pas
             pip install fastapi uvicorn[standard] python-multipart pydantic
           fi
-          # Dépendances lib du projet (pour importer digitalmeve dans l’API)
           pip install -e .
 
       - name: Launch API (background)
         run: |
-          # Démarre l’API FastAPI sur 127.0.0.1:8000
           nohup uvicorn api.app:app --host 127.0.0.1 --port 8000 --no-access-log >/tmp/uvicorn.log 2>&1 &
-          # Attend que le port réponde (max ~10s)
           for i in $(seq 1 20); do
             curl -fsS http://127.0.0.1:8000/health && break
             sleep 0.5
@@ -53,34 +49,12 @@ jobs:
         run: |
           curl -f http://127.0.0.1:8000/health
           echo
-          # Optionnel : smoke sur /docs et /redoc
           curl -fsS http://127.0.0.1:8000/docs >/dev/null || true
           curl -fsS http://127.0.0.1:8000/redoc >/dev/null || true
 
       - name: Shut down API
         if: always()
         run: |
-          # Termine proprement le serveur lancé en arrière-plan
           pkill -f "uvicorn api.app:app" || true
           echo "---- uvicorn log ----"
           tail -n 200 /tmp/uvicorn.log || true
-# api/app.py
-from fastapi import FastAPI
-from pydantic import BaseModel
-from digitalmeve.generator import generate_meve
-from digitalmeve.verifier import verify_meve
-
-app = FastAPI(title="DigitalMeve API", version="1.0")
-
-@app.get("/health")
-def health():
-    return {"status": "ok"}
-
-class VerifyBody(BaseModel):
-    proof: dict
-    expected_issuer: str | None = None
-
-@app.post("/verify")
-def verify(body: VerifyBody):
-    ok, info = verify_meve(body.proof, expected_issuer=body.expected_issuer)
-    return {"ok": ok, "info": info}
