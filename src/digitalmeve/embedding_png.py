@@ -3,7 +3,9 @@ from pathlib import Path
 from typing import Any, Dict
 
 
-def embed_proof_png(in_path: Path | str, proof: Dict[str, Any], out_path: Path | str | None = None) -> Path:
+def embed_proof_png(
+    in_path: Path | str, proof: Dict[str, Any], out_path: Path | str | None = None
+) -> Path:
     """Stub : non implémenté pour l’instant."""
     raise NotImplementedError("PNG embedding non implémenté pour le moment.")
 
