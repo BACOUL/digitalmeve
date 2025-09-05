@@ -109,3 +109,18 @@ print(ok, info["subject"]["hash_sha256"])
 - **Sidecar `.meve.json`** → scalable for any file type or size
 - **CLI & Python API** → generate, verify, inspect in seconds
 - **CI/CD ready** → GitHub Actions (tests, quality, publish)
+
+## 6. 📚 Documentation <a id="documentation"></a>
+
+- [Overview](docs/overview.md)  
+- [Specification](docs/specification.md)  
+- [Generator Guide](docs/generator-guide.md)  
+- [Verification Guide](docs/verification-guide.md)  
+- [API Usage](docs/API_USAGE.md)  
+- [Security](docs/security.md)  
+- [Examples](docs/examples.md)  
+- [Pro](docs/PRO.md)  
+- [Official](docs/OFFICIAL.md)  
+- [Roadmap](docs/roadmap.md)  
+- [FAQ](docs/faq.md)  
+- [Glossary](docs/glossary.md)
