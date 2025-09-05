@@ -7,7 +7,7 @@ from .verifier import verify_meve  # noqa: F401
 from .embedding_pdf import embed_proof_pdf, extract_proof_pdf  # noqa: F401
 
 # Version exposée (attendue par les tests)
-__version__ = "1.7.1.dev0"
+__version__ = "1.7.1-dev"
 
 __all__ = [
     "generate_meve",
