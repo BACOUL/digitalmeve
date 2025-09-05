@@ -49,5 +49,8 @@ Not in scope:
 - For sensitive integrations, run verification offline (no data upload).
 
 ---
+🔑 Encryption
+For sensitive reports, you may use our PGP key:
+https://digitalmeve.com/pgp-security.asc
 
 ✍️ Maintained under **DigitalMeve Security Team**.
