@@ -14,6 +14,28 @@ authors = [
 ]
 keywords = ["proof", "verification", "hash", "timestamp", "json", "digitalmeve", "meve"]
 
+# ✅ AJOUTS : URLs et classifiers
+urls = { 
+  Homepage = "https://github.com/BACOUL/digitalmeve",
+  Repository = "https://github.com/BACOUL/digitalmeve",
+  Issues = "https://github.com/BACOUL/digitalmeve/issues",
+  Documentation = "https://github.com/BACOUL/digitalmeve/tree/main/docs"
+}
+
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Security :: Cryptography",
+  "Topic :: Software Development :: Libraries",
+  "Operating System :: OS Independent"
+]
+
 dependencies = [
   "pikepdf>=9.0.0",      # Embedding MEVE proof into PDF metadata
   "pillow>=10.0.0",      # (à venir) pour PNG embedding + image ops
@@ -31,6 +53,15 @@ dev = [
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+# ✅ Inclure les fichiers non-Python (schémas, scripts) dans les distributions
+[tool.setuptools]
+include-package-data = true
+
+# ⚠️ Ces patterns fonctionnent si les fichiers sont **dans le package**.
+# Étape suivante (si besoin) : avoir `src/digitalmeve/schemas/` et/ou `src/digitalmeve/examples/`.
+[tool.setuptools.package-data]
+digitalmeve = ["schemas/*.json", "examples/*.sh"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
