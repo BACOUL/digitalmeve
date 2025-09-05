@@ -110,10 +110,7 @@ def cli() -> None:
     "--also-json",
     is_flag=True,
     default=False,
-    help=(
-        "Also write a sidecar <output>.meve.json for embedded outputs "
-        "(PDF/PNG)."
-    ),
+    help=("Also write a sidecar <output>.meve.json for embedded outputs " "(PDF/PNG)."),
 )
 @click.option(
     "--outdir",
