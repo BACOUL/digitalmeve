@@ -127,40 +127,40 @@ print(ok, info["subject"]["hash_sha256"])
 
 ## 7. 🧪 Examples <a id="examples"></a>
 
-- Scripts disponibles :  
-  - [make_examples.sh](examples/make_examples.sh) → génère des fichiers `.meve`  
-  - [verify_examples.sh](examples/verify_examples.sh) → vérifie les preuves générées  
+- Scripts disponibles :
+  - [make_examples.sh](examples/make_examples.sh) → génère des fichiers `.meve`
+  - [verify_examples.sh](examples/verify_examples.sh) → vérifie les preuves générées
 
-- Ressources complémentaires :  
-  - [examples/](examples/) (répertoire complet)  
+- Ressources complémentaires :
+  - [examples/](examples/) (répertoire complet)
   - [docs/examples.md](docs/examples.md) (documentation détaillée)
 
 ## 8. 🔑 Certification Levels <a id="certification-levels"></a>
 
-- **Personal** → auto-certification (preuve d’existence uniquement)  
-- **Pro** → vérification par e-mail (identité liée à un professionnel réel)  
-- **Official** → vérification institutionnelle (DNS / organisation validée)  
+- **Personal** → auto-certification (preuve d’existence uniquement)
+- **Pro** → vérification par e-mail (identité liée à un professionnel réel)
+- **Official** → vérification institutionnelle (DNS / organisation validée)
 
 ℹ️ Le niveau est déterminé par le **verifier**, et non auto-déclaré.
 
 ## 9. 🛡 Security <a id="security"></a>
 
-- **Hashing (SHA-256) & immutability** → toute modification invalide la preuve  
-- **Schema validation** (`MEVE/1`) → validation automatique contre le schéma officiel  
-- **Pro verification** → authentification par e-mail (magic-link)  
-- **Official verification** → vérification DNS via enregistrement TXT `_meve.<domaine>`  
-- **Ed25519-ready** → support des signatures numériques (`key_id`, `signature`)  
-- **Transparency-ready** → intégration future dans des journaux de transparence  
+- **Hashing (SHA-256) & immutability** → toute modification invalide la preuve
+- **Schema validation** (`MEVE/1`) → validation automatique contre le schéma officiel
+- **Pro verification** → authentification par e-mail (magic-link)
+- **Official verification** → vérification DNS via enregistrement TXT `_meve.<domaine>`
+- **Ed25519-ready** → support des signatures numériques (`key_id`, `signature`)
+- **Transparency-ready** → intégration future dans des journaux de transparence
 
 🔐 Pour les détails de sécurité et la divulgation responsable, voir [SECURITY.md](SECURITY.md).
 
 ## 10. 📊 Use Cases <a id="use-cases"></a>
 
-DigitalMeve can be used across different contexts:  
+DigitalMeve can be used across different contexts:
 
-- **Individuals** → authorship proof, personal archives, evidence of existence  
-- **Professionals** → invoices, contracts, certifications, automation workflows  
-- **Institutions** → diplomas, tenders, official archives, public records  
+- **Individuals** → authorship proof, personal archives, evidence of existence
+- **Professionals** → invoices, contracts, certifications, automation workflows
+- **Institutions** → diplomas, tenders, official archives, public records
 
 ✅ The `.meve` standard ensures **existence, integrity, and authenticity** regardless of the use case.
 
@@ -168,9 +168,9 @@ DigitalMeve can be used across different contexts:
 
 The project is evolving in clear phases:
 
-- **Phase 1 (MVP)** → core library (`generator`, `verifier`), CLI, schema v1, CI/CD pipelines  
-- **Phase 2 (≤ 6 months)** → Pro/Official onboarding, PDF/PNG embedding, public API, web integration  
-- **Phase 3 (1–2 years)** → standardization, external integrations, transparency logs, broader adoption  
+- **Phase 1 (MVP)** → core library (`generator`, `verifier`), CLI, schema v1, CI/CD pipelines
+- **Phase 2 (≤ 6 months)** → Pro/Official onboarding, PDF/PNG embedding, public API, web integration
+- **Phase 3 (1–2 years)** → standardization, external integrations, transparency logs, broader adoption
 
 ✅ The roadmap is tracked in [`docs/roadmap.md`](docs/roadmap.md).
 
@@ -178,23 +178,23 @@ The project is evolving in clear phases:
 
 Planned integration with web services and APIs:
 
-- **Endpoints (future)**  
-  - `POST /api/generate` → returns `.meve.json` or embedded `.meve.pdf/.png`  
-  - `POST /api/verify` → returns `{ ok, info }` JSON object  
+- **Endpoints (future)**
+  - `POST /api/generate` → returns `.meve.json` or embedded `.meve.pdf/.png`
+  - `POST /api/verify` → returns `{ ok, info }` JSON object
 
-- **Integration with Framer / Websites**  
-  - Simple drag-and-drop of documents  
-  - Proof verification directly in the browser  
+- **Integration with Framer / Websites**
+  - Simple drag-and-drop of documents
+  - Proof verification directly in the browser
 
-- **Security for the API**  
-  - CORS enabled (restricted in production)  
-  - X-API-Key required for private endpoints  
+- **Security for the API**
+  - CORS enabled (restricted in production)
+  - X-API-Key required for private endpoints
 
 📌 More details: [`docs/web-integration.md`](docs/web-integration.md)
 
 ## 13. 💻 Development & Contribution <a id="development--contribution"></a>
 
-We welcome contributions from the community 🤝  
+We welcome contributions from the community 🤝
 
 ### 🛠 Setup (local dev)
 ```bash
