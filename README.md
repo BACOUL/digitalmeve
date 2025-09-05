@@ -79,7 +79,7 @@ Why `.meve`?
 ## 4. 🔧 Quickstart <a id="quickstart"></a>
 
 ### Install
-```bash
+
 pip install digitalmeve
 
 CLI
