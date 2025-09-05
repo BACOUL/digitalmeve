@@ -4,11 +4,11 @@ index 0000000..0000000 100644
 +++ b/src/digitalmeve/verifier.py
 @@ -1,10 +1,16 @@
  from __future__ import annotations
- 
+
  import json
  from pathlib import Path
  from typing import Any, Dict, Iterable, Optional, Tuple
- 
+
 +# Extraction des preuves embarquées (PDF/PNG)
 +try:
 +    from .embedding_pdf import extract_proof_pdf
@@ -19,13 +19,13 @@ index 0000000..0000000 100644
 +except Exception:  # pragma: no cover
 +    extract_proof_png = None  # type: ignore
 +
- 
+
  def verify_identity(identity: str | Path | None) -> bool:
      """
 @@ -19,6 +25,48 @@ def verify_identity(identity: str | Path | None) -> bool:
      return str(identity).strip() != ""
- 
- 
+
+
 +def verify_file(
 +    path: str | Path,
 +    *,
@@ -78,6 +78,6 @@ index 0000000..0000000 100644
        - un dict (retourné tel quel)
 @@ -95,3 +143,4 @@ def verify_meve(
          return False, {"error": msg}  # noqa: E501
- 
+
      return True, obj
 +
