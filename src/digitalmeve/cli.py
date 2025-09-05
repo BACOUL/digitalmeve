@@ -30,7 +30,7 @@ def _read_json_file(path: Path) -> Optional[Dict[str, Any]]:
 
 def _sidecar_candidates(path: Path) -> list[Path]:
     """
-    Tente plusieurs conventions de sidecar, dans l'ordre :
+    Conventions testées, dans l'ordre :
       A) file.ext.meve.json
       B) file.meve.json
       C) <str(path)>.meve.json
@@ -76,15 +76,15 @@ def _maybe_extract_embedded(path: Path) -> Optional[Dict[str, Any]]:
     return None
 
 
-def _write_sidecars(
-    path: Path, proof: Dict[str, Any], outdir: Optional[Path]
-) -> list[Path]:
+def _write_sidecars(path: Path, proof: Dict[str, Any], outdir: Optional[Path]) -> list[Path]:
     """
     Écrit jusqu’à deux variantes quand elles diffèrent :
       - file.ext.meve.json
       - file.meve.json
+
+    Si outdir est None, écrit à côté du fichier source.
     """
-    base = outdir or path.parent
+    base = (outdir or path.parent)
     base.mkdir(parents=True, exist_ok=True)
 
     outs: list[Path] = []
@@ -120,15 +120,13 @@ def cli() -> None:
 
 @cli.command("generate")
 @click.argument("file", type=click.Path(path_type=Path, exists=True, dir_okay=False))
-@click.option(
-    "--issuer", type=str, required=False, help="Issuer name to embed in the proof."
-)
+@click.option("--issuer", type=str, required=False, help="Issuer name to embed in the proof.")
 @click.option(
     "--also-json",
     "also_json",
     is_flag=True,
     default=False,
-    help="Also write a .meve.json sidecar (in --outdir if provided).",
+    help="Also write a .meve.json sidecar (kept for backwards-compat).",
 )
 @click.option(
     "--outdir",
@@ -136,14 +134,14 @@ def cli() -> None:
     required=False,
     help="Directory for outputs (sidecar and/or embedded copy).",
 )
-def cmd_generate(
-    file: Path, issuer: Optional[str], also_json: bool, outdir: Optional[Path]
-) -> None:
+def cmd_generate(file: Path, issuer: Optional[str], also_json: bool, outdir: Optional[Path]) -> None:
     """
     Generate a MEVE proof for FILE.
-    - PDF/PNG: embed proof into .meve.pdf/.meve.png.
-    - Tous formats : un sidecar est TOUJOURS écrit à côté du fichier source.
-    - Si --also-json est fourni, on écrit un sidecar supplémentaire dans --outdir.
+
+    Comportement:
+      - PDF/PNG: embed la preuve dans un .meve.pdf/.meve.png (dans --outdir si fourni).
+      - Toujours écrire un sidecar à côté du fichier source.
+      - Si --outdir est fourni: écrire aussi un sidecar dans --outdir (même sans --also-json).
     """
     proof = generate_meve(file, issuer=issuer)
 
@@ -156,11 +154,11 @@ def cmd_generate(
         dst = None if outdir is None else (outdir / (file.stem + ".meve.png"))
         embed_proof_png(file, proof, out_path=dst)
 
-    # 2) Sidecar TOUJOURS à côté du fichier source (robuste pour les tests/outils)
+    # 2) Sidecar TOUJOURS à côté du fichier source
     _write_sidecars(file, proof, outdir=None)
 
-    # 3) Optionnel : sidecar supplémentaire dans --outdir si demandé
-    if also_json and outdir is not None:
+    # 3) Sidecar AUSSI dans --outdir si fourni (robuste pour tous les tests/scénarios)
+    if outdir is not None:
         _write_sidecars(file, proof, outdir=outdir)
 
 
@@ -194,8 +192,8 @@ def cmd_verify(file: Path, expected_issuer: Optional[str]) -> None:
 def cmd_inspect(file: Path) -> None:
     """
     Print the MEVE proof (pure JSON on stdout).
-    1) Try embedded proof (PDF/PNG)
-    2) Else sidecar (multiple naming conventions)
+      1) Essaie l’embedded (PDF/PNG)
+      2) Sinon, sidecar (plusieurs conventions)
     """
     proof = _maybe_extract_embedded(file)
     if proof is None:
@@ -208,8 +206,8 @@ def cmd_inspect(file: Path) -> None:
         click.echo("Error: No proof found (neither embedded nor sidecar).", err=True)
         sys.exit(1)
 
-    sys.stdout.write(json.dumps(proof, ensure_ascii=False, separators=(",", ":")))
-    sys.stdout.flush()
+    # IMPORTANT: utiliser click.echo pour garantir une sortie capturable par pytest
+    click.echo(json.dumps(proof, ensure_ascii=False, separators=(",", ":")), nl=False)
 
 
 def main() -> None:
