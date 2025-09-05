@@ -15,7 +15,9 @@ def _as_path(p: str | Path) -> Path:
     return p if isinstance(p, Path) else Path(p)
 
 
-def embed_proof_png(in_path: str | Path, proof: Dict[str, Any], out_path: str | Path) -> Path:
+def embed_proof_png(
+    in_path: str | Path, proof: Dict[str, Any], out_path: str | Path
+) -> Path:
     """
     Écrit la preuve JSON minifiée dans un chunk texte du PNG sous la clé MEVE_PNG_KEY.
     Retourne Path(out_path).
