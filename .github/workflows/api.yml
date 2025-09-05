@@ -1,0 +1,29 @@
+name: API
+
+on:
+  push:
+    paths:
+      - "api/**"
+      - "src/**"
+  pull_request:
+
+jobs:
+  test-api:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install deps
+        run: |
+          pip install -e .
+          pip install fastapi uvicorn[standard] python-multipart
+
+      - name: Run API health check
+        run: |
+          uvicorn api.app:app --port 8000 &
+          sleep 3
+          curl -f http://localhost:8000/health
