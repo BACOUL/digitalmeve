@@ -29,9 +29,12 @@ jobs:
       - name: Run tests with coverage
         run: pytest -q --cov=digitalmeve --cov-report=xml --cov-report=term-missing
 
+      - name: Enforce coverage threshold
+        run: coverage report --fail-under=80
+
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
         with:
           files: ./coverage.xml
-          fail_ci_if_error: false   # ne casse pas le job si Codecov a un pépin
-          slug: BACOUL/digitalmeve   # explicite le repo (sécurité)
+          fail_ci_if_error: false
+          slug: BACOUL/digitalmeve
