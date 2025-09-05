@@ -77,7 +77,9 @@ def _maybe_extract_embedded(path: Path) -> Optional[Dict[str, Any]]:
 
 
 def _write_sidecars(
-    path: Path, proof: Dict[str, Any], outdir: Optional[Path]
+    path: Path,
+    proof: Dict[str, Any],
+    outdir: Optional[Path],
 ) -> list[Path]:
     """
     Écrit jusqu’à deux variantes quand elles diffèrent :
@@ -121,9 +123,15 @@ def cli() -> None:
 
 
 @cli.command("generate")
-@click.argument("file", type=click.Path(path_type=Path, exists=True, dir_okay=False))
+@click.argument(
+    "file",
+    type=click.Path(path_type=Path, exists=True, dir_okay=False),
+)
 @click.option(
-    "--issuer", type=str, required=False, help="Issuer name to embed in the proof."
+    "--issuer",
+    type=str,
+    required=False,
+    help="Issuer name to embed in the proof.",
 )
 @click.option(
     "--also-json",
@@ -139,15 +147,20 @@ def cli() -> None:
     help="Directory for outputs (sidecar and/or embedded copy).",
 )
 def cmd_generate(
-    file: Path, issuer: Optional[str], also_json: bool, outdir: Optional[Path]
+    file: Path,
+    issuer: Optional[str],
+    also_json: bool,  # kept for compatibility (sidecar is now always written)
+    outdir: Optional[Path],
 ) -> None:
     """
     Generate a MEVE proof for FILE.
 
     Comportement:
-      - PDF/PNG: embed la preuve dans un .meve.pdf/.meve.png (dans --outdir si fourni).
+      - PDF/PNG: embed la preuve dans un .meve.pdf/.meve.png (dans --outdir si
+        fourni).
       - Toujours écrire un sidecar à côté du fichier source.
-      - Si --outdir est fourni: écrire aussi un sidecar dans --outdir (même sans --also-json).
+      - Si --outdir est fourni: écrire aussi un sidecar dans --outdir (même
+        sans --also-json).
     """
     proof = generate_meve(file, issuer=issuer)
 
@@ -163,17 +176,26 @@ def cmd_generate(
     # 2) Sidecar TOUJOURS à côté du fichier source
     _write_sidecars(file, proof, outdir=None)
 
-    # 3) Sidecar AUSSI dans --outdir si fourni (robuste pour tous les tests/scénarios)
+    # 3) Sidecar AUSSI dans --outdir si fourni
     if outdir is not None:
         _write_sidecars(file, proof, outdir=outdir)
 
 
 @cli.command("verify")
-@click.argument("file", type=click.Path(path_type=Path, exists=True, dir_okay=False))
-@click.option("--expected-issuer", type=str, required=False, help="Expected issuer.")
+@click.argument(
+    "file",
+    type=click.Path(path_type=Path, exists=True, dir_okay=False),
+)
+@click.option(
+    "--expected-issuer",
+    type=str,
+    required=False,
+    help="Expected issuer.",
+)
 def cmd_verify(file: Path, expected_issuer: Optional[str]) -> None:
     """
-    Verify FILE (embedded first, then sidecar). Exit code 0 on success, 1 on failure.
+    Verify FILE (embedded first, then sidecar).
+    Exit code 0 on success, 1 on failure.
     """
     proof = _maybe_extract_embedded(file)
     if proof is None:
@@ -182,7 +204,10 @@ def cmd_verify(file: Path, expected_issuer: Optional[str]) -> None:
             proof = _read_json_file(sc)
 
     if proof is None:
-        click.echo("Error: No proof found (neither embedded nor sidecar).", err=True)
+        click.echo(
+            "Error: No proof found (neither embedded nor sidecar).",
+            err=True,
+        )
         sys.exit(1)
 
     ok, info = verify_meve(proof, expected_issuer=expected_issuer)
@@ -194,7 +219,10 @@ def cmd_verify(file: Path, expected_issuer: Optional[str]) -> None:
 
 
 @cli.command("inspect")
-@click.argument("file", type=click.Path(path_type=Path, exists=True, dir_okay=False))
+@click.argument(
+    "file",
+    type=click.Path(path_type=Path, exists=True, dir_okay=False),
+)
 def cmd_inspect(file: Path) -> None:
     """
     Print the MEVE proof (pure JSON on stdout).
@@ -209,10 +237,13 @@ def cmd_inspect(file: Path) -> None:
                 break
 
     if proof is None:
-        click.echo("Error: No proof found (neither embedded nor sidecar).", err=True)
+        click.echo(
+            "Error: No proof found (neither embedded nor sidecar).",
+            err=True,
+        )
         sys.exit(1)
 
-    # IMPORTANT: utiliser click.echo pour garantir une sortie capturable par pytest
+    # Important: sortie JSON stricte et capturable par pytest
     click.echo(json.dumps(proof, ensure_ascii=False, separators=(",", ":")), nl=False)
 
 
