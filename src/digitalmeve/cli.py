@@ -45,7 +45,9 @@ def _write_sidecar(path: Path, proof: Dict[str, Any], outdir: Optional[Path]) ->
         out = (outdir / path.name).with_suffix(path.suffix + ".meve.json")
     else:
         out = path.with_suffix(path.suffix + ".meve.json")
-    out.write_text(json.dumps(proof, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+    out.write_text(
+        json.dumps(proof, ensure_ascii=False, separators=(",", ":")), encoding="utf-8"
+    )
     return out
 
 
@@ -59,7 +61,9 @@ def cli() -> None:
 
 @cli.command("generate")
 @click.argument("file", type=click.Path(path_type=Path, exists=True, dir_okay=False))
-@click.option("--issuer", type=str, required=False, help="Issuer name to embed in the proof.")
+@click.option(
+    "--issuer", type=str, required=False, help="Issuer name to embed in the proof."
+)
 @click.option(
     "--also-json",
     "also_json",
@@ -73,7 +77,9 @@ def cli() -> None:
     required=False,
     help="Directory where to write outputs (sidecar and/or embedded copy).",
 )
-def cmd_generate(file: Path, issuer: Optional[str], also_json: bool, outdir: Optional[Path]) -> None:
+def cmd_generate(
+    file: Path, issuer: Optional[str], also_json: bool, outdir: Optional[Path]
+) -> None:
     """
     Generate a MEVE proof for FILE.
     - PDF/PNG: embed proof into a new file (.meve.pdf/.meve.png). Optionally write a sidecar.
@@ -86,10 +92,18 @@ def cmd_generate(file: Path, issuer: Optional[str], also_json: bool, outdir: Opt
 
     # 1) Embed for supported formats
     if suffix == ".pdf":
-        embed_proof_pdf(file, proof, out_path=None if outdir is None else outdir / (file.stem + ".meve.pdf"))
+        embed_proof_pdf(
+            file,
+            proof,
+            out_path=None if outdir is None else outdir / (file.stem + ".meve.pdf"),
+        )
         produced_anything = True
     elif suffix == ".png":
-        embed_proof_png(file, proof, out_path=None if outdir is None else outdir / (file.stem + ".meve.png"))
+        embed_proof_png(
+            file,
+            proof,
+            out_path=None if outdir is None else outdir / (file.stem + ".meve.png"),
+        )
         produced_anything = True
 
     # 2) Sidecar if requested
