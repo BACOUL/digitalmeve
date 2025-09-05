@@ -1,0 +1,11 @@
+[run]
+branch = True
+omit =
+    src/digitalmeve/official_identity.py
+    src/digitalmeve/pro_identity.py
+    src/digitalmeve/utils.py
+    */__init__.py
+
+[report]
+show_missing = True
+skip_covered = True
