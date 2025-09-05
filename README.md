@@ -12,7 +12,6 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 [![codecov](https://codecov.io/gh/BACOUL/digitalmeve/branch/main/graph/badge.svg)](https://codecov.io/gh/BACOUL/digitalmeve)
----
 
 ## 📑 Table of Contents
 
