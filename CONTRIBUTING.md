@@ -1,6 +1,6 @@
 # 🤝 Contributing to DigitalMeve
 
-Thank you for your interest in contributing!  
+Thank you for your interest in contributing!
 Please read this guide before opening an issue or pull request.
 
 ---
