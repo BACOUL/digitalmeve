@@ -84,9 +84,7 @@ def cli() -> None:
 
 @cli.command("generate")
 @click.argument("file", type=click.Path(path_type=Path, exists=True, dir_okay=False))
-@click.option(
-    "--issuer", type=str, required=False, help="Issuer name to embed in the proof."
-)
+@click.option("--issuer", type=str, required=False, help="Issuer name to embed in the proof.")
 @click.option(
     "--also-json",
     "also_json",
@@ -100,9 +98,7 @@ def cli() -> None:
     required=False,
     help="Directory where to write outputs (sidecar and/or embedded copy).",
 )
-def cmd_generate(
-    file: Path, issuer: Optional[str], also_json: bool, outdir: Optional[Path]
-) -> None:
+def cmd_generate(file: Path, issuer: Optional[str], also_json: bool, outdir: Optional[Path]) -> None:
     """
     Generate a MEVE proof for FILE.
     - PDF/PNG: embed proof into a new file (.meve.pdf/.meve.png). Optionally write a sidecar.
