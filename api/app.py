@@ -13,7 +13,9 @@ from digitalmeve.generator import generate_meve
 from digitalmeve.verifier import verify_meve
 
 
-app = FastAPI(title="DigitalMeve API", version="1.0.0", docs_url="/docs", redoc_url="/redoc")
+app = FastAPI(
+    title="DigitalMeve API", version="1.0.0", docs_url="/docs", redoc_url="/redoc"
+)
 
 # CORS (dev: ouvert ; prod: restreindre aux domaines nécessaires)
 app.add_middleware(
@@ -83,7 +85,9 @@ async def generate_endpoint(
                     if not isinstance(meta_obj, dict):
                         raise ValueError("metadata must be a JSON object")
                 except Exception as e:  # noqa: BLE001
-                    raise HTTPException(status_code=400, detail=f"Invalid metadata JSON: {e}") from e
+                    raise HTTPException(
+                        status_code=400, detail=f"Invalid metadata JSON: {e}"
+                    ) from e
 
             proof = generate_meve(tmp.name, issuer=issuer, metadata=meta_obj)
 
@@ -113,7 +117,9 @@ async def verify_endpoint(
 
         if body and body.proof:
             if not isinstance(body.proof, dict):
-                raise HTTPException(status_code=400, detail="proof must be a JSON object")
+                raise HTTPException(
+                    status_code=400, detail="proof must be a JSON object"
+                )
             meve_obj = body.proof
             expected_issuer = body.expected_issuer
         elif proof_file is not None:
@@ -121,9 +127,13 @@ async def verify_endpoint(
             try:
                 meve_obj = json.loads(raw.decode("utf-8"))
             except Exception as e:  # noqa: BLE001
-                raise HTTPException(status_code=400, detail=f"Invalid JSON in uploaded file: {e}") from e
+                raise HTTPException(
+                    status_code=400, detail=f"Invalid JSON in uploaded file: {e}"
+                ) from e
         else:
-            raise HTTPException(status_code=400, detail="Missing proof (JSON body or uploaded file)")
+            raise HTTPException(
+                status_code=400, detail="Missing proof (JSON body or uploaded file)"
+            )
 
         ok, info = verify_meve(meve_obj, expected_issuer=expected_issuer)
         return VerifyResponse(ok=ok, info=info)
