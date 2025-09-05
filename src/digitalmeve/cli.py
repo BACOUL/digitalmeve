@@ -76,7 +76,9 @@ def _maybe_extract_embedded(path: Path) -> Optional[Dict[str, Any]]:
     return None
 
 
-def _write_sidecars(path: Path, proof: Dict[str, Any], outdir: Optional[Path]) -> list[Path]:
+def _write_sidecars(
+    path: Path, proof: Dict[str, Any], outdir: Optional[Path]
+) -> list[Path]:
     """
     Écrit jusqu’à deux variantes quand elles diffèrent :
       - file.ext.meve.json
@@ -84,7 +86,7 @@ def _write_sidecars(path: Path, proof: Dict[str, Any], outdir: Optional[Path]) -
 
     Si outdir est None, écrit à côté du fichier source.
     """
-    base = (outdir or path.parent)
+    base = outdir or path.parent
     base.mkdir(parents=True, exist_ok=True)
 
     outs: list[Path] = []
@@ -120,7 +122,9 @@ def cli() -> None:
 
 @cli.command("generate")
 @click.argument("file", type=click.Path(path_type=Path, exists=True, dir_okay=False))
-@click.option("--issuer", type=str, required=False, help="Issuer name to embed in the proof.")
+@click.option(
+    "--issuer", type=str, required=False, help="Issuer name to embed in the proof."
+)
 @click.option(
     "--also-json",
     "also_json",
@@ -134,7 +138,9 @@ def cli() -> None:
     required=False,
     help="Directory for outputs (sidecar and/or embedded copy).",
 )
-def cmd_generate(file: Path, issuer: Optional[str], also_json: bool, outdir: Optional[Path]) -> None:
+def cmd_generate(
+    file: Path, issuer: Optional[str], also_json: bool, outdir: Optional[Path]
+) -> None:
     """
     Generate a MEVE proof for FILE.
 
