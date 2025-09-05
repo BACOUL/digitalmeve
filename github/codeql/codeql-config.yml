@@ -1,0 +1,14 @@
+name: "digitalmeve-codeql-config"
+queries:
+  - uses: security-extended
+  - uses: security-and-quality
+
+paths:
+  - src
+  - api
+  - tests
+
+paths-ignore:
+  - "**/__pycache__/**"
+  - "docs/**"
+  - ".github/**"
