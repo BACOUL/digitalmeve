@@ -1,8 +1,11 @@
 # --- remplace ENTIEREMENT les définitions de cmd_verify et cmd_inspect ---
 
+
 @cli.command("verify")
 @click.argument("proof_path", type=str)  # chaîne brute (plus de Path ici)
-@click.option("--issuer", "expected_issuer", default=None, help="Expected issuer to match.")
+@click.option(
+    "--issuer", "expected_issuer", default=None, help="Expected issuer to match."
+)
 def cmd_verify(proof_path: str, expected_issuer: Optional[str]) -> None:
     """Vérifie une preuve (embedded PDF/PNG ou JSON/sidecar)."""
     if not proof_path or not str(proof_path).strip():
@@ -25,7 +28,9 @@ def cmd_verify(proof_path: str, expected_issuer: Optional[str]) -> None:
 
     ok, info = verify_meve(obj, expected_issuer=expected_issuer)
     if not ok:
-        click.echo(json.dumps({"error": info.get("error", "invalid")}, ensure_ascii=False))
+        click.echo(
+            json.dumps({"error": info.get("error", "invalid")}, ensure_ascii=False)
+        )
         return
 
     click.echo("OK: proof is valid.")
@@ -62,4 +67,8 @@ def cmd_inspect(proof_path: str) -> None:
 
         click.echo(json.dumps(obj, indent=2, ensure_ascii=False))
     except Exception as exc:
-        click.echo(json.dumps({"error": "inspect-failed", "detail": str(exc)}, ensure_ascii=False))
+        click.echo(
+            json.dumps(
+                {"error": "inspect-failed", "detail": str(exc)}, ensure_ascii=False
+            )
+        )
