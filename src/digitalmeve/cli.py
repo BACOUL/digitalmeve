@@ -174,6 +174,7 @@ def cmd_generate(
         fourni).
       - Toujours écrire un sidecar à côté du fichier source.
       - Si --outdir est fourni: écrire aussi un sidecar dans --outdir.
+      - Et AFFICHER la preuve en JSON sur stdout (attendu par les tests).
     """
     proof = generate_meve(file, issuer=issuer)
 
@@ -192,6 +193,9 @@ def cmd_generate(
     # 3) Sidecar AUSSI dans --outdir si fourni
     if outdir is not None:
         _write_sidecars(file, proof, outdir=outdir)
+
+    # 4) Sortie attendue par les tests : JSON pur sur stdout
+    click.echo(json.dumps(proof, ensure_ascii=False, separators=(",", ":")), nl=False)
 
 
 @cli.command("verify")
