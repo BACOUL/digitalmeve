@@ -1,74 +1,54 @@
-# src/digitalmeve/embedding_pdf.py
 from __future__ import annotations
 
 import json
 from pathlib import Path
 from typing import Any, Dict, Optional, Union
 
-import pikepdf
+from PIL import Image, PngImagePlugin
 
+__all__ = ["embed_proof_png", "extract_proof_png"]
 
-__all__ = ["embed_proof_pdf", "extract_proof_pdf"]
-
-# Clé docinfo utilisée pour stocker la preuve JSON minifiée
-_DOCINFO_KEY = "/MeveProof"
+_TEXT_KEY = "meve_proof"  # iTXt key
 
 
 def _to_path(p: Union[str, Path]) -> Path:
     return p if isinstance(p, Path) else Path(p)
 
 
-def embed_proof_pdf(
+def embed_proof_png(
     in_path: Union[str, Path],
     proof: Dict[str, Any],
     out_path: Optional[Union[str, Path]] = None,
 ) -> Path:
-    """
-    Intègre la preuve JSON dans les métadonnées PDF (Info/XMP) via docinfo.
-
-    - in_path : PDF source
-    - proof   : dict JSON (sera minifié)
-    - out_path: PDF de sortie ; si None, écrit à côté avec suffixe ".embedded.pdf"
-
-    Retourne le Path du PDF écrit.
-    """
+    """Embed the JSON proof into a PNG via an iTXt chunk."""
     src = _to_path(in_path)
-    out = (
-        _to_path(out_path) if out_path is not None else src.with_suffix(".embedded.pdf")
-    )
+    out = _to_path(out_path) if out_path is not None else src.with_suffix(".embedded.png")
 
-    # Minifier le JSON pour diminuer la taille et rester stable
     proof_json = json.dumps(proof, separators=(",", ":"), ensure_ascii=False)
 
-    with pikepdf.Pdf.open(str(src)) as pdf:
-        # Copier l'info existant pour ne rien perdre
-        info = (
-            pikepdf.Dictionary(pdf.docinfo)
-            if pdf.docinfo is not None
-            else pikepdf.Dictionary()
-        )
-        # Écrire sous une clé custom
-        info[_DOCINFO_KEY] = proof_json
-        pdf.docinfo = info
-        pdf.save(str(out))
+    with Image.open(src) as im:
+        info = PngImagePlugin.PngInfo()
+        # Preserve existing textual metadata
+        if hasattr(im, "info"):
+            for k, v in im.info.items():
+                try:
+                    info.add_text(str(k), str(v))
+                except Exception:
+                    pass
+        info.add_text(_TEXT_KEY, proof_json)
+        im.save(out, pnginfo=info)
 
     return out
 
 
-def extract_proof_pdf(in_path: Union[str, Path]) -> Optional[Dict[str, Any]]:
-    """
-    Extrait la preuve JSON stockée dans les métadonnées PDF (docinfo).
-    Retourne un dict si présent et valide, sinon None.
-    """
+def extract_proof_png(in_path: Union[str, Path]) -> Optional[Dict[str, Any]]:
+    """Extract the JSON proof from a PNG iTXt chunk, if present."""
     src = _to_path(in_path)
-    with pikepdf.Pdf.open(str(src)) as pdf:
-        if pdf.docinfo is None:
-            return None
-        raw = pdf.docinfo.get(_DOCINFO_KEY)
-        if not raw:
+    with Image.open(src) as im:
+        payload = getattr(im, "info", {}).get(_TEXT_KEY)
+        if not payload:
             return None
         try:
-            # pikepdf peut renvoyer un Object ; on force en str avant json.loads
-            return json.loads(str(raw))
+            return json.loads(str(payload))
         except Exception:
             return None
