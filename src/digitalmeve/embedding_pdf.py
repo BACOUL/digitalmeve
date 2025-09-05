@@ -29,7 +29,11 @@ def embed_proof_pdf(
     if not src.exists():
         raise FileNotFoundError(f"file not found: {src}")
 
-    out = Path(out_path) if out_path is not None else src.with_name(src.stem + ".meve.pdf")
+    out = (
+        Path(out_path)
+        if out_path is not None
+        else src.with_name(src.stem + ".meve.pdf")
+    )
 
     proof_str = _json_minified(proof)
 
