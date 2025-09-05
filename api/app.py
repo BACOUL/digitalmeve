@@ -1,38 +1,62 @@
-from fastapi import FastAPI, UploadFile, File, Form
-from fastapi.responses import JSONResponse
-from digitalmeve.generator import generate_meve
-from digitalmeve.verifier import verify_identity
+name: API (build & smoke)
 
-app = FastAPI(title="DigitalMeve API", version="1.7.1-dev")
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
 
+# Évite les runs doublons quand tu pushes rapidement
+concurrency:
+  group: api-${{ github.ref }}
+  cancel-in-progress: true
 
-@app.get("/health")
-async def health():
-    return {"status": "ok"}
+permissions:
+  contents: read
 
+jobs:
+  api-smoke:
+    runs-on: ubuntu-latest
 
-@app.post("/generate")
-async def generate(
-    file: UploadFile = File(...),
-    issuer: str = Form("Personal"),
-    also_json: bool = Form(False),
-):
-    """
-    Generate a MEVE proof for the uploaded file.
-    """
-    contents = await file.read()
-    proof = generate_meve(contents, issuer=issuer)
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-    response = {"proof": proof}
-    if also_json:
-        response["sidecar"] = f"{file.filename}.meve.json"
-    return JSONResponse(response)
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
 
+      - name: Install API deps
+        run: |
+          python -m pip install -U pip
+          if [ -f requirements-api.txt ]; then
+            pip install -r requirements-api.txt
+          else
+            # fallback minimal si le fichier n'existe pas
+            pip install fastapi uvicorn[standard] python-multipart pydantic
+          fi
+          # Dépendances lib du projet (pour importer digitalmeve dans l’API)
+          pip install -e .
 
-@app.post("/verify")
-async def verify(proof: dict):
-    """
-    Verify a MEVE proof.
-    """
-    result = verify_identity(proof)
-    return JSONResponse(result)
+      - name: Launch API (background)
+        run: |
+          nohup uvicorn api.app:app --host 127.0.0.1 --port 8000 --no-access-log >/tmp/uvicorn.log 2>&1 &
+          for i in $(seq 1 20); do
+            curl -fsS http://127.0.0.1:8000/health && break
+            sleep 0.5
+          done
+
+      - name: Health check
+        run: |
+          curl -f http://127.0.0.1:8000/health
+          echo
+          curl -fsS http://127.0.0.1:8000/docs >/dev/null || true
+          curl -fsS http://127.0.0.1:8000/redoc >/dev/null || true
+
+      - name: Shut down API
+        if: always()
+        run: |
+          pkill -f "uvicorn api.app:app" || true
+          echo "---- uvicorn log ----"
+          tail -n 200 /tmp/uvicorn.log || true
