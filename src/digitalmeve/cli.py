@@ -82,34 +82,48 @@ def _write_sidecars(
     outdir: Optional[Path],
 ) -> list[Path]:
     """
-    Écrit jusqu’à deux variantes quand elles diffèrent :
-      - file.ext.meve.json
-      - file.meve.json
+    Écrit des sidecars robustes, y compris pour les fichiers SANS extension.
 
-    Si outdir est None, écrit à côté du fichier source.
+    On tente :
+      - file.ext.meve.json (si extension présente)
+      - file.meve.json (remplacement extension)
+      - file.name + ".meve.json" (toujours)
+      - file.stem + ".meve.json" (souvent identique au précédent)
     """
     base = outdir or path.parent
     base.mkdir(parents=True, exist_ok=True)
 
     outs: list[Path] = []
 
+    # Variante "conserve l'extension"
     try:
-        a = (base / path.name).with_suffix(path.suffix + ".meve.json")
-        outs.append(a)
-    except Exception:
-        a = None
-
-    try:
-        b = (base / path.name).with_suffix(".meve.json")
-        if a is None or str(b) != str(a):
-            outs.append(b)
+        outs.append((base / path.name).with_suffix(path.suffix + ".meve.json"))
     except Exception:
         pass
 
-    payload = json.dumps(proof, ensure_ascii=False, separators=(",", ":"))
+    # Variante "remplace l'extension par .meve.json"
+    try:
+        outs.append((base / path.name).with_suffix(".meve.json"))
+    except Exception:
+        pass
+
+    # Variantes robustes (fonctionnent même sans extension)
+    outs.append(base / (path.name + ".meve.json"))
+    outs.append(base / (path.stem + ".meve.json"))
+
+    # Déduplication
+    uniq: list[Path] = []
+    seen: set[str] = set()
     for o in outs:
+        k = str(o)
+        if k not in seen:
+            seen.add(k)
+            uniq.append(o)
+
+    payload = json.dumps(proof, ensure_ascii=False, separators=(",", ":"))
+    for o in uniq:
         o.write_text(payload, encoding="utf-8")
-    return outs
+    return uniq
 
 
 # --------------------------------------------------------------------------- #
@@ -149,7 +163,7 @@ def cli() -> None:
 def cmd_generate(
     file: Path,
     issuer: Optional[str],
-    also_json: bool,  # kept for compatibility (sidecar is now always written)
+    also_json: bool,  # conservé pour compat ; on écrit toujours une sidecar
     outdir: Optional[Path],
 ) -> None:
     """
@@ -159,8 +173,7 @@ def cmd_generate(
       - PDF/PNG: embed la preuve dans un .meve.pdf/.meve.png (dans --outdir si
         fourni).
       - Toujours écrire un sidecar à côté du fichier source.
-      - Si --outdir est fourni: écrire aussi un sidecar dans --outdir (même
-        sans --also-json).
+      - Si --outdir est fourni: écrire aussi un sidecar dans --outdir.
     """
     proof = generate_meve(file, issuer=issuer)
 
@@ -197,11 +210,19 @@ def cmd_verify(file: Path, expected_issuer: Optional[str]) -> None:
     Verify FILE (embedded first, then sidecar).
     Exit code 0 on success, 1 on failure.
     """
-    proof = _maybe_extract_embedded(file)
-    if proof is None:
-        sc = _find_sidecar_for(file)
-        if sc is not None:
-            proof = _read_json_file(sc)
+    proof: Optional[Dict[str, Any]]
+
+    # Cas 1 : on inspecte directement un *.meve.json
+    if file.name.endswith(".meve.json"):
+        proof = _read_json_file(file)
+    else:
+        # Cas 2 : embedded (PDF/PNG)
+        proof = _maybe_extract_embedded(file)
+        # Cas 3 : sidecar à partir d’un fichier “source”
+        if proof is None:
+            sc = _find_sidecar_for(file)
+            if sc is not None:
+                proof = _read_json_file(sc)
 
     if proof is None:
         click.echo(
@@ -226,15 +247,24 @@ def cmd_verify(file: Path, expected_issuer: Optional[str]) -> None:
 def cmd_inspect(file: Path) -> None:
     """
     Print the MEVE proof (pure JSON on stdout).
-      1) Essaie l’embedded (PDF/PNG)
-      2) Sinon, sidecar (plusieurs conventions)
+      1) Si FILE est un *.meve.json → lire directement
+      2) Sinon, embedded (PDF/PNG)
+      3) Sinon, sidecar (plusieurs conventions)
     """
-    proof = _maybe_extract_embedded(file)
-    if proof is None:
-        for cand in _sidecar_candidates(file):
-            proof = _read_json_file(cand)
-            if proof is not None:
-                break
+    proof: Optional[Dict[str, Any]]
+
+    # 1) *.meve.json donné directement
+    if file.name.endswith(".meve.json"):
+        proof = _read_json_file(file)
+    else:
+        # 2) embedded
+        proof = _maybe_extract_embedded(file)
+        # 3) sidecars
+        if proof is None:
+            for cand in _sidecar_candidates(file):
+                proof = _read_json_file(cand)
+                if proof is not None:
+                    break
 
     if proof is None:
         click.echo(
@@ -243,7 +273,6 @@ def cmd_inspect(file: Path) -> None:
         )
         sys.exit(1)
 
-    # Important: sortie JSON stricte et capturable par pytest
     click.echo(json.dumps(proof, ensure_ascii=False, separators=(",", ":")), nl=False)
 
 
