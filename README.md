@@ -98,3 +98,14 @@ ok, info = verify_meve(proof, expected_issuer="Alice")
 print(ok, info["subject"]["hash_sha256"])
 
 ✅ With .meve, you can prove existence, integrity, and authenticity in seconds.
+
+## 5. ✨ Features <a id="features"></a>
+
+- **SHA-256 hashing** → guarantees file integrity  
+- **Timestamp (UTC ISO-8601)** → proof of existence at a given time  
+- **Issuer levels** → Personal / Pro / Official  
+- **JSON Schema validation** → machine-verifiable against [`schemas/meve-1.schema.json`](schemas/meve-1.schema.json)  
+- **Metadata embedding** → free-form key/values (author, project, notes…)  
+- **Sidecar `.meve.json`** → scalable for any file type or size  
+- **CLI & Python API** → generate, verify, inspect in seconds  
+- **CI/CD ready** → GitHub Actions (tests, quality, publish)
