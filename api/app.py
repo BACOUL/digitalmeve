@@ -16,13 +16,19 @@ from digitalmeve.verifier import verify_meve
 
 # (Présents dans le paquet — utilisables plus tard si tu veux renvoyer des fichiers embarqués)
 try:
-    from digitalmeve.embedding_pdf import embed_proof_pdf, extract_proof_pdf  # noqa: F401
+    from digitalmeve.embedding_pdf import (
+        embed_proof_pdf,
+        extract_proof_pdf,
+    )  # noqa: F401
 except Exception:  # pragma: no cover
     embed_proof_pdf = None  # type: ignore[misc,assignment]
     extract_proof_pdf = None  # type: ignore[misc,assignment]
 
 try:
-    from digitalmeve.embedding_png import embed_proof_png, extract_proof_png  # noqa: F401
+    from digitalmeve.embedding_png import (
+        embed_proof_png,
+        extract_proof_png,
+    )  # noqa: F401
 except Exception:  # pragma: no cover
     embed_proof_png = None  # type: ignore[misc,assignment]
     extract_proof_png = None  # type: ignore[misc,assignment]
@@ -60,8 +66,12 @@ def health() -> Dict[str, str]:
 @app.post("/generate", dependencies=[Depends(require_api_key)])
 async def api_generate(
     file: UploadFile = File(..., description="Fichier source (PDF, PNG, etc.)"),
-    issuer: Optional[str] = Form(default=None, description="Émetteur (ex: 'Alice' ou 'Personal')"),
-    also_json: bool = Form(default=True, description="Toujours renvoyer la preuve JSON"),
+    issuer: Optional[str] = Form(
+        default=None, description="Émetteur (ex: 'Alice' ou 'Personal')"
+    ),
+    also_json: bool = Form(
+        default=True, description="Toujours renvoyer la preuve JSON"
+    ),
 ) -> JSONResponse:
     """
     Reçoit un fichier, calcule sa preuve .meve (en mémoire) et renvoie la preuve JSON.
@@ -110,7 +120,9 @@ async def api_verify(
     - Cas 2: JSON brut envoyé comme fichier (content-type application/json)
     """
     if not file:
-        raise HTTPException(status_code=400, detail="Aucun fichier fourni (attendu: .meve.json)")
+        raise HTTPException(
+            status_code=400, detail="Aucun fichier fourni (attendu: .meve.json)"
+        )
 
     try:
         raw = await file.read()
@@ -126,7 +138,9 @@ async def api_verify(
         content={
             "ok": ok,
             "info": info if ok else None,
-            "error": None if ok else info,  # la lib renvoie des détails utiles en cas d’échec
+            "error": (
+                None if ok else info
+            ),  # la lib renvoie des détails utiles en cas d’échec
         },
         status_code=200,
     )
