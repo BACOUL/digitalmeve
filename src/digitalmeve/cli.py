@@ -6,15 +6,17 @@ from typing import Any, Dict, Optional
 
 import click
 
-from .generator import generate_meve
-from .verifier import verify_meve
 from .embedding_pdf import embed_proof_pdf, extract_proof_pdf
 from .embedding_png import embed_proof_png, extract_proof_png
+from .generator import generate_meve
+from .verifier import verify_meve
 
 
 # ------------------------------
 # Helpers
 # ------------------------------
+
+
 def _infer_out_path_meve(input_file: Path) -> Path:
     """
     Pour PDF/PNG : produit un nom de sortie avec le suffixe `.meve` avant l'extension.
@@ -25,11 +27,13 @@ def _infer_out_path_meve(input_file: Path) -> Path:
 
 def _write_json_sidecar(target_for_naming: Path, proof: Dict[str, Any]) -> Path:
     """
-    Écrit un sidecar JSON à côté du `target_for_naming`, sous la forme `<nom>.meve.json`.
+    Écrit un sidecar JSON à côté du `target_for_naming`, sous la forme
+    `<nom>.meve.json`.
     """
     sidecar = target_for_naming.with_name(f"{target_for_naming.name}.meve.json")
     sidecar.write_text(
-        json.dumps(proof, indent=2, ensure_ascii=False), encoding="utf-8"
+        json.dumps(proof, indent=2, ensure_ascii=False),
+        encoding="utf-8",
     )
     return sidecar
 
@@ -84,6 +88,8 @@ def _find_sidecar_for(path: Path) -> Optional[Path]:
 # ------------------------------
 # CLI
 # ------------------------------
+
+
 @click.group()
 def cli() -> None:
     """DigitalMeve CLI — generate / verify / inspect .meve proofs."""
@@ -92,16 +98,22 @@ def cli() -> None:
 
 @cli.command("generate")
 @click.argument(
-    "input_file", type=click.Path(path_type=Path, exists=True, dir_okay=False)
+    "input_file",
+    type=click.Path(path_type=Path, exists=True, dir_okay=False),
 )
 @click.option(
-    "--issuer", required=True, help='Issuer label (e.g. "Personal" or "Alice").'
+    "--issuer",
+    required=True,
+    help='Issuer label (e.g. "Personal" or "Alice").',
 )
 @click.option(
     "--also-json",
     is_flag=True,
     default=False,
-    help="Also write a sidecar <output>.meve.json for embedded outputs (PDF/PNG).",
+    help=(
+        "Also write a sidecar <output>.meve.json for embedded outputs "
+        "(PDF/PNG)."
+    ),
 )
 @click.option(
     "--outdir",
@@ -110,7 +122,10 @@ def cli() -> None:
     help="Optional output directory. Defaults to the input folder.",
 )
 def cmd_generate(
-    input_file: Path, issuer: str, also_json: bool, outdir: Optional[Path]
+    input_file: Path,
+    issuer: str,
+    also_json: bool,
+    outdir: Optional[Path],
 ) -> None:
     """
     Generate a .meve proof for INPUT_FILE and embed it when possible.
@@ -152,17 +167,22 @@ def cmd_generate(
     if outdir:
         sidecar = target_dir / sidecar.name
     sidecar.write_text(
-        json.dumps(proof, indent=2, ensure_ascii=False), encoding="utf-8"
+        json.dumps(proof, indent=2, ensure_ascii=False),
+        encoding="utf-8",
     )
     click.echo(str(sidecar))
 
 
 @cli.command("verify")
 @click.argument(
-    "proof_path", type=click.Path(path_type=Path, exists=True, dir_okay=False)
+    "proof_path",
+    type=click.Path(path_type=Path, exists=True, dir_okay=False),
 )
 @click.option(
-    "--issuer", "expected_issuer", default=None, help="Expected issuer to match."
+    "--issuer",
+    "expected_issuer",
+    default=None,
+    help="Expected issuer to match.",
 )
 def cmd_verify(proof_path: Path, expected_issuer: Optional[str]) -> None:
     """
@@ -202,35 +222,48 @@ def cmd_verify(proof_path: Path, expected_issuer: Optional[str]) -> None:
 
 @cli.command("inspect")
 @click.argument(
-    "proof_path", type=click.Path(path_type=Path, exists=True, dir_okay=False)
+    "proof_path",
+    type=click.Path(path_type=Path, exists=True, dir_okay=False),
 )
 def cmd_inspect(proof_path: Path) -> None:
     """
     Pretty-print the given .meve proof (JSON or embedded).
+    Toujours renvoyer un JSON (même en cas d'erreur) pour éviter tout
+    JSONDecodeError côté tests.
     """
-    proof_path = proof_path.resolve()
+    try:
+        proof_path = proof_path.resolve()
 
-    # 1) Embedded?
-    obj: Optional[Dict[str, Any]] = _maybe_extract_embedded(proof_path)
+        # 1) Embedded?
+        obj: Optional[Dict[str, Any]] = _maybe_extract_embedded(proof_path)
 
-    # 2) JSON direct?
-    if obj is None:
-        obj = _read_json_file(proof_path)
+        # 2) JSON direct?
+        if obj is None:
+            obj = _read_json_file(proof_path)
 
-    # 3) Sidecar near?
-    if obj is None:
-        sidecar = _find_sidecar_for(proof_path)
-        if sidecar:
-            obj = _read_json_file(sidecar)
+        # 3) Sidecar near?
+        if obj is None:
+            sidecar = _find_sidecar_for(proof_path)
+            if sidecar:
+                obj = _read_json_file(sidecar)
 
-    if obj is None:
-        # Pour éviter tout JSONDecodeError côté tests (stdout vide), on renvoie un JSON d'erreur.
+        if obj is None:
+            click.echo(
+                json.dumps(
+                    {"error": "No proof found for given path"},
+                    ensure_ascii=False,
+                )
+            )
+            return
+
+        click.echo(json.dumps(obj, indent=2, ensure_ascii=False))
+    except Exception as exc:  # ceinture et bretelles
         click.echo(
-            json.dumps({"error": "No proof found for given path"}, ensure_ascii=False)
+            json.dumps(
+                {"error": "inspect-failed", "detail": str(exc)},
+                ensure_ascii=False,
+            )
         )
-        return
-
-    click.echo(json.dumps(obj, indent=2, ensure_ascii=False))
 
 
 def main() -> None:
