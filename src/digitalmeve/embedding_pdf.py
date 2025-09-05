@@ -22,7 +22,9 @@ def embed_proof_png(
 ) -> Path:
     """Embed the JSON proof into a PNG via an iTXt chunk."""
     src = _to_path(in_path)
-    out = _to_path(out_path) if out_path is not None else src.with_suffix(".embedded.png")
+    out = (
+        _to_path(out_path) if out_path is not None else src.with_suffix(".embedded.png")
+    )
 
     proof_json = json.dumps(proof, separators=(",", ":"), ensure_ascii=False)
 
