@@ -1,10 +1,9 @@
-"""
-DigitalMEVE package root.
-"""
+from .embedding_pdf import embed_proof_pdf, extract_proof_pdf  # noqa: F401
+from .embedding_png import embed_proof_png, extract_proof_png  # noqa: F401
 
 __all__ = [
-    "__version__",
+    "embed_proof_pdf",
+    "extract_proof_pdf",
+    "embed_proof_png",
+    "extract_proof_png",
 ]
-
-# Version du package (utilisée par tests/test_version.py)
-__version__ = "1.7.1-dev"
