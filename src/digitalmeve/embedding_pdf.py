@@ -8,7 +8,7 @@ from PIL import Image, PngImagePlugin
 
 __all__ = ["embed_proof_png", "extract_proof_png"]
 
-_TEXT_KEY = "meve_proof"  # iTXt key
+_TEXT_KEY = "meve_proof"  # clé iTXt
 
 
 def _to_path(p: Union[str, Path]) -> Path:
@@ -20,17 +20,15 @@ def embed_proof_png(
     proof: Dict[str, Any],
     out_path: Optional[Union[str, Path]] = None,
 ) -> Path:
-    """Embed the JSON proof into a PNG via an iTXt chunk."""
+    """Embed la preuve JSON dans un PNG via un chunk iTXt."""
     src = _to_path(in_path)
-    out = (
-        _to_path(out_path) if out_path is not None else src.with_suffix(".embedded.png")
-    )
+    out = _to_path(out_path) if out_path is not None else src.with_suffix(".embedded.png")
 
     proof_json = json.dumps(proof, separators=(",", ":"), ensure_ascii=False)
 
     with Image.open(src) as im:
         info = PngImagePlugin.PngInfo()
-        # Preserve existing textual metadata
+        # Conserver les éventuelles métadonnées texte existantes
         if hasattr(im, "info"):
             for k, v in im.info.items():
                 try:
@@ -44,7 +42,7 @@ def embed_proof_png(
 
 
 def extract_proof_png(in_path: Union[str, Path]) -> Optional[Dict[str, Any]]:
-    """Extract the JSON proof from a PNG iTXt chunk, if present."""
+    """Extrait la preuve JSON d’un PNG (iTXt), si présente."""
     src = _to_path(in_path)
     with Image.open(src) as im:
         payload = getattr(im, "info", {}).get(_TEXT_KEY)
