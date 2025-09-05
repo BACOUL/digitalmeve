@@ -1,29 +1,66 @@
-name: API
+name: API (build & smoke)
 
 on:
   push:
-    paths:
-      - "api/**"
-      - "src/**"
+    branches: [ "main", "master" ]
   pull_request:
 
+# Évite les runs doublons quand tu pushes rapidement
+concurrency:
+  group: api-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
 jobs:
-  test-api:
+  api-smoke:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
           python-version: "3.12"
           cache: "pip"
 
-      - name: Install deps
+      - name: Install API deps
         run: |
+          python -m pip install -U pip
+          if [ -f requirements-api.txt ]; then
+            pip install -r requirements-api.txt
+          else
+            # fallback minimal si le fichier n'existe pas
+            pip install fastapi uvicorn[standard] python-multipart pydantic
+          fi
+          # Dépendances lib du projet (pour importer digitalmeve dans l’API)
           pip install -e .
-          pip install fastapi uvicorn[standard] python-multipart
 
-      - name: Run API health check
+      - name: Launch API (background)
         run: |
-          uvicorn api.app:app --port 8000 &
-          sleep 3
-          curl -f http://localhost:8000/health
+          # Démarre l’API FastAPI sur 127.0.0.1:8000
+          nohup uvicorn api.app:app --host 127.0.0.1 --port 8000 --no-access-log >/tmp/uvicorn.log 2>&1 &
+          # Attend que le port réponde (max ~10s)
+          for i in $(seq 1 20); do
+            curl -fsS http://127.0.0.1:8000/health && break
+            sleep 0.5
+          done
+
+      - name: Health check
+        run: |
+          curl -f http://127.0.0.1:8000/health
+          echo
+          # Optionnel : smoke sur /docs et /redoc
+          curl -fsS http://127.0.0.1:8000/docs >/dev/null || true
+          curl -fsS http://127.0.0.1:8000/redoc >/dev/null || true
+
+      - name: Shut down API
+        if: always()
+        run: |
+          # Termine proprement le serveur lancé en arrière-plan
+          pkill -f "uvicorn api.app:app" || true
+          echo "---- uvicorn log ----"
+          tail -n 200 /tmp/uvicorn.log || true
