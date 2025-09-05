@@ -1,7 +1,7 @@
 # 📜 Changelog — DigitalMeve
 
-All notable changes to this project are documented here.  
-Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),  
+All notable changes to this project are documented here.
+Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and versions follow [Semantic Versioning](https://semver.org/).
 
 ---
@@ -40,10 +40,10 @@ and versions follow [Semantic Versioning](https://semver.org/).
 
 ### Changed
 - Verifier accepts dicts, JSON strings/bytes, or `*.meve.json` paths.
-- Normalized error messages:  
-  - “Missing required keys”  
-  - “Issuer mismatch”  
-  - “Hash mismatch”  
+- Normalized error messages:
+  - “Missing required keys”
+  - “Issuer mismatch”
+  - “Hash mismatch”
   - “Invalid proof”
 
 ### Fixed
