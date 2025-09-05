@@ -1,4 +1,4 @@
-from fastapi import FastAPI, File, UploadFile, Form
+from fastapi import FastAPI, UploadFile, Form
 from fastapi.responses import JSONResponse, FileResponse
 from pathlib import Path
 import tempfile
