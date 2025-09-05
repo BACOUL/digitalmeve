@@ -64,3 +64,23 @@ jobs:
           pkill -f "uvicorn api.app:app" || true
           echo "---- uvicorn log ----"
           tail -n 200 /tmp/uvicorn.log || true
+# api/app.py
+from fastapi import FastAPI
+from pydantic import BaseModel
+from digitalmeve.generator import generate_meve
+from digitalmeve.verifier import verify_meve
+
+app = FastAPI(title="DigitalMeve API", version="1.0")
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}
+
+class VerifyBody(BaseModel):
+    proof: dict
+    expected_issuer: str | None = None
+
+@app.post("/verify")
+def verify(body: VerifyBody):
+    ok, info = verify_meve(body.proof, expected_issuer=body.expected_issuer)
+    return {"ok": ok, "info": info}
