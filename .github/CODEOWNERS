@@ -1,9 +1,15 @@
-# Propriétaires par défaut
-*                                   @BACoul
+# .github/CODEOWNERS
+# ------------------------------------------------------------
+# Règles : la première correspondante gagne.
+# Les chemins sont relatifs à la racine du dépôt.
+# ------------------------------------------------------------
+
+# Propriétaire par défaut (si aucune règle plus spécifique ne matche)
+*                           @BACOUL
 
 # Dossiers critiques
-/src/digitalmeve/**                 @BACoul
-/tests/**                           @BACoul
-/.github/workflows/**               @BACoul
-/docs/**                            @BACoul
-/schemas/**                         @BACoul
+/src/digitalmeve/**         @BACOUL
+/tests/**                   @BACOUL
+/.github/workflows/**       @BACOUL
+/docs/**                    @BACOUL
+/schemas/**                 @BACOUL
