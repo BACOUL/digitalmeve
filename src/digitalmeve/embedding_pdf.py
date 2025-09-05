@@ -1,76 +1,71 @@
-# src/digitalmeve/embedding_png.py
+# src/digitalmeve/embedding_pdf.py
 from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Any, Dict, Union
+from typing import Any, Dict, Optional, Union
 
-from PIL import Image, PngImagePlugin
-
-_MEVE_PNG_KEY = "meve_proof"
+import pikepdf
 
 
-def embed_proof_png(
+__all__ = ["embed_proof_pdf", "extract_proof_pdf"]
+
+# Clé docinfo utilisée pour stocker la preuve JSON minifiée
+_DOCINFO_KEY = "/MeveProof"
+
+
+def _to_path(p: Union[str, Path]) -> Path:
+    return p if isinstance(p, Path) else Path(p)
+
+
+def embed_proof_pdf(
     in_path: Union[str, Path],
     proof: Dict[str, Any],
-    out_path: Union[str, Path],
+    out_path: Optional[Union[str, Path]] = None,
 ) -> Path:
     """
-    Intègre la preuve MEVE dans un PNG via un chunk texte (iTXt) sous la clé 'meve_proof'.
-    - Copie le PNG d'entrée vers out_path en conservant les métadonnées texte existantes.
-    - Ajoute/écrase la clé 'meve_proof' avec un JSON minifié.
+    Intègre la preuve JSON dans les métadonnées PDF (Info/XMP) via docinfo.
 
-    Retourne: Path(out_path)
+    - in_path : PDF source
+    - proof   : dict JSON (sera minifié)
+    - out_path: PDF de sortie ; si None, écrit à côté avec suffixe ".embedded.pdf"
+
+    Retourne le Path du PDF écrit.
     """
-    p_in = Path(in_path)
-    p_out = Path(out_path)
+    src = _to_path(in_path)
+    if out_path is None:
+        out = src.with_suffix(".embedded.pdf")
+    else:
+        out = _to_path(out_path)
 
-    with Image.open(p_in) as im:
-        pnginfo = PngImagePlugin.PngInfo()
+    # Minifier le JSON pour diminuer la taille et rester stable
+    proof_json = json.dumps(proof, separators=(",", ":"), ensure_ascii=False)
 
-        # Conserver les métadonnées texte existantes (si présentes)
-        # en évitant de dupliquer notre clé.
-        info = getattr(im, "info", {}) or {}
-        for k, v in info.items():
-            if k == _MEVE_PNG_KEY:
-                continue
-            # Pillow peut stocker des bytes -> décoder si possible
-            if isinstance(v, bytes):
-                try:
-                    v = v.decode("utf-8")
-                except Exception:
-                    # on saute les entrées non décodables
-                    continue
-            if isinstance(v, str):
-                pnginfo.add_text(k, v)
+    with pikepdf.Pdf.open(str(src)) as pdf:
+        # Copier l'info existant pour ne rien perdre
+        info = pikepdf.Dictionary(pdf.docinfo) if pdf.docinfo is not None else pikepdf.Dictionary()
+        # Écrire sous une clé custom
+        info[_DOCINFO_KEY] = proof_json
+        pdf.docinfo = info
+        pdf.save(str(out))
 
-        payload = json.dumps(proof, ensure_ascii=False, separators=(",", ":"))
-        pnginfo.add_text(_MEVE_PNG_KEY, payload)
-
-        # Sauvegarde avec nos métadonnées
-        im.save(p_out, pnginfo=pnginfo)
-
-    return p_out
+    return out
 
 
-def extract_proof_png(in_path: Union[str, Path]) -> Dict[str, Any] | None:
+def extract_proof_pdf(in_path: Union[str, Path]) -> Optional[Dict[str, Any]]:
     """
-    Extrait la preuve MEVE depuis un PNG (clé iTXt 'meve_proof').
-    Retourne le dict de preuve ou None si absent/illisible.
+    Extrait la preuve JSON stockée dans les métadonnées PDF (docinfo).
+    Retourne un dict si présent et valide, sinon None.
     """
-    p = Path(in_path)
-    with Image.open(p) as im:
-        data = getattr(im, "info", {}).get(_MEVE_PNG_KEY)
-        if data is None:
+    src = _to_path(in_path)
+    with pikepdf.Pdf.open(str(src)) as pdf:
+        if pdf.docinfo is None:
             return None
-
-        if isinstance(data, bytes):
-            try:
-                data = data.decode("utf-8")
-            except Exception:
-                return None
-
+        raw = pdf.docinfo.get(_DOCINFO_KEY)
+        if not raw:
+            return None
         try:
-            return json.loads(data)
+            # pikepdf peut renvoyer un Object ; on force en str avant json.loads
+            return json.loads(str(raw))
         except Exception:
             return None
