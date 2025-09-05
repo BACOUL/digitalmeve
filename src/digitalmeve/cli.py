@@ -128,7 +128,7 @@ def cmd_generate(
     # 3) Other formats: ALWAYS write a JSON sidecar (default behavior)
     sidecar = input_file.with_name(f"{input_file.name}.meve.json")
     if outdir:
-        sidecar = (Path(outdir).resolve() / sidecar.name)
+        sidecar = Path(outdir).resolve() / sidecar.name
     sidecar.write_text(
         json.dumps(proof, indent=2, ensure_ascii=False),
         encoding="utf-8",
