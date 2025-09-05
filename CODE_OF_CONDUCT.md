@@ -1,5 +1,8 @@
 # 📜 Code of Conduct — DigitalMeve
 
+-If you experience or witness unacceptable behavior: 📧 Contact us at contact@digitalmeve.com.
++If you experience or witness unacceptable behavior: 📧 Contact us at security@digitalmeve.com.
+
 We are committed to providing a welcoming, respectful, and inclusive community for everyone.
 
 ---
