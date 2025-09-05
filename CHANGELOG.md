@@ -49,8 +49,8 @@ index 1234567..89abcde 100644
 -Historical (pre-1.0)
 -Internal prototypes and POCs.
 +# 📜 Changelog — DigitalMeve
-+All notable changes to this project are documented here.  
-+Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),  
++All notable changes to this project are documented here.
++Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 +and this project adheres to [Semantic Versioning](https://semver.org/).
 +
 +## [Unreleased]
