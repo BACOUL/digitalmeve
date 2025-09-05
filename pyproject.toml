@@ -14,14 +14,6 @@ authors = [
 ]
 keywords = ["proof", "verification", "hash", "timestamp", "json", "digitalmeve", "meve"]
 
-# ✅ AJOUTS : URLs et classifiers
-urls = {
-  Homepage = "https://github.com/BACOUL/digitalmeve",
-  Repository = "https://github.com/BACOUL/digitalmeve",
-  Issues = "https://github.com/BACOUL/digitalmeve/issues",
-  Documentation = "https://github.com/BACOUL/digitalmeve/tree/main/docs"
-}
-
 classifiers = [
   "Development Status :: 4 - Beta",
   "Intended Audience :: Developers",
@@ -51,15 +43,23 @@ dev = [
   "pre-commit>=3.3",
 ]
 
+# ✅ URLs en table TOML (forme la plus sûre)
+[project.urls]
+Homepage = "https://github.com/BACOUL/digitalmeve"
+Repository = "https://github.com/BACOUL/digitalmeve"
+Issues = "https://github.com/BACOUL/digitalmeve/issues"
+Documentation = "https://github.com/BACOUL/digitalmeve/tree/main/docs"
+
 [tool.setuptools.packages.find]
 where = ["src"]
 
-# ✅ Inclure les fichiers non-Python (schémas, scripts) dans les distributions
+# Inclure fichiers non-Python (schémas, scripts) dans les distros
 [tool.setuptools]
 include-package-data = true
 
-# ⚠️ Ces patterns fonctionnent si les fichiers sont **dans le package**.
-# Étape suivante (si besoin) : avoir `src/digitalmeve/schemas/` et/ou `src/digitalmeve/examples/`.
+# Si/Quand tu déplaces schemas/ et examples/ dans le package:
+#   src/digitalmeve/schemas/  et  src/digitalmeve/examples/
+# ces patterns les mettront dans la wheel.
 [tool.setuptools.package-data]
 digitalmeve = ["schemas/*.json", "examples/*.sh"]
 
