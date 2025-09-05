@@ -11,8 +11,6 @@
 [![Downloads](https://pepy.tech/badge/digitalmeve)](https://pepy.tech/project/digitalmeve)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-[![Coverage](./coverage.svg)](./coverage.svg)
-
 
 ## 📑 Table of Contents
 
