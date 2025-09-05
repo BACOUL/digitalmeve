@@ -11,31 +11,31 @@
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/digitalmeve.svg?logo=python&label=Python)](https://pypi.org/project/digitalmeve/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-> **Quick links**:  
+> **Quick links**:
 > • [Overview](docs/overview.md) • [Specification](docs/specification.md) • [Generator Guide](docs/generator-guide.md) • [Verifier Guide](docs/verification-guide.md) • [API Usage](docs/API_USAGE.md) • [Examples](docs/examples.md) • [Security](SECURITY.md) • [Roadmap](docs/roadmap.md)
 
 ---
 
 ## 📑 Table of Contents
 
-1. [Overview](#overview)  
-2. [Quick Installation](#quick-installation)  
-3. [CLI Usage](#cli-usage)  
-4. [Python Usage](#python-usage)  
-5. [Features](#features)  
-6. [Schema & Format](#schema--format)  
-7. [Reproducible Examples](#reproducible-examples)  
-8. [Certification Levels](#certification-levels)  
-9. [Security](#security)  
-10. [Web Integration (preview)](#web-integration-preview)  
-11. [Development & Contribution](#development--contribution)  
+1. [Overview](#overview)
+2. [Quick Installation](#quick-installation)
+3. [CLI Usage](#cli-usage)
+4. [Python Usage](#python-usage)
+5. [Features](#features)
+6. [Schema & Format](#schema--format)
+7. [Reproducible Examples](#reproducible-examples)
+8. [Certification Levels](#certification-levels)
+9. [Security](#security)
+10. [Web Integration (preview)](#web-integration-preview)
+11. [Development & Contribution](#development--contribution)
 12. [License](#license)
 
 ---
 
 ## Overview
 
-**DigitalMeve** defines the `.meve` format to prove **existence**, **integrity** (SHA-256), **timestamp** (UTC) and **issuer** of any file.  
+**DigitalMeve** defines the `.meve` format to prove **existence**, **integrity** (SHA-256), **timestamp** (UTC) and **issuer** of any file.
 The format is **open**, **portable** (sidecar `.meve.json`) and **machine-verifiable** (JSON Schema).
 
 ---
@@ -196,4 +196,3 @@ License
 MIT
 
 ---
-
