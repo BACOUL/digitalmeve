@@ -16,7 +16,9 @@ def _to_path(p: str | Path) -> Path:
     return p if isinstance(p, Path) else Path(p)
 
 
-def embed_proof_pdf(in_path: str | Path, proof: Dict[str, Any], out_path: str | Path) -> Path:
+def embed_proof_pdf(
+    in_path: str | Path, proof: Dict[str, Any], out_path: str | Path
+) -> Path:
     """
     Intègre une preuve MEVE dans les métadonnées PDF.
     """
