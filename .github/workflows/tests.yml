@@ -1,42 +1,22 @@
-name: pytest
-
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
-
-jobs:
-  tests:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: ["3.10", "3.11", "3.12"]
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python-version }}
-          cache: "pip"
-
-      - name: Install deps
-        run: |
-          python -m pip install --upgrade pip
-          pip install -e .
-          pip install pytest pytest-cov
-
-      - name: Run tests with coverage
-        run: |
-          pytest -q --cov=digitalmeve --cov-report=term-missing --cov-report=xml
-
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v4
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}   # requis si dépôt privé
-          files: coverage.xml
-          flags: unittests
-          fail_ci_if_error: true
+diff --git a/.github/workflows/tests.yml b/.github/workflows/tests.yml
+index 1234567..89abcde 100644
+--- a/.github/workflows/tests.yml
++++ b/.github/workflows/tests.yml
+@@ -40,11 +40,12 @@ jobs:
+         run: |
+           pytest -q --cov=digitalmeve --cov-report=term-missing --cov-report=xml
+ 
+-      - name: Upload coverage to Codecov
+-        uses: codecov/codecov-action@v4
+-        with:
+-          token: ${{ secrets.CODECOV_TOKEN }}
+-          files: coverage.xml
+-          flags: unittests
+-          fail_ci_if_error: true
++      - name: Upload coverage to Codecov
++        uses: codecov/codecov-action@v4
++        with:
++          files: coverage.xml
++          slug: BACOUL/digitalmeve
++          flags: unittests
++          fail_ci_if_error: true
