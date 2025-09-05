@@ -231,13 +231,13 @@ All new code should include tests.
 
 ## 14. 📦 Releases <a id="releases"></a>
 
-DigitalMeve uses **semantic versioning** (MAJOR.MINOR.PATCH).  
+DigitalMeve uses **semantic versioning** (MAJOR.MINOR.PATCH).
 
 ### 🔄 Release process
-1. Bump version in `pyproject.toml`  
-2. Update [CHANGELOG.md](CHANGELOG.md)  
-3. Commit & tag:  
-   
+1. Bump version in `pyproject.toml`
+2. Update [CHANGELOG.md](CHANGELOG.md)
+3. Commit & tag:
+
    git commit -am "chore(release): v1.x.x"
    git tag v1.x.x
    git push --tags
@@ -261,10 +261,10 @@ See CHANGELOG.md for a history of added / changed / fixed features.
 
 ## 15. ⚖ License <a id="license"></a>
 
-DigitalMeve is released under the **MIT License**.  
+DigitalMeve is released under the **MIT License**.
 
-- You are free to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the software.  
-- Attribution is required: include the original copyright and license notice in any copy.  
-- The software is provided **“as is”**, without warranty of any kind.  
+- You are free to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the software.
+- Attribution is required: include the original copyright and license notice in any copy.
+- The software is provided **“as is”**, without warranty of any kind.
 
 📄 See the full license text here → [LICENSE](LICENSE)
