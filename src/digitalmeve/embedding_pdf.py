@@ -1,73 +1,69 @@
 from __future__ import annotations
 
-import json
 from pathlib import Path
 from typing import Any, Dict, Optional
 
+import json
 import pikepdf
 
 
-_MEVE_KEY = "/MEVE_Proof"
+MEVE_DOCINFO_KEY = "meve_proof"  # clé légère dans Info (XMP possible plus tard)
 
 
-def _minify_json(obj: Dict[str, Any]) -> str:
-    """Retourne un JSON **minifié** et UTF-8 (sans échappements inutiles)."""
-    return json.dumps(obj, ensure_ascii=False, separators=(",", ":"))
-
-
-def embed_proof_pdf(
-    in_path: Path | str,
-    proof: Dict[str, Any],
-    out_path: Optional[Path | str] = None,
-) -> Path:
+def embed_proof_pdf(in_path: Path | str, proof: Dict[str, Any], out_path: Path | str | None = None) -> Path:
     """
-    Embarque la preuve MEVE dans les métadonnées PDF (docinfo) sous la clé /MEVE_Proof.
-    - in_path : PDF source
-    - proof   : dict MEVE
-    - out_path: destination (par défaut <in_path>.meve.pdf)
-    Retourne le chemin du PDF écrit.
+    Embarque la preuve JSON (minifiée) dans les métadonnées PDF (Info).
+    - in_path: PDF source
+    - proof: dict JSON sérialisable
+    - out_path: destination; si None, écrit à côté sous <name>.meve.pdf
     """
-    src = Path(in_path)
+    in_path = Path(in_path)
     if out_path is None:
-        dst = src.with_suffix(src.suffix)  # garde .pdf
-        dst = dst.with_name(src.stem + ".meve" + src.suffix)  # foo.pdf -> foo.meve.pdf
-    else:
-        dst = Path(out_path)
+        out_path = in_path.with_suffix(".meve.pdf")
+    out_path = Path(out_path)
 
-    if not src.exists():
-        raise FileNotFoundError(f"PDF introuvable: {src}")
+    payload = json.dumps(proof, separators=(",", ":"), ensure_ascii=False)
 
-    payload = _minify_json(proof)
-
-    with pikepdf.Pdf.open(str(src)) as pdf:
-        # docinfo peut être immuable : on reconstruit un Dictionary modifiable
-        info = pikepdf.Dictionary(pdf.docinfo)
-        info[_MEVE_KEY] = payload
+    with pikepdf.Pdf.open(in_path) as pdf:
+        info = pdf.docinfo or pikepdf.Dictionary()
+        info[MEVE_DOCINFO_KEY] = pikepdf.String(payload)
         pdf.docinfo = info
-        pdf.save(str(dst))
+        pdf.save(str(out_path))
 
-    return dst
+    return out_path
 
 
-def extract_proof_pdf(in_path: Path | str) -> Dict[str, Any]:
+def extract_proof_pdf(path: Path | str) -> Optional[Dict[str, Any]]:
     """
-    Extrait la preuve MEVE (JSON) depuis les métadonnées PDF (/MEVE_Proof).
-    Retourne un dict Python.
-    Lève KeyError si la clé n’est pas présente ou JSONDecodeError si invalide.
+    Extrait la preuve depuis les métadonnées PDF (Info[MEVE_DOCINFO_KEY]).
+    Retourne dict ou None si absent/invalide.
     """
-    src = Path(in_path)
-    if not src.exists():
-        raise FileNotFoundError(f"PDF introuvable: {src}")
+    path = Path(path)
+    try:
+        with pikepdf.Pdf.open(path) as pdf:
+            info = pdf.docinfo or {}
+            raw = info.get(MEVE_DOCINFO_KEY)
+            if not raw:
+                return None
+            if isinstance(raw, pikepdf.String):
+                raw = str(raw)
+            return json.loads(raw)
+    except Exception:
+        return None
 
-    with pikepdf.Pdf.open(str(src)) as pdf:
-        raw = pdf.docinfo.get(_MEVE_KEY, None)
 
-    if raw is None:
-        raise KeyError("Aucune preuve MEVE trouvée dans le PDF (/MEVE_Proof).")
-
-    if isinstance(raw, bytes):
-        raw = raw.decode("utf-8", errors="strict")
-
-    # Certaines versions peuvent renvoyer un pikepdf.String
-    raw_str = str(raw)
-    return json.loads(raw_str)
+def is_meve_pdf(path: Path | str) -> bool:
+    """
+    Heuristique rapide : existe et suffix .meve.pdf OU présence de la clé Info.
+    """
+    p = Path(path)
+    if not p.exists():
+        return False
+    if p.name.endswith(".meve.pdf"):
+        return True
+    try:
+        with pikepdf.Pdf.open(p) as pdf:
+            info = pdf.docinfo or {}
+            return MEVE_DOCINFO_KEY in info
+    except Exception:
+        return False
