@@ -5,6 +5,7 @@ DigitalMeve package init: expose l’API publique sans casser si PNG n’est pas
 # Version "best effort" (utile pour tests/version)
 try:
     from importlib.metadata import PackageNotFoundError, version  # type: ignore
+
     try:
         __version__ = version("digitalmeve")
     except PackageNotFoundError:
