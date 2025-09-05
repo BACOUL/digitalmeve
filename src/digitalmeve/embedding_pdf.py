@@ -43,7 +43,11 @@ def embed_proof_pdf(
 
     with pikepdf.Pdf.open(str(src)) as pdf:
         # Copier l'info existant pour ne rien perdre
-        info = pikepdf.Dictionary(pdf.docinfo) if pdf.docinfo is not None else pikepdf.Dictionary()
+        info = (
+            pikepdf.Dictionary(pdf.docinfo)
+            if pdf.docinfo is not None
+            else pikepdf.Dictionary()
+        )
         # Écrire sous une clé custom
         info[_DOCINFO_KEY] = proof_json
         pdf.docinfo = info
