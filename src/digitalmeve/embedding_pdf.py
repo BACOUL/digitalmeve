@@ -33,14 +33,20 @@ def embed_proof_pdf(
     Retourne le Path du PDF écrit.
     """
     src = _to_path(in_path)
-    out = _to_path(out_path) if out_path is not None else src.with_suffix(".embedded.pdf")
+    out = (
+        _to_path(out_path) if out_path is not None else src.with_suffix(".embedded.pdf")
+    )
 
     # Minifier le JSON pour diminuer la taille et rester stable
     proof_json = json.dumps(proof, separators=(",", ":"), ensure_ascii=False)
 
     with pikepdf.Pdf.open(str(src)) as pdf:
         # Copier l'info existant pour ne rien perdre
-        info = pikepdf.Dictionary(pdf.docinfo) if pdf.docinfo is not None else pikepdf.Dictionary()
+        info = (
+            pikepdf.Dictionary(pdf.docinfo)
+            if pdf.docinfo is not None
+            else pikepdf.Dictionary()
+        )
         # Écrire sous une clé custom
         info[_DOCINFO_KEY] = proof_json
         pdf.docinfo = info
