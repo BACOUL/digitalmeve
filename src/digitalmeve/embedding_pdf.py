@@ -1,23 +1,29 @@
 from __future__ import annotations
 
+import json
 from pathlib import Path
 from typing import Any, Dict, Optional
 
-import json
 import pikepdf
-
 
 MEVE_DOCINFO_KEY = "meve_proof"  # clé légère dans Info (XMP possible plus tard)
 
 
 def embed_proof_pdf(
-    in_path: Path | str, proof: Dict[str, Any], out_path: Path | str | None = None
+    in_path: Path | str,
+    proof: Dict[str, Any],
+    out_path: Path | str | None = None,
 ) -> Path:
     """
     Embarque la preuve JSON (minifiée) dans les métadonnées PDF (Info).
-    - in_path: PDF source
-    - proof: dict JSON sérialisable
-    - out_path: destination; si None, écrit à côté sous <name>.meve.pdf
+
+    Args:
+        in_path: PDF source.
+        proof: dict JSON sérialisable.
+        out_path: destination; si None, écrit à côté sous <name>.meve.pdf.
+
+    Returns:
+        Chemin du PDF enrichi.
     """
     in_path = Path(in_path)
     if out_path is None:
@@ -38,7 +44,9 @@ def embed_proof_pdf(
 def extract_proof_pdf(path: Path | str) -> Optional[Dict[str, Any]]:
     """
     Extrait la preuve depuis les métadonnées PDF (Info[MEVE_DOCINFO_KEY]).
-    Retourne dict ou None si absent/invalide.
+
+    Returns:
+        dict si trouvé/valide, sinon None.
     """
     path = Path(path)
     try:
