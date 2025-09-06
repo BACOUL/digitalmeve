@@ -1,53 +1,83 @@
-name: security
+name: Security (Bandit & pip-audit)
 
 on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
   schedule:
-    - cron: "0 6 * * 1"   # Tous les lundis à 06:00 UTC
-  workflow_dispatch:       # Lancement manuel possible
+    - cron: "0 6 * * 1"  # Lundi 06:00 UTC
+  workflow_dispatch:
 
 permissions:
   contents: read
+  security-events: write   # nécessaire pour uploader les rapports SARIF (code scanning)
 
 jobs:
   bandit:
-    name: Bandit Scan
+    name: Bandit (code security lint)
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+          cache: "pip"
 
-      - name: Install Bandit
-        run: pip install bandit
+      - name: Install project (editable) + bandit
+        run: |
+          python -m pip install -U pip
+          pip install -e .
+          pip install bandit
 
-      - name: Run Bandit
-        run: bandit -r src/digitalmeve -f txt -o bandit-report.txt || true
+      - name: Run Bandit (SARIF)
+        run: |
+          # -r récursif, -x pour ignorer tests (bruit), -lll niveau max, --exit-zero pour ne pas casser le CI
+          bandit -r src -x tests -lll -f sarif -o bandit.sarif --exit-zero
 
-      - name: Upload Bandit Report
+      - name: Upload SARIF to code scanning
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: bandit.sarif
+
+      - name: Upload Bandit artifact (optional)
         uses: actions/upload-artifact@v4
         with:
-          name: bandit-report
-          path: bandit-report.txt
+          name: bandit-sarif
+          path: bandit.sarif
 
   pip-audit:
-    name: pip-audit Scan
+    name: pip-audit (dependency vulnerabilities)
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+          cache: "pip"
 
-      - name: Install pip-audit
-        run: pip install pip-audit
+      - name: Install project (editable)
+        run: |
+          python -m pip install -U pip
+          # Installe la lib principale (et éventuellement les extras prod si tu en as)
+          pip install -e .
+          # Si tu veux aussi auditer les deps de dev : dé-commente la ligne suivante
+          # pip install -e .[dev]
 
-      - name: Run pip-audit
-        run: pip-audit -r requirements.txt -f json -o pip-audit-report.json || true
+      - name: Run pip-audit (JSON)
+        # --strict ferait échouer en cas de vulnérabilité (tu peux l’ajouter plus tard)
+        run: |
+          pip install pip-audit
+          pip-audit -f json -o pip-audit-report.json || true
 
-      - name: Upload pip-audit Report
+      - name: Upload pip-audit report
         uses: actions/upload-artifact@v4
         with:
           name: pip-audit-report
