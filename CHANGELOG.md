@@ -5,7 +5,7 @@ index 0000000..0000001 100644
 @@ -1,34 +1,48 @@
  📜 Changelog — DigitalMeve
  All notable changes to this project are documented here. Format based on Keep a Changelog, and versions follow Semantic Versioning.
- 
+
  [Unreleased]
  Added
  Documentation: expanded guides in /docs/ (API usage, generator guide, verification guide, overview, specification, security, roadmap, Pro/Official drafts, examples).
@@ -30,7 +30,7 @@ index 0000000..0000001 100644
 +
 +### Fixed
 +- Minor typos and broken links in docs.
- 
+
  [1.7.0] — 2025-08-30
  Added
  generate_meve(...) returns richer dict:
