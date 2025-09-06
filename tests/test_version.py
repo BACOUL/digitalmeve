@@ -4,8 +4,8 @@ index 3b6c9aa..b1f2a71 100644
 +++ b/tests/test_version.py
 @@ -1,10 +1,12 @@
  import digitalmeve
- 
- 
+
+
  def test_version():
      # le package doit exposer __version__
      assert hasattr(digitalmeve, "__version__")
