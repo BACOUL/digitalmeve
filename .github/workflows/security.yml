@@ -10,7 +10,6 @@ on:
 
 permissions:
   contents: read
-  security-events: write   # nécessaire pour uploader les rapports SARIF (code scanning)
 
 jobs:
   bandit:
@@ -33,21 +32,17 @@ jobs:
           pip install -e .
           pip install bandit
 
-      - name: Run Bandit (SARIF)
+      - name: Run Bandit (JSON report)
         run: |
-          # -r récursif, -x pour ignorer tests (bruit), -lll niveau max, --exit-zero pour ne pas casser le CI
-          bandit -r src -x tests -lll -f sarif -o bandit.sarif --exit-zero
+          # -r récursif, -x ignore tests (moins de bruit)
+          # -f json sort en JSON ; --exit-zero pour ne pas casser le CI pour l’instant
+          bandit -r src -x tests -lll -f json -o bandit-report.json --exit-zero
 
-      - name: Upload SARIF to code scanning
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: bandit.sarif
-
-      - name: Upload Bandit artifact (optional)
+      - name: Upload Bandit artifact
         uses: actions/upload-artifact@v4
         with:
-          name: bandit-sarif
-          path: bandit.sarif
+          name: bandit-report
+          path: bandit-report.json
 
   pip-audit:
     name: pip-audit (dependency vulnerabilities)
@@ -66,15 +61,14 @@ jobs:
       - name: Install project (editable)
         run: |
           python -m pip install -U pip
-          # Installe la lib principale (et éventuellement les extras prod si tu en as)
           pip install -e .
-          # Si tu veux aussi auditer les deps de dev : dé-commente la ligne suivante
+          # Si tu veux aussi auditer les deps de dev, décommente :
           # pip install -e .[dev]
 
       - name: Run pip-audit (JSON)
-        # --strict ferait échouer en cas de vulnérabilité (tu peux l’ajouter plus tard)
         run: |
           pip install pip-audit
+          # Report-only pour l’instant
           pip-audit -f json -o pip-audit-report.json || true
 
       - name: Upload pip-audit report
