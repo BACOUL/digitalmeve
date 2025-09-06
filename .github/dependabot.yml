@@ -1,26 +1,23 @@
 version: 2
 
 updates:
-  # ===== Pip (projet Python) =====
+  # ===== Python (pip) =====
   - package-ecosystem: "pip"
-    directory: "/"                # pyproject.toml à la racine
+    directory: "/"                 # pyproject.toml at the repo root
     schedule:
       interval: "weekly"
       day: "monday"
       time: "07:00"
       timezone: "Europe/Paris"
     open-pull-requests-limit: 10
-    # MAJ autorisées : dépendances directes (lib publiées)
     allow:
-      - dependency-type: "direct"
-    # Labels + message de commit propres
+      - dependency-type: "direct"  # keep noise low for a library repo
     labels:
       - "dependencies"
       - "security"
     commit-message:
       prefix: "deps(pip)"
       include: "scope"
-    # Groupes pour réduire le nombre de PRs
     groups:
       qa-tools:
         patterns:
@@ -39,7 +36,7 @@ updates:
 
   # ===== GitHub Actions (CI) =====
   - package-ecosystem: "github-actions"
-    directory: "/"                # .github/workflows/*
+    directory: "/"                 # .github/workflows/*
     schedule:
       interval: "weekly"
       day: "monday"
@@ -52,7 +49,6 @@ updates:
     commit-message:
       prefix: "deps(actions)"
       include: "scope"
-    # Grouper les actions courantes de setup et cache
     groups:
       runners-and-setup:
         patterns:
@@ -63,3 +59,12 @@ updates:
         patterns:
           - "codecov/*"
           - "github/codeql-action*"
+
+# --- Optional safety rails (uncomment if you want to avoid noisy major bumps) ---
+#  - package-ecosystem: "pip"
+#    directory: "/"
+#    ignore:
+#      - dependency-name: "pikepdf"
+#        update-types: ["version-update:semver-major"]
+#      - dependency-name: "pillow"
+#        update-types: ["version-update:semver-major"]
