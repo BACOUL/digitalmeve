@@ -9,7 +9,7 @@ This page shows how `.meve.json` proofs are generated, structured, and verified,
 **Input file:** `contract.pdf`  
 
 **Command:**
-```bash
+
 digitalmeve generate examples/contract.pdf --outdir examples --issuer "Personal"
 
 Generated proof (contract.pdf.meve.json):
