@@ -1,4 +1,4 @@
-name: CodeQL
+name: Analyze (CodeQL)
 
 on:
   push:
@@ -6,41 +6,44 @@ on:
   pull_request:
     branches: [ "main", "master" ]
   schedule:
-    - cron: "0 3 * * 1"  # chaque lundi à 03:00 UTC
-
-concurrency:
-  group: codeql-${{ github.ref }}
-  cancel-in-progress: true
+    - cron: "0 6 * * 1" # chaque lundi 06:00 UTC
 
 permissions:
   contents: read
-  security-events: write
+  security-events: write   # nécessaire pour publier les résultats Code Scanning
+  actions: read
 
 jobs:
   analyze:
-    name: Analyze (CodeQL)
+    name: CodeQL (python)
     runs-on: ubuntu-latest
-
-    strategy:
-      fail-fast: false
-      matrix:
-        language: [ "python" ]
+    timeout-minutes: 30
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # (Optionnel) installe les deps pour améliorer la résolution d’imports
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install minimal deps
+        run: |
+          python -m pip install -U pip
+          # Dépendances utiles pour comprendre les imports du projet
+          pip install -e .[dev] || true
+
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
         with:
-          languages: ${{ matrix.language }}
-          config-file: ./.github/codeql/codeql-config.yml
+          languages: python
+          config-file: .github/codeql/codeql-config.yml
 
-      # Pour Python, pas besoin de build — on laisse l'étape par défaut
-      - name: Autobuild
-        uses: github/codeql-action/autobuild@v3
-
+      # Pour Python pas d’autobuild nécessaire, on passe directement à analyze
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
         with:
-          category: "/language:${{ matrix.language }}"
+          category: "/language:python"
