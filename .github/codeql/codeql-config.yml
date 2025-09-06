@@ -1,13 +1,15 @@
 name: "digitalmeve-codeql-config"
+
+# Répertoires à analyser / ignorer
+paths:
+  - src
+  - api
+exclude:
+  - tests
+  - docs
+  - examples
+
+# Profils de requêtes
 queries:
   - uses: security-extended
   - uses: security-and-quality
-
-paths:
-  - src
-  - tests
-
-paths-ignore:
-  - "**/__pycache__/**"
-  - "docs/**"
-  - ".github/**"
