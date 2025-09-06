@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "digitalmeve"
-version = "1.7.1-dev"
+version = "1.7.1"
 description = "DigitalMeve — The .MEVE Standard: timestamp, hash, and certify digital documents."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -25,25 +25,20 @@ classifiers = [
   "Programming Language :: Python :: 3.12",
   "Topic :: Security :: Cryptography",
   "Topic :: Software Development :: Libraries",
-  "Operating System :: OS Independent"
+  "Operating System :: OS Independent",
+  "Typing :: Typed"
 ]
 
 dependencies = [
-  "pikepdf>=9.0.0",      # Embedding MEVE proof into PDF metadata
-  "pillow>=10.0.0",      # (à venir) pour PNG embedding + image ops
-  "click>=8.1.7",        # CLI interface
+  "pikepdf>=9.0.0",      # PDF embedding
+  "pillow>=10.0.0",      # PNG embedding (present/futur)
+  "click>=8.1.7",        # CLI
 ]
 
-[project.optional-dependencies]
-dev = [
-  "pytest>=7.0",
-  "pytest-cov>=4.0",
-  "ruff>=0.4.0",
-  "black>=23.0",
-  "pre-commit>=3.3",
-]
+# ⬇️ Expose le binaire CLI `digitalmeve`
+[project.scripts]
+digitalmeve = "digitalmeve.cli:main"
 
-# ✅ URLs en table TOML (forme la plus sûre)
 [project.urls]
 Homepage = "https://github.com/BACOUL/digitalmeve"
 Repository = "https://github.com/BACOUL/digitalmeve"
@@ -53,13 +48,10 @@ Documentation = "https://github.com/BACOUL/digitalmeve/tree/main/docs"
 [tool.setuptools.packages.find]
 where = ["src"]
 
-# Inclure fichiers non-Python (schémas, scripts) dans les distros
+# Inclure fichiers non-Python (schémas, scripts) dans la wheel
 [tool.setuptools]
 include-package-data = true
 
-# Si/Quand tu déplaces schemas/ et examples/ dans le package:
-#   src/digitalmeve/schemas/  et  src/digitalmeve/examples/
-# ces patterns les mettront dans la wheel.
 [tool.setuptools.package-data]
 digitalmeve = ["schemas/*.json", "examples/*.sh"]
 
