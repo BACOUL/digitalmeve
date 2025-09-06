@@ -10,7 +10,8 @@
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/digitalmeve.svg?logo=python&label=Python)](https://pypi.org/project/digitalmeve/)
 [![Downloads](https://pepy.tech/badge/digitalmeve)](https://pepy.tech/project/digitalmeve)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-
+[![Security](https://github.com/BACOUL/digitalmeve/actions/workflows/security.yml/badge.svg?branch=main)](.github/workflows/security.yml)
+[![CodeQL](https://github.com/BACOUL/digitalmeve/actions/workflows/codeql.yml/badge.svg?branch=main)](.github/workflows/codeql.yml)
 
 ## 📑 Table of Contents
 
