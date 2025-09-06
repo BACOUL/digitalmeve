@@ -4,11 +4,12 @@
 
 ![quality](https://img.shields.io/badge/quality-passing-brightgreen)
 ![tests](https://img.shields.io/badge/tests-passing-brightgreen)
-![publish](https://img.shields.io/badge/publish-failing-red)
+[![publish](https://github.com/BACOUL/digitalmeve/actions/workflows/publish.yml/badge.svg)](https://github.com/BACOUL/digitalmeve/actions/workflows/publish.yml)
 ![coverage](https://img.shields.io/badge/coverage-90%25-green)
 
 ![DigitalMeve](https://img.shields.io/badge/DigitalMeve-v1.7.1-blue)
 [![PyPI version](https://img.shields.io/pypi/v/digitalmeve.svg)](https://pypi.org/project/digitalmeve/)
+![Python](https://img.shields.io/pypi/pyversions/digitalmeve.svg)
 
 ![downloads](https://img.shields.io/badge/downloads-2k-blue)
 ![License](https://img.shields.io/badge/License-MIT-green)
