@@ -1,0 +1,54 @@
+name: security
+
+on:
+  schedule:
+    - cron: "0 6 * * 1"   # Tous les lundis à 06:00 UTC
+  workflow_dispatch:       # Lancement manuel possible
+
+permissions:
+  contents: read
+
+jobs:
+  bandit:
+    name: Bandit Scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Bandit
+        run: pip install bandit
+
+      - name: Run Bandit
+        run: bandit -r src/digitalmeve -f txt -o bandit-report.txt || true
+
+      - name: Upload Bandit Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: bandit-report
+          path: bandit-report.txt
+
+  pip-audit:
+    name: pip-audit Scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install pip-audit
+        run: pip install pip-audit
+
+      - name: Run pip-audit
+        run: pip-audit -r requirements.txt -f json -o pip-audit-report.json || true
+
+      - name: Upload pip-audit Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: pip-audit-report
+          path: pip-audit-report.json
