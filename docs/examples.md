@@ -6,9 +6,9 @@ This page shows how `.meve.json` proofs are generated, structured, and verified,
 
 ## 📝 Example 1 — Basic File Proof
 
-**Input file:** `contract.pdf`
-**Command:**
+**Input file:** `contract.pdf`  
 
+**Command:**
 ```bash
 digitalmeve generate examples/contract.pdf --outdir examples --issuer "Personal"
 
@@ -38,7 +38,7 @@ Expected output:
 
 {"ok": true, ...}
 
-> Note: timestamp is kept for backward compatibility. The schema uses issued_at as the canonical field.
+> ℹ️ Note: timestamp is kept for backward compatibility. The schema uses issued_at as the canonical field.
 
 
 
@@ -48,6 +48,7 @@ Expected output:
 🏞 Example 2 — With Metadata
 
 Input file: photo.jpg
+
 Command:
 
 digitalmeve generate examples/photo.jpg --outdir examples --issuer "Personal"
@@ -72,7 +73,9 @@ Generated proof (excerpt):
   }
 }
 
-Metadata is optional and can include arbitrary key/value pairs under the meta object.
+> Metadata is optional and can include arbitrary key/value pairs under the meta object.
+
+
 
 
 ---
@@ -94,7 +97,7 @@ Example snippet (illustrative):
   "hash_sha256": "9a9a...1111"
 }
 
-> In the current MVP, Pro/Official elevation is mocked in docs.
+> ⚠️ In the current MVP, Pro/Official elevation is mocked in docs.
 Production flow will add email/DNS checks and optional signature fields (key_id, signature, verified_domain).
 
 
@@ -112,3 +115,4 @@ cd examples
 This calls the CLI for each supported file and writes <file>.meve.json sidecars next to sources.
 
 ---
+
