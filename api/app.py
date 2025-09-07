@@ -1,84 +1,43 @@
-from __future__ import annotations
+name: api-smoke
 
-import json
-import tempfile
-from pathlib import Path
-from typing import Optional
+on:
+  push:
+    paths:
+      - "api/**"
+      - ".github/workflows/api.yml"
+  pull_request:
+    paths:
+      - "api/**"
+      - ".github/workflows/api.yml"
 
-from fastapi import FastAPI, File, Form, HTTPException, UploadFile
-from fastapi.responses import JSONResponse
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
 
-from digitalmeve.generator import generate_meve
-from digitalmeve.verifier import verify_meve
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-# Aligne la version API sur la lib publiée
-app = FastAPI(title="DigitalMeve API", version="1.7.1")
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
 
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install uvicorn fastapi .
+      
+      # ✅ Lancer l’API en arrière-plan
+      - name: Run API in background
+        run: |
+          nohup uvicorn api.app:app --host 127.0.0.1 --port 8000 &
+          sleep 5
 
-@app.get("/health")
-def health() -> dict[str, str]:
-    return {"status": "ok"}
+      # ✅ Vérifier le endpoint /health
+      - name: Health check
+        run: curl -f http://127.0.0.1:8000/health
 
-
-@app.post("/generate")
-async def generate(
-    file: UploadFile = File(...),
-    issuer: Optional[str] = Form(None),
-) -> JSONResponse:
-    """
-    Reçoit un fichier, génère une preuve MEVE, renvoie la preuve (JSON) dans la réponse.
-    - Pas d’écriture de sidecar sur disque côté API (MVP stateless).
-    """
-    try:
-        # Sauve l’upload en temporaire (nom conservé pour les métadonnées)
-        suffix = Path(file.filename or "").suffix
-        tmp_path = Path(tempfile.mkstemp(suffix=suffix)[1])
-        tmp_path.write_bytes(await file.read())
-
-        proof = generate_meve(tmp_path, issuer=issuer or "Personal")
-        return JSONResponse({"ok": True, "proof": proof})
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
-
-
-@app.post("/verify")
-async def verify(
-    # Option 1 : on envoie une preuve JSON brute (Content-Type: application/json)
-    proof: Optional[dict] = None,
-    # Option 2 : on envoie un fichier .meve.json via multipart/form-data
-    file: Optional[UploadFile] = File(None),
-    expected_issuer: Optional[str] = Form(None),
-) -> JSONResponse:
-    """
-    Vérifie une preuve :
-      - soit via `proof` (JSON) directement,
-      - soit via un fichier `*.meve.json` uploadé.
-    Renvoie { ok: bool, info: dict }.
-    """
-    try:
-        proof_obj: Optional[dict] = None
-
-        if proof is not None:
-            # JSON direct dans le body
-            if not isinstance(proof, dict):
-                raise ValueError("Invalid JSON for 'proof'")
-            proof_obj = proof
-
-        elif file is not None:
-            # Fichier uploadé — seulement *.meve.json (MVP)
-            filename = file.filename or ""
-            if not filename.endswith(".meve.json"):
-                raise ValueError("Upload a .meve.json file or provide 'proof' JSON.")
-            raw = await file.read()
-            try:
-                proof_obj = json.loads(raw.decode("utf-8"))
-            except Exception:
-                raise ValueError("Cannot decode JSON from uploaded .meve.json")
-
-        else:
-            raise ValueError("Provide either a 'proof' JSON body or a .meve.json file.")
-
-        ok, info = verify_meve(proof_obj, expected_issuer=expected_issuer)
-        return JSONResponse({"ok": ok, "info": info})
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e)})
+      # ✅ Arrêter les process (optionnel mais propre)
+      - name: Shut down API
+        run: pkill -f "uvicorn" || true
