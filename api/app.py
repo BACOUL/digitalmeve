@@ -27,7 +27,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install uvicorn fastapi .
-      
+
       # ✅ Lancer l’API en arrière-plan
       - name: Run API in background
         run: |
