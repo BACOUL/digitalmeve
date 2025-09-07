@@ -1,43 +1,70 @@
-name: api-smoke
-
-on:
-  push:
-    paths:
-      - "api/**"
-      - ".github/workflows/api.yml"
-  pull_request:
-    paths:
-      - "api/**"
-      - ".github/workflows/api.yml"
-
-jobs:
-  smoke:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install uvicorn fastapi .
-
-      # ✅ Lancer l’API en arrière-plan
-      - name: Run API in background
-        run: |
-          nohup uvicorn api.app:app --host 127.0.0.1 --port 8000 &
-          sleep 5
-
-      # ✅ Vérifier le endpoint /health
-      - name: Health check
-        run: curl -f http://127.0.0.1:8000/health
-
-      # ✅ Arrêter les process (optionnel mais propre)
-      - name: Shut down API
-        run: pkill -f "uvicorn" || true
+*** Begin Patch
+*** Update File: api/app.py
++from __future__ import annotations
++
++import shutil
++import tempfile
++from pathlib import Path
++
++from fastapi import FastAPI, File, Form, HTTPException, UploadFile
++from fastapi.middleware.cors import CORSMiddleware
++from fastapi.responses import JSONResponse
++
++from digitalmeve.generator import generate_meve
++from digitalmeve.verifier import verify_meve
++
++app = FastAPI(title="DigitalMeve API", version="1.7.1")
++
++# CORS (ouvert en dev — à restreindre en prod)
++app.add_middleware(
++    CORSMiddleware,
++    allow_origins=["*"],
++    allow_methods=["*"],
++    allow_headers=["*"],
++)
++
++
++@app.get("/health")
++def health() -> dict:
++    return {"status": "ok"}
++
++
++@app.post("/generate")
++async def generate(
++    file: UploadFile = File(...),
++    issuer: str = Form("Personal"),
++) -> JSONResponse:
++    """
++    Upload d’un fichier → renvoie la preuve (.meve) en JSON.
++    """
++    try:
++        tmpdir = Path(tempfile.mkdtemp(prefix="digitalmeve_"))
++        infile = tmpdir / (file.filename or "upload.bin")
++
++        with infile.open("wb") as f:
++            shutil.copyfileobj(file.file, f)
++
++        proof = generate_meve(infile, issuer=issuer)
++        return JSONResponse(content={"ok": True, "proof": proof})
++    except Exception as e:  # noqa: BLE001 - surface d’erreur HTTP
++        raise HTTPException(status_code=400, detail=str(e)) from e
++
++
++@app.post("/verify")
++async def verify(file: UploadFile = File(...)) -> JSONResponse:
++    """
++    Upload d’un fichier (document ou sidecar .meve.json) → vérification.
++    """
++    try:
++        tmpdir = Path(tempfile.mkdtemp(prefix="digitalmeve_"))
++        infile = tmpdir / (file.filename or "upload.bin")
++
++        with infile.open("wb") as f:
++            shutil.copyfileobj(file.file, f)
++
++        ok, info = verify_meve(str(infile))
++        return JSONResponse(content={"ok": ok, "info": info})
++    except Exception as e:  # noqa: BLE001
++        raise HTTPException(status_code=400, detail=str(e)) from e
++
+*** End Patch
