@@ -37,7 +37,7 @@ jobs:
         run: coverage report --fail-under=80
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           files: ./coverage.xml
           fail_ci_if_error: false   # ne casse pas le job si Codecov bug
