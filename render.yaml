@@ -3,5 +3,5 @@ services:
     name: digitalmeve
     env: python
     plan: free
-    buildCommand: pip install -r requirements-api.txt
-    startCommand: uvicorn api.app:app --host 0.0.0.0 --port 8000
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "uvicorn api.app:app --host 0.0.0.0 --port 8000"
