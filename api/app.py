@@ -1,73 +1,142 @@
-from __future__ import annotations
+from fastapi import FastAPI, UploadFile, Form
+from fastapi.responses import StreamingResponse, JSONResponse
+from typing import Optional
+from io import BytesIO
+from datetime import datetime, timezone
+import hashlib, json, mimetypes
 
-import shutil
-import tempfile
-from pathlib import Path
+from pypdf import PdfReader, PdfWriter
+from PIL import Image, PngImagePlugin
 
-from fastapi import FastAPI, File, Form, HTTPException, UploadFile
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+app = FastAPI()
 
-from digitalmeve.generator import generate_meve
-from digitalmeve.verifier import verify_meve
+# ---------- Helpers ----------
 
-app = FastAPI(title="DigitalMeve API", version="1.7.1")
+def sha256_hex(b: bytes) -> str:
+    return hashlib.sha256(b).hexdigest()
 
-# CORS ouvert en dev (à restreindre en prod)
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+def now_iso() -> str:
+    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
+def stringify_canonical(obj) -> str:
+    # JSON canonique simple (clés triées)
+    def _canon(o):
+        if o is None or isinstance(o, (int, float, bool, str)):
+            return json.dumps(o, separators=(",", ":"), ensure_ascii=False)
+        if isinstance(o, list):
+            return "[" + ",".join(_canon(x) for x in o) + "]"
+        if isinstance(o, dict):
+            keys = sorted(o.keys())
+            return "{" + ",".join(json.dumps(k, ensure_ascii=False)+":"+_canon(o[k]) for k in keys) + "}"
+        raise TypeError("Unsupported type")
+    return _canon(obj)
+
+def clean_none(d):
+    if isinstance(d, dict):
+        return {k: clean_none(v) for k, v in d.items() if v is not None}
+    if isinstance(d, list):
+        return [clean_none(x) for x in d]
+    return d
+
+def build_proof(name: Optional[str], mime: Optional[str], size: int, sha256: str, issuer_identity: Optional[str]):
+    proof = {
+        "version": "meve/1",
+        "created_at": now_iso(),
+        "doc": {
+            "name": name or None,
+            "mime": mime or None,
+            "size": size,
+            "sha256": sha256,
+            # "preview_b64": "...",  # optionnel
+        },
+        "issuer": {
+            "name": "DigitalMeve",
+            "identity": issuer_identity or None,
+            "type": "personal",        # le vérif recalcule le badge
+            "website": "https://digitalmeve.com",
+            "verified_domain": False
+        },
+        "meta": {}
+    }
+    return clean_none(proof)
+
+def infer_ext_and_mime(filename: Optional[str], sniff_mime: Optional[str]) -> tuple[str, str]:
+    if sniff_mime:
+        mime = sniff_mime
+    else:
+        mime = mimetypes.guess_type(filename or "")[0] or "application/octet-stream"
+    ext = (filename or "").split(".")[-1].lower() if filename and "." in filename else {
+        "application/pdf": "pdf",
+        "image/png": "png"
+    }.get(mime, "bin")
+    return ext, mime
+
+# ---------- Embedding ----------
+
+def embed_in_pdf(src: bytes, proof_json: str) -> bytes:
+    reader = PdfReader(BytesIO(src))
+    writer = PdfWriter()
+    for page in reader.pages:
+        writer.add_page(page)
+    # métadonnée personnalisée /MeveProof
+    meta = reader.metadata or {}
+    meta = {**{k: v for k, v in meta.items() if isinstance(k, str)}, "/MeveProof": proof_json}
+    writer.add_metadata(meta)
+    out = BytesIO()
+    writer.write(out)
+    return out.getvalue()
+
+def embed_in_png(src: bytes, proof_json: str) -> bytes:
+    with Image.open(BytesIO(src)) as im:
+        meta = PngImagePlugin.PngInfo()
+        meta.add_itxt("meve_proof", proof_json, lang="", tkey="meve_proof")
+        out = BytesIO()
+        im.save(out, format="PNG", pnginfo=meta)
+        return out.getvalue()
+
+# ---------- Endpoints ----------
 
 @app.get("/health")
-def health() -> dict:
+def health():
     return {"status": "ok"}
-
 
 @app.post("/generate")
 async def generate(
-    file: UploadFile = File(...),
-    issuer: str = Form("Personal"),
-) -> JSONResponse:
-    """
-    Upload d’un fichier → renvoie la preuve (dict JSON).
-    """
+    file: UploadFile,
+    issuer: Optional[str] = Form(None),
+    also_json: Optional[str] = Form(None),  # "1" si l'appelant veut explicitement un sidecar
+):
+    src_bytes = await file.read()
+    size = len(src_bytes)
+    ext, mime0 = infer_ext_and_mime(file.filename, file.content_type)
+    sha = sha256_hex(src_bytes)
+
+    proof_obj = build_proof(file.filename, mime0, size, sha, issuer)
+    proof_json = stringify_canonical(proof_obj)
+
+    # 1) Si output "binaire intégré" possible -> renvoyer name.meve.ext
     try:
-        tmpdir = Path(tempfile.mkdtemp(prefix="digitalmeve_"))
-        infile = tmpdir / (file.filename or "upload.bin")
+        if ext == "pdf" or mime0 == "application/pdf":
+            out_bytes = embed_in_pdf(src_bytes, proof_json)
+            out_mime = "application/pdf"
+            out_name = f"{file.filename.rsplit('.',1)[0]}.meve.pdf"
+            return StreamingResponse(
+                BytesIO(out_bytes),
+                media_type=out_mime,
+                headers={"Content-Disposition": f'attachment; filename="{out_name}"'}
+            )
+        if ext == "png" or mime0 == "image/png":
+            out_bytes = embed_in_png(src_bytes, proof_json)
+            out_mime = "image/png"
+            out_name = f"{file.filename.rsplit('.',1)[0]}.meve.png"
+            return StreamingResponse(
+                BytesIO(out_bytes),
+                media_type=out_mime,
+                headers={"Content-Disposition": f'attachment; filename="{out_name}"'}
+            )
+    except Exception as e:
+        # si l'intégration échoue, on passe au sidecar
+        pass
 
-        with infile.open("wb") as f:
-            shutil.copyfileobj(file.file, f)
-
-        proof = generate_meve(infile, issuer=issuer)
-        return JSONResponse(content={"ok": True, "proof": proof})
-    except Exception as e:  # noqa: BLE001
-        raise HTTPException(status_code=400, detail=str(e)) from e
-
-
-@app.post("/verify")
-async def verify(file: UploadFile = File(...)) -> JSONResponse:
-    """
-    Upload d’un fichier (document ou sidecar .meve.json) → vérification.
-    """
-    try:
-        tmpdir = Path(tempfile.mkdtemp(prefix="digitalmeve_"))
-        infile = tmpdir / (file.filename or "upload.bin")
-
-        with infile.open("wb") as f:
-            shutil.copyfileobj(file.file, f)
-
-        ok, info = verify_meve(str(infile))
-        return JSONResponse(content={"ok": ok, "info": info})
-    except Exception as e:  # noqa: BLE001
-        raise HTTPException(status_code=400, detail=str(e)) from e
-
-
-# Optionnel : exécution locale
-if __name__ == "__main__":
-    import uvicorn
-
-    uvicorn.run("api.app:app", host="127.0.0.1", port=8000, reload=False)
+    # 2) Fallback / ou output sidecar explicite : renvoie le JSON de preuve
+    return JSONResponse(content={"ok": True, "proof": json.loads(proof_json)})
